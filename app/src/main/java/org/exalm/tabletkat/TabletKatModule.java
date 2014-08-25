@@ -63,26 +63,23 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         MODULE_PATH = startupParam.modulePath;
         pref = new XSharedPreferences("org.exalm.tabletkat");
         pref.makeWorldReadable();
-        pref.reload();
 
-        if (pref.getBoolean("enable_tablet_ui", false)) {
-            Class c = findClass("com.android.internal.policy.impl.PhoneWindowManager", null);
-            findAndHookMethod(c, "setInitialDisplaySize", Display.class, int.class, int.class, int.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    pref.reload();
-                    if (pref.getBoolean("enable_tablet_ui", false)) {
-                        setBooleanField(param.thisObject, "mHasNavigationBar", true);
-                        setBooleanField(param.thisObject, "mNavigationBarCanMove", false);
-                    }
-                }
-            });
+        if (checkIsDisabled()){
+            return;
         }
+
+        Class c = findClass("com.android.internal.policy.impl.PhoneWindowManager", null);
+        findAndHookMethod(c, "setInitialDisplaySize", Display.class, int.class, int.class, int.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                setBooleanField(param.thisObject, "mHasNavigationBar", true);
+                setBooleanField(param.thisObject, "mNavigationBarCanMove", false);
+            }
+        });
 
         XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, null);
         XResources.setSystemWideReplacement("android", "layout", "status_bar_latest_event_ticker", res2.fwd(R.layout.status_bar_latest_event_ticker));
         XResources.setSystemWideReplacement("android", "layout", "status_bar_latest_event_ticker_large_icon", res2.fwd(R.layout.status_bar_latest_event_ticker_large_icon));
-
     }
 
     @Override
@@ -122,8 +119,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         mToggleSliderClass = findClass("com.android.systemui.settings.ToggleSlider", loadPackageParam.classLoader);
         mTvStatusBarClass = findClass("com.android.systemui.statusbar.tv.TvStatusBar", loadPackageParam.classLoader);
 
-        pref.reload();
-        if (!pref.getBoolean("enable_tablet_ui", false)){
+        if (checkIsDisabled()){
             return;
         }
 
@@ -154,6 +150,11 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 
     }
 
+    private boolean checkIsDisabled() {
+        pref.reload();
+        return !pref.getBoolean("enable_tablet_ui", false);
+    }
+
     private Object createStatusBar(String clsName, Context mContext, Object mComponents) {
         Class<?> cls;
         try {
@@ -182,8 +183,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         if (!initPackageResourcesParam.packageName.equals(SYSTEMUI_PACKAGE)){
             return;
         }
-        pref.reload();
-        if (!pref.getBoolean("enable_tablet_ui", false)){
+
+        if (checkIsDisabled()){
             return;
         }
 
