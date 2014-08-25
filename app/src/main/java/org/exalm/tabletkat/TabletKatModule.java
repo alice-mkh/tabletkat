@@ -124,6 +124,11 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         mToggleSliderClass = findClass("com.android.systemui.settings.ToggleSlider", loadPackageParam.classLoader);
         mTvStatusBarClass = findClass("com.android.systemui.statusbar.tv.TvStatusBar", loadPackageParam.classLoader);
 
+        pref.reload();
+        if (!pref.getBoolean("enable_tablet_ui", false)){
+            return;
+        }
+
         statusBarMod.addHooks(loadPackageParam.classLoader);
         recentsMod.addHooks(loadPackageParam.classLoader);
 
@@ -136,9 +141,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
                 Object mComponents = getObjectField(self, "mComponents");
 
                 if (DEBUG) Log.d(TAG, "createStatusBarFromConfig");
-                String clsName = mContext.getString(SystemR.string.config_statusBarComponent);
-
-                clsName = "com.android.systemui.statusbar.tv.TvStatusBar";
+                String clsName = "com.android.systemui.statusbar.tv.TvStatusBar";
 
                 if (clsName == null || clsName.length() == 0) {
                     clsName = "com.android.systemui.statusbar.phone.PhoneStatusBar";
