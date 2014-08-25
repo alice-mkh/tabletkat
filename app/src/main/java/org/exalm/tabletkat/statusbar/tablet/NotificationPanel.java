@@ -44,6 +44,7 @@ import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.ViewHelper;
 
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
 public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
@@ -141,7 +142,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
                 new Class<?>[]{Context.class, TabletKatModule.mExpandHelperCallbackClass, Integer.TYPE, Integer.TYPE},
                 new Object[]{mContext, latestItems, minHeight, maxHeight});
         XposedHelpers.callMethod(mExpandHelper, "setEventSource", this);
-        XposedHelpers.callMethod(mExpandHelper, "setGravity", Gravity.BOTTOM);
+        XposedHelpers.setIntField(mExpandHelper, "mGravity", Gravity.BOTTOM);
     }
 
     private View.OnClickListener mClearButtonListener = new View.OnClickListener() {
