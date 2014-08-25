@@ -26,6 +26,4 @@
             android:name="xposedminversion"
             android:value="30" />
     </application>
-
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
 </manifest>
