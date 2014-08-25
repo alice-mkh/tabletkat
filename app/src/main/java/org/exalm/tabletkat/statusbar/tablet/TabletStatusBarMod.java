@@ -1689,13 +1689,15 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             }
         });
 
-        XposedHelpers.findAndHookMethod(tv, "haltTicker", new XC_MethodReplacement() {
-            @Override
-            protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                mTicker.halt();
-                return null;
-            }
-        });
+        try {
+            XposedHelpers.findAndHookMethod(tv, "haltTicker", new XC_MethodReplacement() {
+                @Override
+                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                    mTicker.halt();
+                    return null;
+                }
+            });
+        }catch (NoSuchMethodError e){}
 
         XposedHelpers.findAndHookMethod(tv, "updateExpandedViewPos", int.class, XC_MethodReplacement.DO_NOTHING);
 
