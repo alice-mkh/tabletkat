@@ -1,6 +1,7 @@
 package org.exalm.tabletkat;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
 import android.util.Log;
@@ -78,8 +79,10 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         });
 
         XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, null);
-        XResources.setSystemWideReplacement("android", "layout", "status_bar_latest_event_ticker", res2.fwd(R.layout.status_bar_latest_event_ticker));
-        XResources.setSystemWideReplacement("android", "layout", "status_bar_latest_event_ticker_large_icon", res2.fwd(R.layout.status_bar_latest_event_ticker_large_icon));
+        try {
+            XResources.setSystemWideReplacement("android", "layout", "status_bar_latest_event_ticker", res2.fwd(R.layout.status_bar_latest_event_ticker));
+            XResources.setSystemWideReplacement("android", "layout", "status_bar_latest_event_ticker_large_icon", res2.fwd(R.layout.status_bar_latest_event_ticker_large_icon));
+        }catch (Resources.NotFoundException e){}
     }
 
     @Override
