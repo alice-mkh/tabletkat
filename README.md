@@ -29,7 +29,7 @@ Screenshots
 Installation
 ============
 
-1. Install [Xposed Installer](xposed.info) if you don't have it yet.
+1. Install [Xposed Installer](http://repo.xposed.info/module/de.robv.android.xposed.installer) if you don't have it yet.
 
 2. Install TabletKat.
 
