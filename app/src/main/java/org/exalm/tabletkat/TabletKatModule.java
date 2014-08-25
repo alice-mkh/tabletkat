@@ -49,7 +49,6 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     public static Class mNotificationDataEntryClass;
     public static Class mNotificationRowLayoutClass;
     public static Class mPhoneStatusBarPolicyClass;
-    public static Class mRotationLockControllerClass;
     public static Class mStatusBarIconClass;
     public static Class mStatusBarIconViewClass;
     public static Class mSystemUIClass;
@@ -117,7 +116,6 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         mNotificationDataEntryClass = findClass("com.android.systemui.statusbar.NotificationData.Entry", loadPackageParam.classLoader);
         mNotificationRowLayoutClass = findClass("com.android.systemui.statusbar.policy.NotificationRowLayout", loadPackageParam.classLoader);
         mPhoneStatusBarPolicyClass = findClass("com.android.systemui.statusbar.phone.PhoneStatusBarPolicy", loadPackageParam.classLoader);
-        mRotationLockControllerClass = findClass("com.android.systemui.statusbar.policy.RotationLockController", loadPackageParam.classLoader);
         mStatusBarIconClass = findClass("com.android.internal.statusbar.StatusBarIcon", loadPackageParam.classLoader);
         mStatusBarIconViewClass = findClass("com.android.systemui.statusbar.StatusBarIconView", loadPackageParam.classLoader);
         mSystemUIClass = findClass("com.android.systemui.SystemUI", loadPackageParam.classLoader);

@@ -34,6 +34,7 @@ import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.statusbar.policy.AirplaneModeController;
 import org.exalm.tabletkat.statusbar.policy.DoNotDisturbController;
+import org.exalm.tabletkat.statusbar.policy.RotationLockController;
 
 import de.robv.android.xposed.XposedHelpers;
 
@@ -41,7 +42,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
     static final String TAG = "SettingsView";
 
     AirplaneModeController mAirplane;
-    Object mRotationController;
+    RotationLockController mRotationController;
     Object mBrightness;
     DoNotDisturbController mDoNotDisturb;
     View mRotationLockContainer;
@@ -67,24 +68,23 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
 
         mRotationLockContainer = findViewById(TkR.id.rotate);
         mRotationLockSeparator = findViewById(TkR.id.rotate_separator);
-        mRotationController = XposedHelpers.newInstance(TabletKatModule.mRotationLockControllerClass, context);
-//TODO
-/*        mRotationController.addRotationLockControllerCallback(
+        mRotationController = new RotationLockController(context);
+        mRotationController.addRotationLockControllerCallback(
                 new RotationLockController.RotationLockControllerCallback() {
                     @Override
                     public void onRotationLockStateChanged(boolean locked, boolean visible) {
                         mRotationLockContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
                         mRotationLockSeparator.setVisibility(visible ? View.VISIBLE : View.GONE);
                     }
-                });*/
+                });
         CompoundButton rotateCheckbox = (CompoundButton) findViewById(TkR.id.rotate_checkbox);
-        rotateCheckbox.setChecked(!(Boolean)XposedHelpers.callMethod(mRotationController, "isRotationLocked"));
-        rotateCheckbox.setVisibility((Boolean) XposedHelpers.callMethod(mRotationController, "isRotationLockAffordanceVisible")
+        rotateCheckbox.setChecked(!mRotationController.isRotationLocked());
+        rotateCheckbox.setVisibility(mRotationController.isRotationLockAffordanceVisible()
                 ? View.VISIBLE : View.GONE);
         rotateCheckbox.setOnCheckedChangeListener(new CompoundButton. OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                XposedHelpers.callMethod(mRotationController, "setRotationLocked", !buttonView.isChecked());
+                mRotationController.setRotationLocked(!buttonView.isChecked());
             }
         });
 
@@ -115,7 +115,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
         super.onDetachedFromWindow();
         mAirplane.release();
         mDoNotDisturb.release();
-        XposedHelpers.callMethod(mRotationController, "release");
+        mRotationController.release();
     }
 
     public void onClick(View v) {
