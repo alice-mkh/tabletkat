@@ -278,7 +278,11 @@ public class BaseStatusBarMod implements IMod {
     }
 
     protected boolean inKeyguardRestrictedInputMode() {
-        return (Boolean)XposedHelpers.callMethod(self, "inKeyguardRestrictedInputMode");
+        try {
+            return (Boolean) XposedHelpers.callMethod(self, "inKeyguardRestrictedInputMode");
+        }catch (NoSuchMethodError e){
+            return false;
+        }
     }
 
     public void toggleRecentApps() {
