@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="status_bar_recents_app_label_color">#ffffffff</color>
+
+    <drawable name="recents_callout_line">#99ffffff</drawable>
+</resources>

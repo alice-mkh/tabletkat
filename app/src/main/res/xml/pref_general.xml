@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="enable_tablet_ui"
+        android:title="@string/pref_title_enable_tablet_ui"
+        android:summary="@string/pref_summary_enable_tablet_ui"
+        android:defaultValue="true" />
+<!--
+    <ListPreference
+        android:key="when_to_use"
+        android:title="@string/pref_title_when_to_use"
+        android:defaultValue="2"
+        android:entries="@array/pref_when_to_use_titles"
+        android:entryValues="@array/pref_when_to_use_values"
+        android:dependency="enable_tablet_ui"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null" />
+-->
+</PreferenceScreen>

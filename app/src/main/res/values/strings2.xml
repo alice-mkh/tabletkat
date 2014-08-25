@@ -1,0 +1,17 @@
+<resources>
+    <!-- Strings for SystemUI -->
+
+    <string name="compat_mode_on">Zoom to fill screen</string>
+
+    <string name="compat_mode_off">Stretch to fill screen</string>
+
+    <string name="notifications_off_title">Notifications off</string>
+    <string name="notifications_off_text">Tap here to turn notifications back on.</string>
+
+    <string name="compat_mode_help_header">Compatibility zoom</string>
+
+    <string name="compat_mode_help_body">When an app was designed for a smaller screen, a zoom control will appear by the clock.</string>
+
+    <string name="accessibility_compatibility_zoom_button">Compatibility zoom button.</string>
+    <string name="accessibility_compatibility_zoom_example">Zoom smaller to larger screen.</string>
+</resources>

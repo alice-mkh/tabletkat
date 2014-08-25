@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (C) 2010 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<!-- TabletStatusBarView extends FrameLayout -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    
+    <FrameLayout
+        android:id="@+id/bar_contents_holder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/system_bar_height"
+        android:layout_gravity="bottom"
+        >
+        <RelativeLayout
+            android:id="@+id/bar_contents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            >
+
+            <!-- notification icons & panel access -->
+            <include layout="@layout/system_bar_notification_area"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="1dp"
+                />
+
+            <!-- navigation controls -->
+            <LinearLayout
+                android:id="@+id/navigationArea"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:orientation="horizontal"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                >
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/back"
+                    />
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/home"
+                    />
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/recent_apps"
+                    />
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/menu"
+                    />
+            </LinearLayout>
+
+            <!-- fake space bar zone -->
+            <View android:id="@+id/fake_space_bar"
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:paddingStart="8dip"
+                android:paddingEnd="8dip"
+                android:layout_toEndOf="@+id/navigationArea"
+                android:layout_toStartOf="@+id/notificationArea"
+                android:visibility="gone"
+                />
+        </RelativeLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/bar_shadow_holder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/system_bar_height"
+        android:layout_gravity="bottom"
+        >
+        <!-- lights out shade -->
+        <RelativeLayout
+            android:id="@+id/bar_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FF000000"
+            android:visibility="gone"
+            >
+            <ImageView
+                android:id="@+id/dot0"
+                android:layout_width="80dip"
+                android:layout_height="48dip"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                />
+            <ImageView
+                android:id="@+id/dot1"
+                android:layout_width="80dip"
+                android:layout_height="48dip"
+                android:layout_toEndOf="@+id/dot0"
+                android:layout_alignParentBottom="true"
+                />
+            <ImageView
+                android:id="@+id/dot2"
+                android:layout_width="80dip"
+                android:layout_height="48dip"
+                android:layout_toEndOf="@+id/dot1"
+                android:layout_alignParentBottom="true"
+                />
+            <ImageView
+                android:id="@+id/dot3"
+                android:layout_width="80dip"
+                android:layout_height="48dip"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                />
+        </RelativeLayout>
+    </FrameLayout>
+</FrameLayout>
