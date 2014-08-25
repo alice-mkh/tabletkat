@@ -22,7 +22,7 @@ Features
 Screenshots
 ===========
 
-![Screenshot](/screenshots/2.jpg?raw=true)
+![Screenshot](/screenshots/2.png?raw=true)
 
 ![Screenshot](/screenshots/1.jpg?raw=true)
 
