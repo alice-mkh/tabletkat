@@ -1296,12 +1296,16 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             }
         });
 
-        XposedHelpers.findAndHookMethod(tv, "getExpandedViewMaxHeight", new XC_MethodReplacement() {
-            @Override
-            protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                return getNotificationPanelHeight();
-            }
-        });
+        try {
+            XposedHelpers.findAndHookMethod(tv, "getExpandedViewMaxHeight", new XC_MethodReplacement() {
+                @Override
+                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                    return getNotificationPanelHeight();
+                }
+            });
+        }catch(NoSuchMethodError e){
+
+        }
 
         XposedHelpers.findAndHookMethod(base, "onConfigurationChanged", Configuration.class, new XC_MethodHook() {
             @Override
