@@ -290,7 +290,9 @@ public class BaseStatusBarMod implements IMod {
     }
 
     protected void updateSearchPanel() {
-        XposedHelpers.callMethod(self, "updateSearchPanel");
+        try {
+            XposedHelpers.callMethod(self, "updateSearchPanel");
+        }catch(NoSuchMethodError e){}
     }
 
     protected void showSearchPanel() {

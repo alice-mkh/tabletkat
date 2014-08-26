@@ -1388,18 +1388,20 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             }
         });
 
-        XposedHelpers.findAndHookMethod(base, "updateSearchPanel", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if (!mIsTv){
-                    return;
+        try {
+            XposedHelpers.findAndHookMethod(base, "updateSearchPanel", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (!mIsTv) {
+                        return;
+                    }
+
+                    mSearchPanelView = XposedHelpers.getObjectField(self, "mSearchPanelView");
+
+                    mStatusBarView.setDelegateView((View) mSearchPanelView);
                 }
-
-                mSearchPanelView = XposedHelpers.getObjectField(self, "mSearchPanelView");
-
-                mStatusBarView.setDelegateView((View) mSearchPanelView);
-            }
-        });
+            });
+        }catch (NoSuchMethodError e){}
 
         XposedHelpers.findAndHookMethod(base, "showSearchPanel", new XC_MethodHook() {
             @Override
