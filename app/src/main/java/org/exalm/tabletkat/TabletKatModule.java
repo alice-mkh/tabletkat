@@ -75,7 +75,6 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 setBooleanField(param.thisObject, "mHasNavigationBar", true);
                 setBooleanField(param.thisObject, "mNavigationBarCanMove", false);
-                setIntField(param.thisObject, "mStatusBarHeight", 0);
             }
         });
 
@@ -83,10 +82,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         try {
             XResources.setSystemWideReplacement("android", "layout", "status_bar_latest_event_ticker", res2.fwd(R.layout.status_bar_latest_event_ticker));
             XResources.setSystemWideReplacement("android", "layout", "status_bar_latest_event_ticker_large_icon", res2.fwd(R.layout.status_bar_latest_event_ticker_large_icon));
-            XResources.setSystemWideReplacement("android", "dimen", "status_bar_height", 0);
-        }catch (Resources.NotFoundException e){
-            XposedBridge.log(e);
-        }
+        }catch (Resources.NotFoundException e){}
     }
 
     @Override
@@ -109,8 +105,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         try{
             Class c = findClass("com.sonymobile.systemui.statusbar.BatteryImage", loadPackageParam.classLoader);
             mBatteryMeterViewClass = c;
-            XposedBridge.log("Setting up Xperia battery view");
         }catch (ClassNotFoundError e){
+            //Ok, it's not Xperia
             mBatteryMeterViewClass = findClass("com.android.systemui.BatteryMeterView", loadPackageParam.classLoader);
         }
         mBluetoothControllerClass = findClass("com.android.systemui.statusbar.policy.BluetoothController", loadPackageParam.classLoader);

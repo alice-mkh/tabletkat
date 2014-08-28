@@ -64,14 +64,12 @@ public class TabletRecentsMod implements IMod {
                 f.setForeground(res.getDrawable(SystemR.drawable.recents_thumbnail_fg));
             }
         });
-        try {
-            XposedHelpers.findAndHookMethod(recentTasksLoaderClass, "getFirstTask", new XC_MethodReplacement() {
-                @Override
-                protected Object replaceHookedMethod(XC_MethodHook.MethodHookParam methodHookParam) throws Throwable {
-                    return null;
-                }
-            });
-        }catch (NoSuchMethodError e){}
+        XposedHelpers.findAndHookMethod(recentTasksLoaderClass, "getFirstTask", new XC_MethodReplacement() {
+            @Override
+            protected Object replaceHookedMethod(XC_MethodHook.MethodHookParam methodHookParam) throws Throwable {
+                return null;
+            }
+        });
     }
 
     @Override

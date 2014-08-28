@@ -269,7 +269,7 @@ public class TabletTicker
         }
         if (n.tickerView != null) {
             group = (ViewGroup)inflater.inflate(TkR.layout.system_bar_ticker_panel, null, false);
-            group.findViewById(TkR.id.background).setBackgroundResource(SystemR.drawable.system_bar_ticker_background); //FIXME: NullPointerException on CM11
+            group.findViewById(TkR.id.background).setBackgroundResource(SystemR.drawable.system_bar_ticker_background);
             ViewGroup content = (FrameLayout) group.findViewById(TkR.id.ticker_expanded);
             View expanded = null;
             Exception exception = null;
