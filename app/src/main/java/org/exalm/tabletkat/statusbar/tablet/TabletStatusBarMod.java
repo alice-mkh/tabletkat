@@ -34,6 +34,7 @@ import android.content.res.XModuleResources;
 import android.content.res.XResources;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.inputmethodservice.InputMethodService;
@@ -662,16 +663,22 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         return sb;
     }
 
+    public void setClockFont(TextView clock){
+        //TODO: Make an option
+        boolean useOldFont = false;
+        if (useOldFont){
+            clock.setTypeface(Typeface.createFromFile("/system/fonts/AndroidClock_Solid.ttf"));
+        }else{
+            clock.setTypeface(Typeface.DEFAULT);
+        }
+    }
+
     //TODO: Refactor
     private void finalizeStatusBarView(TabletStatusBarView v) {
         TextView clock = (TextView) XposedHelpers.newInstance(TabletKatModule.mClockClass, mContext);
         ViewHelper.replaceView(v, SystemR.id.clock, clock);
         clock.setTextColor(mContext.getResources().getColor(SystemR.color.status_bar_clock_color));
-//An experiment. If successful, will become an option in future.
-//        final String SYSTEM = "/system/fonts/";
-//        final String SYSTEM_FONT_TIME_BACKGROUND = SYSTEM + "AndroidClock.ttf";
-//        final String SYSTEM_FONT_TIME_FOREGROUND = SYSTEM + "AndroidClock_Highlight.ttf";
-//        clock.setTypeface(Typeface.createFromFile(SYSTEM_FONT_TIME_FOREGROUND));
+        setClockFont(clock);
 
         FrameLayout f = (FrameLayout) v.findViewById(SystemR.id.signal_cluster);
         ViewStub cluster = (ViewStub) f.getChildAt(0);
