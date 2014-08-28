@@ -69,6 +69,7 @@ public class ViewHelper {
             ((TextView) v2).setTextSize(TypedValue.COMPLEX_UNIT_PX, ((TextView)v1).getTextSize());
             ((TextView) v2).setTypeface(((TextView) v1).getTypeface());
             ((TextView) v2).setSingleLine(XposedHelpers.getBooleanField(v1, "mSingleLine"));
+            ((TextView) v2).setGravity(((TextView) v1).getGravity());
         }
         return v2;
     }
