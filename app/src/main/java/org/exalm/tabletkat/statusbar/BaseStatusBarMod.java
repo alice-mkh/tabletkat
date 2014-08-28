@@ -268,6 +268,10 @@ public class BaseStatusBarMod implements IMod {
                 onStart();
             }
         });
+        //AOSPA hook
+        try {
+            XposedHelpers.findAndHookMethod(base, "updateHoverState", XC_MethodReplacement.DO_NOTHING);
+        }catch (NoSuchMethodError e){}
     }
 
     protected void onStart() {}

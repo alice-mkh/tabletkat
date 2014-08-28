@@ -3,8 +3,8 @@
     android:layout_height="25dp"
     >
     <ImageView android:id="@android:id/icon"
-        android:layout_width="48dp"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/system_bar_height"
+        android:layout_height="@dimen/system_bar_height"
         android:scaleType="center"
         />
     <LinearLayout
