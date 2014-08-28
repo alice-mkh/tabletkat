@@ -101,7 +101,14 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         mBaseStatusBarClass = findClass("com.android.systemui.statusbar.BaseStatusBar", loadPackageParam.classLoader);
         mBaseStatusBarHClass = findClass("com.android.systemui.statusbar.BaseStatusBar.H", loadPackageParam.classLoader);
         mBatteryControllerClass = findClass("com.android.systemui.statusbar.policy.BatteryController", loadPackageParam.classLoader);
-        mBatteryMeterViewClass = findClass("com.android.systemui.BatteryMeterView", loadPackageParam.classLoader);
+        //Xperia custom battery meter
+        try{
+            Class c = findClass("com.sonymobile.systemui.statusbar.BatteryImage", loadPackageParam.classLoader);
+            mBatteryMeterViewClass = c;
+        }catch (ClassNotFoundError e){
+            //Ok, it's not Xperia
+            mBatteryMeterViewClass = findClass("com.android.systemui.BatteryMeterView", loadPackageParam.classLoader);
+        }
         mBluetoothControllerClass = findClass("com.android.systemui.statusbar.policy.BluetoothController", loadPackageParam.classLoader);
         mBrightnessControllerClass = findClass("com.android.systemui.settings.BrightnessController", loadPackageParam.classLoader);
         mClockClass = findClass("com.android.systemui.statusbar.policy.Clock", loadPackageParam.classLoader);
