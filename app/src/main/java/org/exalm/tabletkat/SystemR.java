@@ -17,6 +17,7 @@ public class SystemR {
         public static int notification_panel_width;
         public static int notification_row_max_height;
         public static int notification_row_min_height;
+        public static int status_bar_icon_drawing_alpha;
         public static int status_bar_icon_size;
     }
 
@@ -114,6 +115,7 @@ public class SystemR {
         dimen.notification_panel_width = res.getIdentifier("notification_panel_width", "dimen", SYSTEMUI_PACKAGE);
         dimen.notification_row_max_height = res.getIdentifier("notification_row_max_height", "dimen", SYSTEMUI_PACKAGE);
         dimen.notification_row_min_height = res.getIdentifier("notification_row_min_height", "dimen", SYSTEMUI_PACKAGE);
+        dimen.status_bar_icon_drawing_alpha = res.getIdentifier("status_bar_icon_drawing_alpha", "dimen", SYSTEMUI_PACKAGE);
         dimen.status_bar_icon_size = res.getIdentifier("status_bar_icon_size", "dimen", SYSTEMUI_PACKAGE);
 
         drawable.ic_notifications = res.getIdentifier("ic_notifications", "drawable", SYSTEMUI_PACKAGE);
