@@ -59,7 +59,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
         mBarService = IStatusBarService.Stub.asInterface(
                 ServiceManager.getService(Context.STATUS_BAR_SERVICE));
         final Resources res = mView.getContext().getResources();
-        mIconAlphaWhenOpaque = res.getFraction(SystemR.dimen.status_bar_icon_drawing_alpha, 1, 1);
+        mIconAlphaWhenOpaque = 1.0F;
     }
 
     public void init() {

@@ -11,6 +11,7 @@ public class TkR {
         public static int notification_ticker_width;
         public static int system_bar_height;
         public static int system_bar_icon_drawing_size;
+        public static int system_bar_icon_padding;
         public static int system_bar_navigation_key_width;
         public static int system_bar_navigation_menu_key_width;
         public static int status_bar_recents_thumbnail_width;
@@ -107,6 +108,7 @@ public class TkR {
         dimen.notification_ticker_width = add(res, res2, R.dimen.notification_ticker_width);
         dimen.system_bar_height = add(res, res2, R.dimen.system_bar_height);
         dimen.system_bar_icon_drawing_size = add(res, res2, R.dimen.system_bar_icon_drawing_size);
+        dimen.system_bar_icon_padding = add(res, res2, R.dimen.system_bar_icon_padding);
         dimen.system_bar_navigation_key_width = add(res, res2, R.dimen.system_bar_navigation_key_width);
         dimen.system_bar_navigation_menu_key_width = add(res, res2, R.dimen.system_bar_navigation_menu_key_width);
         dimen.status_bar_recents_thumbnail_width = add(res, res2, R.dimen.status_bar_recents_thumbnail_width);

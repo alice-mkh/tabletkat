@@ -109,7 +109,7 @@ public class TabletBluetoothController {
 
     private void refreshView(ImageView v){
         v.setVisibility(mBluetoothEnabled ? View.VISIBLE : View.GONE);
-        v.setImageResource(mIconId);
+        v.setImageDrawable(mContext.getResources().getDrawable(mIconId));
         v.setContentDescription(mContentDescription);
     }
 }

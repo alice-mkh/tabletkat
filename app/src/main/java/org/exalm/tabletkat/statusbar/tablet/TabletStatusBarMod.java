@@ -47,6 +47,7 @@ import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.IWindowManager;
@@ -90,6 +91,7 @@ import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 
@@ -204,6 +206,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     private boolean mAutohideSuspended;
     private int mInteractingWindows;
     private Boolean mScreenOn;
+    private Context mLargeIconContext;
 
     @Override
     public void reset() {
@@ -263,6 +266,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         mAutohideSuspended = false;
         mInteractingWindows = 0;
         mScreenOn = null;
+        mLargeIconContext = null;
     }
 
     public Context getContext() {
@@ -324,7 +328,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         // Notification Panel
         RelativeLayout l = (RelativeLayout)View.inflate(context, TkR.layout.system_bar_notification_panel, null);
-        ViewHelper.replaceView(l, TkR.id.title_area, new NotificationPanelTitle(context, null));
+        ViewHelper.replaceView(l, TkR.id.title_area, new NotificationPanelTitle(context, mLargeIconContext, null));
         mNotificationPanel = (NotificationPanel) ViewHelper.replaceView(l, new NotificationPanel(context, null));
         mNotificationPanel.onFinishInflate();
 
@@ -340,7 +344,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 (TextView) mNotificationPanel.findViewById(TkR.id.network_text));
 
         FrameLayout f = (FrameLayout) mNotificationPanel.findViewById(SystemR.id.signal_cluster);
-        ViewStub cluster = (ViewStub) f.getChildAt(0);
+        ViewStub cluster = new ViewStub(mLargeIconContext);
+        ViewHelper.replaceView(f.getChildAt(0), cluster);
         cluster.setLayoutResource(SystemR.layout.signal_cluster_view);
         cluster.inflate();
         XposedHelpers.callMethod(mNetworkController, "addSignalCluster", f.getChildAt(0));
@@ -446,13 +451,27 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     protected void loadDimens() {
         final Resources res = mContext.getResources();
 
+        Configuration c = new Configuration(res.getConfiguration());
+        XposedBridge.log("Native density: " + c.densityDpi);
+
+        if (c.densityDpi >= 280) {
+            c.densityDpi = DisplayMetrics.DENSITY_XXHIGH;
+        }else if (c.densityDpi >= 187) {
+            c.densityDpi = DisplayMetrics.DENSITY_XHIGH;
+        } else {
+            c.densityDpi = DisplayMetrics.DENSITY_HIGH;
+        }
+
+        XposedBridge.log("Status bar icons will use density: " + c.densityDpi);
+        mLargeIconContext = mContext.createConfigurationContext(c);
+
         mNaturalBarHeight = res.getDimensionPixelSize(
-                TkR.dimen.system_bar_height);
+        TkR.dimen.system_bar_height);
 
         int newIconSize = res.getDimensionPixelSize(
                 TkR.dimen.system_bar_icon_drawing_size);
         int newIconHPadding = res.getDimensionPixelSize(
-                SystemR.dimen.status_bar_icon_padding);
+                TkR.dimen.system_bar_icon_padding);
         int newNavIconWidth = res.getDimensionPixelSize(TkR.dimen.system_bar_navigation_menu_key_width);
         int newMenuNavIconWidth = res.getDimensionPixelSize(TkR.dimen.system_bar_navigation_menu_key_width);
 
@@ -551,7 +570,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         // watch the PREF_DO_NOT_DISTURB and convert to appropriate disable() calls
         mDoNotDisturb = new DoNotDisturb(mContext);
 
-        mBluetoothController = new TabletBluetoothController(mContext);
+        mBluetoothController = new TabletBluetoothController(mLargeIconContext);
         mBluetoothController.addView((ImageView)sb.findViewById(TkR.id.bluetooth));
 
         mNetworkController = XposedHelpers.newInstance(TabletKatModule.mNetworkControllerClass, mContext);
@@ -666,11 +685,20 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     public void setClockFont(TextView clock){
         //TODO: Make an option
         boolean useOldFont = false;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) clock.getLayoutParams();
         if (useOldFont){
+            params.setMarginStart(8);
+            params.bottomMargin = 3;
             clock.setTypeface(Typeface.createFromFile("/system/fonts/AndroidClock_Solid.ttf"));
+            clock.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 40);
         }else{
+            params.setMarginStart(6);
+            params.bottomMargin = 0;
             clock.setTypeface(Typeface.DEFAULT);
+            clock.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 30);
         }
+        clock.setLayoutParams(params);
+        clock.requestLayout();
     }
 
     //TODO: Refactor
@@ -681,11 +709,12 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         setClockFont(clock);
 
         FrameLayout f = (FrameLayout) v.findViewById(SystemR.id.signal_cluster);
-        ViewStub cluster = (ViewStub) f.getChildAt(0);
+        ViewStub cluster = new ViewStub(mLargeIconContext);
+        ViewHelper.replaceView(f.getChildAt(0), cluster);
         cluster.setLayoutResource(SystemR.layout.signal_cluster_view);
         cluster.inflate();
 
-        ViewHelper.replaceView(v, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mContext));
+        ViewHelper.replaceView(v, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mLargeIconContext));
 
         ViewGroup view = (ViewGroup)v.findViewById(TkR.id.navigationArea);
 
@@ -1590,7 +1619,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                                 .getNotification();
 
                         final ImageView iconView = (ImageView) XposedHelpers.newInstance(TabletKatModule.mStatusBarIconViewClass,
-                                mContext, "_dnd",
+                                mLargeIconContext, "_dnd",
                                 dndNotification);
                         iconView.setImageResource(TkR.drawable.ic_notification_dnd);
                         iconView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -1737,7 +1766,9 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                     return null;
                 }
 
-                View view = (View) XposedHelpers.newInstance(TabletKatModule.mStatusBarIconViewClass, mContext, slot, null);
+                ImageView view = (ImageView) XposedHelpers.newInstance(TabletKatModule.mStatusBarIconViewClass,
+                        mLargeIconContext, slot, null);
+
                 XposedHelpers.callMethod(view, "set", icon);
                 mStatusIcons.addView(view, viewIndex, new LinearLayout.LayoutParams(mIconSize, mIconSize));
                 return null;
@@ -1758,7 +1789,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                     return null;
                 }
 
-                View view = mStatusIcons.getChildAt(viewIndex);
+                ImageView view = (ImageView) mStatusIcons.getChildAt(viewIndex);
                 XposedHelpers.callMethod(view, "set", icon);
                 return null;
             }
@@ -2145,6 +2176,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     public void initResources(XResources res, final XModuleResources res2) {
         super.initResources(res, res2);
 
+        res.setReplacement(TabletKatModule.SYSTEMUI_PACKAGE, "dimen", "status_bar_icon_drawing_size", res2.fwd(R.dimen.system_bar_icon_drawing_size));
+
         res.setReplacement(TabletKatModule.SYSTEMUI_PACKAGE, "dimen", "navbar_search_panel_height", res2.fwd(R.dimen.navbar_search_panel_height));
         res.setReplacement(TabletKatModule.SYSTEMUI_PACKAGE, "dimen", "navbar_search_outerring_diameter", res2.fwd(R.dimen.navbar_search_outerring_diameter));
         res.setReplacement(TabletKatModule.SYSTEMUI_PACKAGE, "dimen", "navbar_search_outerring_radius", res2.fwd(R.dimen.navbar_search_outerring_radius));
@@ -2195,7 +2228,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                     ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) glowpad.getLayoutParams();
                     params.setMarginStart(margin);
                     glowpad.setLayoutParams(params);
-                }
+               }
             }
         });
     }

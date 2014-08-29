@@ -83,8 +83,8 @@
 
             <View
                 android:id="@+id/battery"
-                android:layout_height="16dp"
-                android:layout_width="10.5dp"
+                android:layout_height="24dp"
+                android:layout_width="16dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="6dp"
                 android:contentDescription="@null"

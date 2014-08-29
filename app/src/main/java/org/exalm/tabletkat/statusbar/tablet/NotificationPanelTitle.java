@@ -42,9 +42,11 @@ public class NotificationPanelTitle extends RelativeLayout implements View.OnCli
     private NotificationPanel mPanel;
     private ArrayList<View> buttons;
     private View mSettingsButton;
+    private final Context mLargeIconContext;
 
-    public NotificationPanelTitle(Context context, AttributeSet attrs) {
+    public NotificationPanelTitle(Context context, Context largeContext, AttributeSet attrs) {
         super(context, attrs);
+        mLargeIconContext = largeContext;
         buttons = new ArrayList<View>();
         setOnClickListener(this);
     }
@@ -69,7 +71,7 @@ public class NotificationPanelTitle extends RelativeLayout implements View.OnCli
         ViewHelper.replaceView(this, SystemR.id.date, date);
         ((TextView) findViewById(SystemR.id.date)).setAllCaps(true);
 
-        ViewHelper.replaceView(this, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mContext));
+        ViewHelper.replaceView(this, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mLargeIconContext));
 
         ViewHelper.replaceView(this, TkR.id.battery_text, new BatteryPercentView(mContext));
         BatteryPercentView v = (BatteryPercentView) findViewById(TkR.id.battery_text);
