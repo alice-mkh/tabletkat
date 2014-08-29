@@ -391,7 +391,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         lp = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
+                WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
                         | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
@@ -399,7 +399,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 PixelFormat.TRANSLUCENT);
         lp.gravity = Gravity.BOTTOM | Gravity.END;
         lp.setTitle("InputMethodsPanel");
-        lp.windowAnimations = com.android.internal.R.style.Animation;
+//        lp.windowAnimations = com.android.internal.R.style.Animation;
 //TODO:        lp.windowAnimations = R.style.Animation_RecentPanel;
 
         mWindowManager.addView(mInputMethodsPanel, lp);
@@ -416,7 +416,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         lp = new WindowManager.LayoutParams(
                 250,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL,
+                WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
                         | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
