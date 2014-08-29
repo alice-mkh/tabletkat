@@ -278,6 +278,7 @@ public class TabletTicker
             }
             catch (RuntimeException e) {
                 exception = e;
+                XposedBridge.log(e);
             }
             if (expanded == null) {
                 final String ident = notification.getPackageName()
