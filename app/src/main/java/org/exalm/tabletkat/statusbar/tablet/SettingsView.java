@@ -36,7 +36,6 @@ import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.statusbar.policy.AirplaneModeController;
 import org.exalm.tabletkat.statusbar.policy.DoNotDisturbController;
 import org.exalm.tabletkat.statusbar.policy.RotationLockController;
-import org.exalm.tabletkat.statusbar.policy.WifiController;
 
 import de.robv.android.xposed.XposedHelpers;
 
