@@ -48,15 +48,15 @@ public class TabletStatusBarView extends FrameLayout {
 
     private final TabletStatusBarTransitions mBarTransitions;
 
-    public TabletStatusBarView(Context context) {
-        this(context, null);
+    public TabletStatusBarView(Context context, Object service) {
+        this(context, null, service);
     }
 
-    public TabletStatusBarView(Context context, AttributeSet attrs) {
+    public TabletStatusBarView(Context context, AttributeSet attrs, Object barService) {
         super(context, attrs);
         mDelegateHelper = XposedHelpers.newInstance(TabletKatModule.mDelegateViewHelperClass, this);
         setBackgroundResource(SystemR.drawable.system_bar_background);
-        mBarTransitions = new TabletStatusBarTransitions(this);
+        mBarTransitions = new TabletStatusBarTransitions(this, barService);
     }
 
     public void setDelegateView(View view) {

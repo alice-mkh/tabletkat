@@ -369,8 +369,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         lp.setTitle("NotificationPanel");
         lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
                 | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
-//        lp.windowAnimations = com.android.internal.R.style.Animation; // == no animation
-        lp.windowAnimations = com.android.internal.R.style.Animation_ZoomButtons; // simple fade
+//        lp.windowAnimations = XposedHelpers.getStaticIntField(TabletKatModule.mComAndroidInternalRStyleClass, "Animation"); // == no animation
+        lp.windowAnimations = XposedHelpers.getStaticIntField(TabletKatModule.mComAndroidInternalRStyleClass, "Animation_ZoomButtons"); // simple fade
 
         mWindowManager.addView(mNotificationPanel, lp);
 
@@ -399,7 +399,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 PixelFormat.TRANSLUCENT);
         lp.gravity = Gravity.BOTTOM | Gravity.END;
         lp.setTitle("InputMethodsPanel");
-//        lp.windowAnimations = com.android.internal.R.style.Animation;
+//        lp.windowAnimations = XposedHelpers.getStaticIntField(TabletKatModule.mComAndroidInternalRStyleClass, "Animation");
 //TODO:        lp.windowAnimations = R.style.Animation_RecentPanel;
 
         mWindowManager.addView(mInputMethodsPanel, lp);
@@ -525,7 +525,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         ViewHelper.replaceView(temp, TkR.id.compatModeButton, new CompatModeButton(context, null));
         ViewHelper.replaceView(temp, SystemR.id.notificationIcons, new NotificationIconArea(context, null));
         ViewHelper.replaceView(temp, TkR.id.icons, new NotificationIconArea.IconLayout(context, null));
-        final TabletStatusBarView sb = (TabletStatusBarView) ViewHelper.replaceView(temp, new TabletStatusBarView(context));
+        final TabletStatusBarView sb = (TabletStatusBarView) ViewHelper.replaceView(temp, new TabletStatusBarView(context, mBarService));
 
         finalizeStatusBarView(sb);
 
@@ -606,6 +606,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         // The bar contents buttons
         mFeedbackIconArea = (ViewGroup)sb.findViewById(TkR.id.feedbackIconArea);
+        mFeedbackIconArea.setVisibility(View.VISIBLE);
         mInputMethodSwitchButton = (InputMethodButton) sb.findViewById(TkR.id.imeSwitchButton);
         // Overwrite the lister
         mInputMethodSwitchButton.setOnClickListener(mOnClickListener);
@@ -630,8 +631,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                             mBarContents.setVisibility(View.VISIBLE);
 
                             try {
-                                mBarService.setSystemUiVisibility(0, View.SYSTEM_UI_FLAG_LOW_PROFILE);
-                            } catch (RemoteException ex) {
+                                XposedHelpers.callMethod(mBarService, "setSystemUiVisibility", 0, View.SYSTEM_UI_FLAG_LOW_PROFILE);
+                            } catch (Exception ex) {
                                 // system process dead
                             }
                         }
@@ -769,7 +770,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     public int getStatusBarHeight() {
         return mStatusBarView != null ? mStatusBarView.getHeight()
                 : mContext.getResources().getDimensionPixelSize(
-                com.android.internal.R.dimen.navigation_bar_height);
+                TkR.dimen.system_bar_height);
     }
 
     protected int getStatusBarGravity() {
@@ -1031,7 +1032,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         lp.setTitle("CompatibilityModeDialog");
         lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
                 | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
-        lp.windowAnimations = com.android.internal.R.style.Animation_ZoomButtons; // simple fade
+        lp.windowAnimations = XposedHelpers.getStaticIntField(TabletKatModule.mComAndroidInternalRStyleClass, "Animation_ZoomButtons"); // simple fade
 
         mWindowManager.addView(mCompatibilityHelpDialog, lp);
     }
@@ -1098,7 +1099,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         private Runnable mHiliteOnR = new Runnable() { public void run() {
             mNotificationArea.setBackgroundResource(
-                    com.android.internal.R.drawable.list_selector_pressed_holo_dark);
+                    XposedHelpers.getStaticIntField(TabletKatModule.mComAndroidInternalRDrawableClass, "list_selector_pressed_holo_dark"));
         }};
         public void hilite(final boolean on) {
             if (on) {
@@ -1229,8 +1230,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
     public void clearAll() {
         try {
-            mBarService.onClearAllNotifications();
-        } catch (RemoteException ex) {
+            XposedHelpers.callMethod(mBarService, "onClearAllNotifications");
+        } catch (Exception ex) {
             // system process is dead if we're here.
         }
         animateCollapsePanels();
@@ -1388,7 +1389,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                         PixelFormat.TRANSLUCENT);
                 lp.gravity = Gravity.BOTTOM | Gravity.START;
                 lp.setTitle("RecentsPanel");
-                lp.windowAnimations = com.android.internal.R.style.Animation_RecentApplications;
+                lp.windowAnimations = XposedHelpers.getStaticIntField(TabletKatModule.mComAndroidInternalRStyleClass, "Animation_RecentApplications");
                 lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
                         | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
 
@@ -1417,7 +1418,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 lp.gravity = Gravity.BOTTOM | Gravity.START;
                 lp.setTitle("SearchPanel");
 
-                lp.windowAnimations = com.android.internal.R.style.Animation_RecentApplications;
+                lp.windowAnimations = XposedHelpers.getStaticIntField(TabletKatModule.mComAndroidInternalRStyleClass, "Animation_RecentApplications");
                 lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
                         | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
                 return lp;
@@ -2122,8 +2123,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     @Override
     public void onHardKeyboardEnabledChange(boolean enabled) {
         try {
-            mBarService.setHardKeyboardEnabled(enabled);
-        } catch (RemoteException ex) {
+            XposedHelpers.callMethod(mBarService, "setHardKeyboardEnabled", enabled);
+        } catch (Exception ex) {
         }
     }
 

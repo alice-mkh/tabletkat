@@ -24,6 +24,7 @@ import android.content.res.XModuleResources;
 import android.content.res.XResources;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
@@ -34,9 +35,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.RemoteViews;
-
-import com.android.internal.statusbar.IStatusBarService;
-import com.android.internal.statusbar.StatusBarIcon;
 
 import org.exalm.tabletkat.IMod;
 import org.exalm.tabletkat.TabletKatModule;
@@ -69,7 +67,7 @@ public class BaseStatusBarMod implements IMod {
     protected View.OnTouchListener mRecentsPreloadOnTouchListener;
     protected Object mPile;
     protected IWindowManager mWindowManagerService;
-    protected IStatusBarService mBarService;
+    protected Object mBarService;
     protected Object mSearchPanelView;
     protected Object mCommandQueue;
     protected boolean mIsTv;
@@ -195,7 +193,8 @@ public class BaseStatusBarMod implements IMod {
                         }
 
                         // Update the icon.
-                        final StatusBarIcon ic = new StatusBarIcon(notification.getPackageName(),
+                        final Parcelable ic = (Parcelable) XposedHelpers.newInstance(TabletKatModule.mStatusBarIconClass,
+                                notification.getPackageName(),
                                 notification.getUser(),
                                 notification.getNotification().icon, notification.getNotification().iconLevel,
                                 notification.getNotification().number,
@@ -262,7 +261,7 @@ public class BaseStatusBarMod implements IMod {
                 mHandler = (Handler) XposedHelpers.getObjectField(self, "mHandler");
                 mRecentsPreloadOnTouchListener = (View.OnTouchListener) XposedHelpers.getObjectField(self, "mRecentsPreloadOnTouchListener");
                 mPile = XposedHelpers.getObjectField(self, "mPile");
-                mBarService = (IStatusBarService) XposedHelpers.getObjectField(self, "mBarService");
+                mBarService = XposedHelpers.getObjectField(self, "mBarService");
                 mSearchPanelView = XposedHelpers.getObjectField(self, "mSearchPanelView");
                 mCommandQueue = XposedHelpers.getObjectField(self, "mCommandQueue");
                 onStart();

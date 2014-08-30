@@ -19,8 +19,6 @@ package org.exalm.tabletkat.statusbar.policy;
 import android.content.Context;
 import android.os.UserHandle;
 
-import com.android.internal.view.RotationPolicy;
-
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class RotationLockController {

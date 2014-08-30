@@ -39,6 +39,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     public static Class mBluetoothControllerClass;
     public static Class mBrightnessControllerClass;
     public static Class mClockClass;
+    public static Class mComAndroidInternalRDrawableClass;
+    public static Class mComAndroidInternalRStyleClass;
     public static Class mDateViewClass;
     public static Class mDelegateViewHelperClass;
     public static Class mExpandHelperClass;
@@ -112,6 +114,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         mBluetoothControllerClass = findClass("com.android.systemui.statusbar.policy.BluetoothController", loadPackageParam.classLoader);
         mBrightnessControllerClass = findClass("com.android.systemui.settings.BrightnessController", loadPackageParam.classLoader);
         mClockClass = findClass("com.android.systemui.statusbar.policy.Clock", loadPackageParam.classLoader);
+        mComAndroidInternalRDrawableClass = findClass("com.android.internal.R.drawable", loadPackageParam.classLoader);
+        mComAndroidInternalRStyleClass = findClass("com.android.internal.R.style", loadPackageParam.classLoader);
         mDateViewClass = findClass("com.android.systemui.statusbar.policy.DateView", loadPackageParam.classLoader);
         mDelegateViewHelperClass = findClass("com.android.systemui.statusbar.DelegateViewHelper", loadPackageParam.classLoader);
         mExpandHelperClass = findClass("com.android.systemui.ExpandHelper", loadPackageParam.classLoader);

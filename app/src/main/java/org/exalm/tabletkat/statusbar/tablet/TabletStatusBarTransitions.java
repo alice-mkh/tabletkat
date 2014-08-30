@@ -20,14 +20,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.content.res.Resources;
-import android.os.ServiceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-
-import com.android.internal.statusbar.IStatusBarService;
 
 import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TkR;
@@ -44,7 +40,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
     private static final int CONTENT_FADE_DURATION = 200;
 
     private final TabletStatusBarView mView;
-    private final IStatusBarService mBarService;
+    private final Object mBarService;
 
     private boolean mLightsOut;
     private int mRequestedMode;
@@ -53,11 +49,10 @@ public final class TabletStatusBarTransitions extends BarTransitions {
     private View mNotificationArea, mStatusIcons, mSignalCluster, mBattery, mBluetooth, mClock;
     private Animator mCurrentAnimation;
 
-    public TabletStatusBarTransitions(TabletStatusBarView view) {
+    public TabletStatusBarTransitions(TabletStatusBarView view, Object barService) {
         super(view, SystemR.drawable.nav_background);
         mView = view;
-        mBarService = IStatusBarService.Stub.asInterface(
-                ServiceManager.getService("statusbar"));
+        mBarService = barService;
         final Resources res = mView.getContext().getResources();
         mIconAlphaWhenOpaque = res.getFraction(SystemR.dimen.status_bar_icon_drawing_alpha, 1, 1);
     }
@@ -249,8 +244,8 @@ public final class TabletStatusBarTransitions extends BarTransitions {
                 applyLightsOut(false, false, false);
 
                 try {
-                    mBarService.setSystemUiVisibility(0, View.SYSTEM_UI_FLAG_LOW_PROFILE);
-                } catch (android.os.RemoteException ex) {
+                    XposedHelpers.callMethod(mBarService, "setSystemUiVisibility", 0, View.SYSTEM_UI_FLAG_LOW_PROFILE);
+                } catch (Exception ex) {
                 }
             }
             return false;
