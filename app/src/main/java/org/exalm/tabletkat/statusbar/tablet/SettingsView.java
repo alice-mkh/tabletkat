@@ -39,6 +39,7 @@ import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.statusbar.policy.AirplaneModeController;
 import org.exalm.tabletkat.statusbar.policy.DoNotDisturbController;
 import org.exalm.tabletkat.statusbar.policy.RotationLockController;
+import org.exalm.tabletkat.statusbar.policy.WifiController;
 
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
@@ -49,6 +50,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
     static final String TAG = "SettingsView";
 
     AirplaneModeController mAirplane;
+    WifiController mWifiController;
     RotationLockController mRotationController;
     Object mBrightness;
     DoNotDisturbController mDoNotDisturb;
@@ -68,18 +70,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
 
     private void rebuild(String[] strings) {
         LinearLayout container = (LinearLayout) findViewById(TkR.id.settings_container);
-        if (mAirplane != null) {
-            mAirplane.release();
-            mAirplane = null;
-        }
-        if (mDoNotDisturb != null) {
-            mDoNotDisturb.release();
-            mDoNotDisturb = null;
-        }
-        if (mRotationController != null) {
-            mRotationController.release();
-            mRotationController = null;
-        }
+        releaseControllers();
         container.removeAllViews();
         for (String s : strings){
             View row = createRowFromString(s);
@@ -128,7 +119,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
             });
             label.setText(SystemR.string.status_bar_settings_wifi_button);
             if (id.equals("wifi-switch")){
-                //TODO
+                mWifiController = new WifiController(getContext(), checkbox);
             }else{
                 row.removeView(checkbox);
             }
@@ -219,12 +210,14 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
         });
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+    private void releaseControllers() {
         if (mAirplane != null) {
             mAirplane.release();
             mAirplane = null;
+        }
+        if (mWifiController != null) {
+            mWifiController.release();
+            mWifiController = null;
         }
         if (mDoNotDisturb != null) {
             mDoNotDisturb.release();
@@ -234,6 +227,12 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
             mRotationController.release();
             mRotationController = null;
         }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        releaseControllers();
         if (settingsReceiver != null) {
             getContext().unregisterReceiver(settingsReceiver);
             settingsReceiver = null;
