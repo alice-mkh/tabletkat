@@ -22,216 +22,50 @@
         android:orientation="vertical"
         >
 
-    <!-- Airplane mode -->
     <LinearLayout
-            android:id="@+id/airplane"
-            android:paddingRight="16dp"
-            android:layout_height="64dp"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:background="?android:attr/listChoiceBackgroundIndicator"
-            >
-        <ImageView
-                android:id="@+id/airplane_icon"
-                android:layout_height="match_parent"
-                android:layout_width="64dp"
-                android:scaleType="center"
-                android:src="@drawable/ic_sysbar_airplane_on"
-                />
-        <TextView
-                android:id="@+id/airplane_label"
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_gravity="start|center_vertical"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="18sp"
-                />
-        <Switch
-                android:id="@+id/airplane_checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="5dp"
-                />
-    </LinearLayout>
-    <View
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/settings_container" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Link to settings -->
+        <LinearLayout
+                android:id="@+id/settings"
+                android:paddingRight="16dp"
+                android:layout_height="64dp"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:background="?android:attr/listChoiceBackgroundIndicator"
+                >
+
+            <ImageView
+                    android:id="@+id/settings_icon"
+                    android:layout_height="match_parent"
+                    android:layout_width="64dp"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_sysbar_quicksettings"
+                    />
+            <TextView
+                    android:id="@+id/settings_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="start|center_vertical"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="18sp"
+                    />
+        </LinearLayout>
+        <View
             android:layout_marginEnd="0dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:drawable/divider_horizontal_dark"
-    />
-
-    <!-- Network -->
-    <LinearLayout
-            android:id="@+id/network"
-            android:paddingRight="16dp"
-            android:layout_height="64dp"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:background="?android:attr/listChoiceBackgroundIndicator"
-            >
-        <ImageView
-                android:id="@+id/network_icon"
-                android:layout_height="match_parent"
-                android:layout_width="64dp"
-                android:scaleType="center"
-                android:src="@drawable/ic_sysbar_wifi_on"
-                />
-        <TextView
-                android:id="@+id/network_label"
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_gravity="start|center_vertical"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="18sp"
-                />
+        />
     </LinearLayout>
-    <View
-        android:layout_marginEnd="0dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:drawable/divider_horizontal_dark"
-    />
-
-    <!-- Rotation lock -->
-    <LinearLayout
-            android:id="@+id/rotate"
-            android:paddingRight="16dp"
-            android:layout_height="64dp"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:background="?android:attr/listChoiceBackgroundIndicator"
-            >
-        <ImageView
-                android:id="@+id/rotate_icon"
-                android:layout_height="match_parent"
-                android:layout_width="64dp"
-                android:scaleType="center"
-                android:src="@drawable/ic_sysbar_rotate_on"
-                />
-        <TextView
-                android:id="@+id/rotate_label"
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_gravity="start|center_vertical"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="18sp"
-                />
-        <Switch
-                android:id="@+id/rotate_checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="5dp"
-                />
-    </LinearLayout>
-    <View
-            android:id="@+id/rotate_separator"
-            android:layout_marginEnd="0dp"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:drawable/divider_horizontal_dark"
-    />
-
-    <!-- Brightness -->
-    <LinearLayout
-        android:id="@+id/brightness"
-        android:paddingRight="16dp"
-        android:layout_height="64dp"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:background="?android:attr/listChoiceBackgroundIndicator" >
-        <ImageView
-                android:id="@+id/brightness_icon"
-                android:layout_height="match_parent"
-                android:layout_width="64dp"
-                android:scaleType="center"
-                android:src="@drawable/ic_sysbar_brightness"
-                />
-    </LinearLayout>
-    <View
-        android:layout_marginEnd="0dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:drawable/divider_horizontal_dark"
-    />
-
-    <!-- Notifications / Do not disturb -->
-    <LinearLayout
-            android:id="@+id/do_not_disturb"
-            android:paddingRight="16dp"
-            android:layout_height="64dp"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:background="?android:attr/listChoiceBackgroundIndicator"
-            >
-        <ImageView
-                android:id="@+id/do_not_disturb_icon"
-                android:layout_height="match_parent"
-                android:layout_width="64dp"
-                android:scaleType="center"
-                android:src="@drawable/ic_notification_open"
-                />
-        <TextView
-            android:id="@+id/do_not_disturb_label"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_gravity="start|center_vertical"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="18sp"
-                />
-        <Switch
-                android:id="@+id/do_not_disturb_checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="5dp"
-                />
-    </LinearLayout>
-    <View
-        android:layout_marginEnd="0dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:drawable/divider_horizontal_dark"
-    />
-
-    <!-- Link to settings -->
-    <LinearLayout
-            android:id="@+id/settings"
-            android:paddingRight="16dp"
-            android:layout_height="64dp"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:background="?android:attr/listChoiceBackgroundIndicator"
-            >
-
-        <ImageView
-                android:id="@+id/settings_icon"
-                android:layout_height="match_parent"
-                android:layout_width="64dp"
-                android:scaleType="center"
-                android:src="@drawable/ic_sysbar_quicksettings"
-                />
-        <TextView
-                android:id="@+id/settings_label"
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_gravity="start|center_vertical"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="18sp"
-                />
-    </LinearLayout>
-    <View
-        android:layout_marginEnd="0dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:drawable/divider_horizontal_dark"
-    />
-
 </LinearLayout>
 

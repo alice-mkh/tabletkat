@@ -16,4 +16,11 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null" />
 -->
+
+    <CheckBoxPreference
+        android:key="extended_settings"
+        android:title="@string/pref_title_extended_settings"
+        android:summary="@string/pref_summary_extended_settings"
+        android:dependency="enable_tablet_ui"
+        android:defaultValue="false" />
 </PreferenceScreen>

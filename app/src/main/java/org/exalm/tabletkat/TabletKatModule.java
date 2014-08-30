@@ -240,7 +240,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         XposedBridge.log(TAG + ": " + s);
     }
 
-    public static void registerReceiver(Context c, final OnPreferenceChangedListener l){
+    public static BroadcastReceiver registerReceiver(Context c, final OnPreferenceChangedListener l){
         IntentFilter f = new IntentFilter();
         f.addAction(ACTION_PREFERENCE_CHANGED);
         BroadcastReceiver r = new BroadcastReceiver() {
@@ -257,8 +257,10 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
                 }
             }
         };
+        pref.reload();
         l.init(pref);
         c.registerReceiver(r, f);
+        return r;
     }
 
     public static Object invokeOriginalMethod(XC_MethodHook.MethodHookParam param) throws IllegalAccessException, InvocationTargetException{

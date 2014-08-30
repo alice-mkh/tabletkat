@@ -49,6 +49,8 @@ public class TabletKatSettings extends PreferenceActivity {
                 return true;
             }
         });
+        setUpPreferenceChangeListener(findPreference("extended_settings"));
+
 //        bindPreferenceSummaryToValue(findPreference("when_to_use"));
     }
 
@@ -142,6 +144,7 @@ public class TabletKatSettings extends PreferenceActivity {
                     return true;
                 }
             });
+            setUpPreferenceChangeListener(findPreference("extended_settings"));
         }
     }
 }
