@@ -17,7 +17,6 @@
 package org.exalm.tabletkat.statusbar.policy;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -33,12 +32,12 @@ public class WifiController extends BroadcastReceiver
     private CompoundButton mCheckBox;
 
     private boolean mWifiEnabled;
-	private WifiManager mWifiManager;
+    private WifiManager mWifiManager;
 
     public WifiController( Context context, CompoundButton checkbox ) {
-		mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         mContext = context;
-		mWifiEnabled = getWifiEnabled();
+        mWifiEnabled = getWifiEnabled();
         mCheckBox = checkbox;
         checkbox.setChecked(mWifiEnabled);
         checkbox.setOnCheckedChangeListener(this);
@@ -55,7 +54,7 @@ public class WifiController extends BroadcastReceiver
 
     public void onCheckedChanged(CompoundButton view, boolean checked) {
         if (checked != mWifiEnabled) {
-			mWifiEnabled = checked;
+            mWifiEnabled = checked;
             unsafe(checked);
         }
     }
@@ -64,7 +63,7 @@ public class WifiController extends BroadcastReceiver
         if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
             final boolean enabled = mWifiManager.isWifiEnabled();
             if (enabled != mWifiEnabled) {
-				mWifiEnabled = enabled;
+                mWifiEnabled = enabled;
                 mCheckBox.setChecked(enabled);
             }
         }
@@ -77,10 +76,8 @@ public class WifiController extends BroadcastReceiver
     private void unsafe(final boolean enabled) {
         AsyncTask.execute(new Runnable() {
                 public void run() {
-					ContentResolver cr = mContext.getContentResolver();
-
-					mWifiManager.setWifiApEnabled(null, false);
-					mWifiManager.setWifiEnabled(enabled);
+                    mWifiManager.setWifiApEnabled(null, false);
+                    mWifiManager.setWifiEnabled(enabled);
                 }
             });
     }

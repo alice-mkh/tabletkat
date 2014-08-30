@@ -44,7 +44,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
 
     AirplaneModeController mAirplane;
     RotationLockController mRotationController;
-	WifiController mWifiController;
+    WifiController mWifiController;
     Object mBrightness;
     DoNotDisturbController mDoNotDisturb;
     View mRotationLockContainer;
@@ -103,8 +103,8 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
                 slider);
         mDoNotDisturb = new DoNotDisturbController(context,
                 (CompoundButton)findViewById(TkR.id.do_not_disturb_checkbox));
-		mWifiController = new WifiController(context,
-				(CompoundButton)findViewById(TkR.id.network_checkbox));
+        mWifiController = new WifiController(context,
+                (CompoundButton)findViewById(TkR.id.network_checkbox));
         findViewById(TkR.id.settings).setOnClickListener(this);
 
         ((TextView) findViewById(TkR.id.airplane_label)).setText(SystemR.string.status_bar_settings_airplane);
