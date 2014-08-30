@@ -16,7 +16,6 @@
 
 package org.exalm.tabletkat.statusbar.tablet;
 
-import android.app.StatusBarManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.UserHandle;
@@ -90,7 +89,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
             }
         });
 
-        View slider = (View)XposedHelpers.newInstance(TabletKatModule.mToggleSliderClass, mContext);
+        View slider = (View)XposedHelpers.newInstance(TabletKatModule.mToggleSliderClass, getContext());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.FILL_PARENT);
         lp.weight = 1;
         lp.setMarginEnd(2);
@@ -131,8 +130,8 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
         }
     }
 
-    private StatusBarManager getStatusBarManager() {
-        return (StatusBarManager)getContext().getSystemService("statusbar");
+    private Object getStatusBarManager() {
+        return getContext().getSystemService("statusbar");
     }
 
     // Network
@@ -140,16 +139,17 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
     private void onClickNetwork() {
         getContext().startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        getStatusBarManager().collapsePanels();
+        XposedHelpers.callMethod(getStatusBarManager(), "collapsePanels");
     }
 
     // Settings
     // ----------------------------
     private void onClickSettings() {
-        getContext().startActivityAsUser(new Intent(Settings.ACTION_SETTINGS)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                new UserHandle(UserHandle.USER_CURRENT));
-        getStatusBarManager().collapsePanels();
+        int USER_CURRENT = XposedHelpers.getStaticIntField(UserHandle.class, "USER_CURRENT");
+        Intent i = new Intent(Settings.ACTION_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        UserHandle h = (UserHandle) XposedHelpers.newInstance(UserHandle.class, USER_CURRENT);
+        XposedHelpers.callMethod(getContext(), "startActivityAsUser", i, h);
+        XposedHelpers.callMethod(getStatusBarManager(), "collapsePanels");
     }
 }
 

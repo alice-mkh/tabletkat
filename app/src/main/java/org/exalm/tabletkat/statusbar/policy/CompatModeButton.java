@@ -25,6 +25,8 @@ import android.widget.ImageView;
 
 import org.exalm.tabletkat.SystemR;
 
+import de.robv.android.xposed.XposedHelpers;
+
 public class CompatModeButton extends ImageView {
     private static final boolean DEBUG = false;
     private static final String TAG = "StatusBar.CompatModeButton";
@@ -48,13 +50,17 @@ public class CompatModeButton extends ImageView {
     }
 
     public void refresh() {
-        int mode = mAM.getFrontActivityScreenCompatMode();
-        if (mode == ActivityManager.COMPAT_MODE_UNKNOWN) {
+        int COMPAT_MODE_UNKNOWN = XposedHelpers.getStaticIntField(ActivityManager.class, "COMPAT_MODE_UNKNOWN");
+        int COMPAT_MODE_NEVER = XposedHelpers.getStaticIntField(ActivityManager.class, "COMPAT_MODE_NEVER");
+        int COMPAT_MODE_ALWAYS = XposedHelpers.getStaticIntField(ActivityManager.class, "COMPAT_MODE_ALWAYS");
+
+        int mode = (Integer) XposedHelpers.callMethod(mAM, "getFrontActivityScreenCompatMode");
+        if (mode == COMPAT_MODE_UNKNOWN) {
             // If in an unknown state, don't change.
             return;
         }
-        final boolean vis = (mode != ActivityManager.COMPAT_MODE_NEVER
-                          && mode != ActivityManager.COMPAT_MODE_ALWAYS);
+        final boolean vis = (mode != COMPAT_MODE_NEVER
+                          && mode != COMPAT_MODE_ALWAYS);
         if (DEBUG) Log.d(TAG, "compat mode is " + mode + "; icon will " + (vis ? "show" : "hide"));
         setVisibility(vis ? View.VISIBLE : View.GONE);
     }

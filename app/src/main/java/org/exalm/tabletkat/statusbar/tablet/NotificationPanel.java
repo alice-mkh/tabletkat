@@ -117,7 +117,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
 
         mContentFrame.setBackgroundResource(SystemR.drawable.notification_panel_bg);
 
-        LinearLayout l = (LinearLayout) XposedHelpers.newInstance(TabletKatModule.mNotificationRowLayoutClass, mContext, null);
+        LinearLayout l = (LinearLayout) XposedHelpers.newInstance(TabletKatModule.mNotificationRowLayoutClass, getContext(), null);
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
@@ -140,7 +140,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
         int maxHeight = getResources().getDimensionPixelSize(SystemR.dimen.notification_row_max_height);
         mExpandHelper = XposedHelpers.newInstance(TabletKatModule.mExpandHelperClass,
                 new Class<?>[]{Context.class, TabletKatModule.mExpandHelperCallbackClass, Integer.TYPE, Integer.TYPE},
-                new Object[]{mContext, latestItems, minHeight, maxHeight});
+                new Object[]{getContext(), latestItems, minHeight, maxHeight});
         XposedHelpers.callMethod(mExpandHelper, "setEventSource", this);
         XposedHelpers.setIntField(mExpandHelper, "mGravity", Gravity.BOTTOM);
     }

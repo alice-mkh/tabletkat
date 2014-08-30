@@ -21,15 +21,15 @@ import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
-import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.IWindowManager;
 import android.view.Surface;
-import android.view.WindowManagerGlobal;
+
+import org.exalm.tabletkat.TabletKatModule;
+
+import de.robv.android.xposed.XposedHelpers;
 
 /**
  * Provides helper functions for configuring the display rotation policy.
@@ -72,18 +72,20 @@ public final class RotationPolicy {
      * Returns true if the rotation-lock toggle should be shown in the UI.
      */
     public static boolean isRotationLockToggleVisible(Context context) {
+        String HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY = (String) XposedHelpers.getStaticObjectField(Settings.System.class, "HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY");
+
         return isRotationLockToggleSupported(context) &&
-                Settings.System.getIntForUser(context.getContentResolver(),
-                        Settings.System.HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY, 0,
-                        UserHandle.USER_CURRENT) == 0;
+                (Integer) XposedHelpers.callStaticMethod(Settings.System.class, "getIntForUser", context.getContentResolver(),
+                        HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY, 0,
+                        XposedHelpers.getStaticIntField(UserHandle.class, "USER_CURRENT")) == 0;
     }
 
     /**
      * Returns true if rotation lock is enabled.
      */
     public static boolean isRotationLocked(Context context) {
-        return Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.ACCELEROMETER_ROTATION, 0, UserHandle.USER_CURRENT) == 0;
+        return (Integer) XposedHelpers.callStaticMethod(Settings.System.class, "getIntForUser", context.getContentResolver(),
+                Settings.System.ACCELEROMETER_ROTATION, 0, XposedHelpers.getStaticIntField(UserHandle.class, "USER_CURRENT")) == 0;
     }
 
     /**
@@ -92,21 +94,23 @@ public final class RotationPolicy {
      * Should be used by the rotation lock toggle.
      */
     public static void setRotationLock(Context context, final boolean enabled) {
-        Settings.System.putIntForUser(context.getContentResolver(),
-                Settings.System.HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY, 0,
-                UserHandle.USER_CURRENT);
+        String HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY = (String) XposedHelpers.getStaticObjectField(Settings.System.class, "HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY");
+
+        XposedHelpers.callStaticMethod(Settings.System.class, "putIntForUser", context.getContentResolver(),
+                HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY, 0,
+                XposedHelpers.getStaticIntField(UserHandle.class, "USER_CURRENT"));
 
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
+                    Object wm = XposedHelpers.callStaticMethod(TabletKatModule.mWindowManagerGlobalClass, "getWindowManagerService");
                     if (enabled) {
-                        wm.freezeRotation(-1);
+                        XposedHelpers.callMethod(wm, "freezeRotation", -1);
                     } else {
-                        wm.thawRotation();
+                        XposedHelpers.callMethod(wm, "thawRotation");
                     }
-                } catch (RemoteException exc) {
+                } catch (Exception exc) {
                     Log.w(TAG, "Unable to save auto-rotate setting");
                 }
             }
@@ -120,21 +124,21 @@ public final class RotationPolicy {
      * Should be used by Display settings and Accessibility settings.
      */
     public static void setRotationLockForAccessibility(Context context, final boolean enabled) {
-        Settings.System.putIntForUser(context.getContentResolver(),
-                Settings.System.HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY, enabled ? 1 : 0,
-                        UserHandle.USER_CURRENT);
+        XposedHelpers.callStaticMethod(Settings.System.class, "putIntForUser", context.getContentResolver(),
+                XposedHelpers.getStaticObjectField(Settings.System.class, "HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY"), enabled ? 1 : 0,
+                XposedHelpers.getStaticIntField(UserHandle.class, "USER_CURRENT"));
 
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
+                    Object wm = XposedHelpers.callStaticMethod(TabletKatModule.mWindowManagerGlobalClass, "getWindowManagerService");
                     if (enabled) {
-                        wm.freezeRotation(Surface.ROTATION_0);
+                        XposedHelpers.callMethod(wm, "freezeRotation", Surface.ROTATION_0);
                     } else {
-                        wm.thawRotation();
+                        XposedHelpers.callMethod(wm, "thawRotation");
                     }
-                } catch (RemoteException exc) {
+                } catch (Exception exc) {
                     Log.w(TAG, "Unable to save auto-rotate setting");
                 }
             }
@@ -146,7 +150,7 @@ public final class RotationPolicy {
      */
     public static void registerRotationPolicyListener(Context context,
             RotationPolicyListener listener) {
-        registerRotationPolicyListener(context, listener, UserHandle.getCallingUserId());
+        registerRotationPolicyListener(context, listener, (Integer) XposedHelpers.callStaticMethod(UserHandle.class, "getCallingUserId"));
     }
 
     /**
@@ -155,11 +159,13 @@ public final class RotationPolicy {
      */
     public static void registerRotationPolicyListener(Context context,
             RotationPolicyListener listener, int userHandle) {
-        context.getContentResolver().registerContentObserver(Settings.System.getUriFor(
+        String HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY = (String) XposedHelpers.getStaticObjectField(Settings.System.class, "HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY");
+
+        XposedHelpers.callMethod(context.getContentResolver(), "registerContentObserver", Settings.System.getUriFor(
                 Settings.System.ACCELEROMETER_ROTATION),
                 false, listener.mObserver, userHandle);
-        context.getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                Settings.System.HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY),
+        XposedHelpers.callMethod(context.getContentResolver(), "registerContentObserver", Settings.System.getUriFor(
+                        HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY),
                 false, listener.mObserver, userHandle);
     }
 

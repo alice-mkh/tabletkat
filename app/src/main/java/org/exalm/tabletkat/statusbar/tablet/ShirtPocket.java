@@ -32,6 +32,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import de.robv.android.xposed.XposedHelpers;
+
 public class ShirtPocket extends ImageView {
     private static final boolean DEBUG = false;
     private static final String  TAG = "StatusBar/ShirtPocket";
@@ -129,7 +131,7 @@ public class ShirtPocket extends ImageView {
         mClipping = clipping;
         if (mClipping != null) {
             setVisibility(View.VISIBLE);
-            Bitmap icon = mClipping.getIcon();
+            Bitmap icon = (Bitmap) XposedHelpers.callMethod(mClipping, "getIcon");
 //            mDescription.setText(mClipping.getDescription().getLabel());
             if (icon != null) {
                 setImageBitmap(icon);
@@ -149,7 +151,7 @@ public class ShirtPocket extends ImageView {
         if (action == MotionEvent.ACTION_DOWN) {
             final ClipData clip = mClipping;
             if (clip != null) {
-                final Bitmap icon = clip.getIcon();
+                final Bitmap icon = (Bitmap) XposedHelpers.callMethod(clip, "getIcon");
                 DragShadowBuilder shadow;
                 if (icon != null) {
                     shadow = new DragShadowBuilder(this) {

@@ -16,7 +16,6 @@
 
 package org.exalm.tabletkat.statusbar;
 
-import android.app.ActivityManagerNative;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -26,10 +25,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.IWindowManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +65,7 @@ public class BaseStatusBarMod implements IMod {
     protected Handler mHandler;
     protected View.OnTouchListener mRecentsPreloadOnTouchListener;
     protected Object mPile;
-    protected IWindowManager mWindowManagerService;
+    protected Object mWindowManagerService;
     protected Object mBarService;
     protected Object mSearchPanelView;
     protected Object mCommandQueue;
@@ -165,8 +164,10 @@ public class BaseStatusBarMod implements IMod {
                                 && oldBigContentView.getPackage().equals(bigContentView.getPackage())
                                 && oldBigContentView.getLayoutId() == bigContentView.getLayoutId());
                 ViewGroup rowParent = (ViewGroup) XposedHelpers.callMethod(row, "getParent");
+                int notificationScore = (Integer) XposedHelpers.callMethod(notification, "getScore");
+                int oldNotificationScore = (Integer) XposedHelpers.callMethod(oldNotification, "getScore");
                 boolean orderUnchanged = notification.getNotification().when== oldNotification.getNotification().when
-                        && notification.getScore() == oldNotification.getScore();
+                        && notificationScore == oldNotificationScore;
                 // score now encompasses/supersedes isOngoing()
 
                 StatusBarNotification s = (StatusBarNotification) XposedHelpers.getObjectField(oldEntry, "notification");
@@ -195,7 +196,7 @@ public class BaseStatusBarMod implements IMod {
                         // Update the icon.
                         final Parcelable ic = (Parcelable) XposedHelpers.newInstance(TabletKatModule.mStatusBarIconClass,
                                 notification.getPackageName(),
-                                notification.getUser(),
+                                (UserHandle) XposedHelpers.callMethod(notification, "getUser"),
                                 notification.getNotification().icon, notification.getNotification().iconLevel,
                                 notification.getNotification().number,
                                 notification.getNotification().tickerText);
@@ -389,12 +390,13 @@ public class BaseStatusBarMod implements IMod {
             if (DEBUG) {
                 Log.v(TAG, "Notification click handler invoked for intent: " + pendingIntent);
             }
-            final boolean isActivity = pendingIntent.isActivity();
+            final boolean isActivity = (Boolean) XposedHelpers.callMethod(pendingIntent, "isActivity");
             if (isActivity) {
                 try {
-                    ActivityManagerNative.getDefault().resumeAppSwitches();
-                    ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
-                } catch (RemoteException e) {
+                    Object o = XposedHelpers.callStaticMethod(TabletKatModule.mActivityManagerNativeClass, "getDefault");
+                    XposedHelpers.callMethod(o, "resumeAppSwitches");
+                    XposedHelpers.callMethod(o, "dismissKeyguardOnNextActivity");
+                } catch (Exception e) {
                 }
             }
 

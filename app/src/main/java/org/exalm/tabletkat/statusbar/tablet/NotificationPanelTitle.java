@@ -63,17 +63,17 @@ public class NotificationPanelTitle extends RelativeLayout implements View.OnCli
 
         setBackgroundResource(SystemR.drawable.system_bar_notification_header_bg);
 
-        TextView clock = (TextView) XposedHelpers.newInstance(TabletKatModule.mClockClass, mContext, null);
+        TextView clock = (TextView) XposedHelpers.newInstance(TabletKatModule.mClockClass, getContext(), null);
         clock.setSingleLine();
         ViewHelper.replaceView(this, SystemR.id.clock, clock);
 
-        TextView date = (TextView) XposedHelpers.newInstance(TabletKatModule.mDateViewClass, mContext, null);
+        TextView date = (TextView) XposedHelpers.newInstance(TabletKatModule.mDateViewClass, getContext(), null);
         ViewHelper.replaceView(this, SystemR.id.date, date);
         ((TextView) findViewById(SystemR.id.date)).setAllCaps(true);
 
         ViewHelper.replaceView(this, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mLargeIconContext));
 
-        ViewHelper.replaceView(this, TkR.id.battery_text, new BatteryPercentView(mContext));
+        ViewHelper.replaceView(this, TkR.id.battery_text, new BatteryPercentView(getContext()));
         BatteryPercentView v = (BatteryPercentView) findViewById(TkR.id.battery_text);
         v.attach(findViewById(SystemR.id.battery));
         v.setShowOnFull(true);
