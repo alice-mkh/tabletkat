@@ -1,6 +1,9 @@
 package org.exalm.tabletkat;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
@@ -61,6 +64,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     public static Class mTvStatusBarClass;
     public static Class mWindowManagerGlobalClass;
     public static Class mWindowManagerLayoutParamsClass;
+
+    public static final String ACTION_PREFERENCE_CHANGED = "org.exalm.tabletkat.PREFERENCE_CHANGED";
 
     private static String MODULE_PATH = null;
     private static XSharedPreferences pref;
@@ -233,6 +238,27 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
             return;
         }
         XposedBridge.log(TAG + ": " + s);
+    }
+
+    public static void registerReceiver(Context c, final OnPreferenceChangedListener l){
+        IntentFilter f = new IntentFilter();
+        f.addAction(ACTION_PREFERENCE_CHANGED);
+        BroadcastReceiver r = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String key = intent.getStringExtra("key");
+                if (intent.hasExtra("boolValue")){
+                    boolean boolValue = intent.getBooleanExtra("boolValue", false);
+                    l.onPreferenceChanged(key, boolValue);
+                }
+                if (intent.hasExtra("intValue")){
+                    int intValue = intent.getIntExtra("intValue", 0);
+                    l.onPreferenceChanged(key, intValue);
+                }
+            }
+        };
+        l.init(pref);
+        c.registerReceiver(r, f);
     }
 
     public static Object invokeOriginalMethod(XC_MethodHook.MethodHookParam param) throws IllegalAccessException, InvocationTargetException{

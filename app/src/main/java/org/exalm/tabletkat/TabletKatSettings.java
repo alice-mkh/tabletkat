@@ -1,6 +1,7 @@
 package org.exalm.tabletkat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.*;
 import android.preference.ListPreference;
@@ -14,6 +15,7 @@ import java.util.List;
 
 public class TabletKatSettings extends PreferenceActivity {
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
+    public static final String ACTION_PREFERENCE_CHANGED = "org.exalm.tabletkat.PREFERENCE_CHANGED";
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -96,6 +98,23 @@ public class TabletKatSettings extends PreferenceActivity {
         }
     };
 
+    private static Preference.OnPreferenceChangeListener sPreferenceChangeListener = new Preference.OnPreferenceChangeListener() {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            Intent i = new Intent(ACTION_PREFERENCE_CHANGED);
+            i.putExtra("key", preference.getKey());
+            if (newValue instanceof Boolean){
+                i.putExtra("boolValue", (Boolean) newValue);
+            }
+            if (newValue instanceof Integer){
+                i.putExtra("intValue", (Integer) newValue);
+            }
+            i.putExtra("stringValue", "" + newValue);
+            preference.getContext().sendBroadcast(i);
+            return true;
+        }
+    };
+
     private static void bindPreferenceSummaryToValue(Preference preference) {
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
@@ -105,6 +124,10 @@ public class TabletKatSettings extends PreferenceActivity {
                         .getString(preference.getKey(), ""));
     }
 
+    private static void setUpPreferenceChangeListener(Preference preference) {
+        preference.setOnPreferenceChangeListener(sPreferenceChangeListener);
+    }
+
     public static class GeneralPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -112,7 +135,13 @@ public class TabletKatSettings extends PreferenceActivity {
             getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
             addPreferencesFromResource(R.xml.pref_general);
 
-//            bindPreferenceSummaryToValue(findPreference("when_to_use"));
+            findPreference("enable_tablet_ui").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    Toast.makeText(getActivity(), getString(R.string.message_reboot), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
         }
     }
 }
