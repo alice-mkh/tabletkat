@@ -472,6 +472,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
     }
 
     public void setSettingsEnabled(boolean settingsEnabled) {
+        settingsEnabled = settingsEnabled && (mSettingsView == null);
         if (mSettingsButton != null) {
             mSettingsButton.setEnabled(settingsEnabled);
             mSettingsButton.setVisibility(settingsEnabled ? View.VISIBLE : View.GONE);

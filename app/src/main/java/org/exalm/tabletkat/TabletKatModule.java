@@ -151,7 +151,9 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         }
 
         statusBarMod.addHooks(loadPackageParam.classLoader);
-        recentsMod.addHooks(loadPackageParam.classLoader);
+        if (isModEnabled("recents")) {
+            recentsMod.addHooks(loadPackageParam.classLoader);
+        }
 
         final Class systemBarsClass = findClass("com.android.systemui.statusbar.SystemBars", loadPackageParam.classLoader);
         findAndHookMethod(systemBarsClass, "createStatusBarFromConfig", new XC_MethodReplacement() {
@@ -175,6 +177,11 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
             }
         });
 
+    }
+
+    private boolean isModEnabled(String id) {
+        pref.reload();
+        return pref.getBoolean("enable_mod_" + id, true);
     }
 
     private boolean checkIsDisabled() {
@@ -230,7 +237,9 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         TkR.init(res, res2);
 
         statusBarMod.initResources(res, res2);
-        recentsMod.initResources(res, res2);
+        if (isModEnabled("recents")) {
+            recentsMod.initResources(res, res2);
+        }
     }
 
     public static void debug(String s){
