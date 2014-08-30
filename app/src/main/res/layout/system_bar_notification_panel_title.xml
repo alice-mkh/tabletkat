@@ -118,6 +118,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_sysbar_quicksettings"
+                    android:alpha="0.69"
                     />
 
                 <ImageView
@@ -126,6 +127,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_notification_open"
                     android:visibility="invisible"
+                    android:alpha="0.69"
                     />
             </FrameLayout>
 

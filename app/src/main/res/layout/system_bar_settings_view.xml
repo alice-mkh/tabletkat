@@ -48,6 +48,7 @@
                     android:layout_height="match_parent"
                     android:layout_width="64dp"
                     android:scaleType="center"
+                    android:alpha="0.69"
                     android:src="@drawable/ic_sysbar_quicksettings"
                     />
             <TextView

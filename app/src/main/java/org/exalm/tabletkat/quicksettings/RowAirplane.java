@@ -1,8 +1,6 @@
 package org.exalm.tabletkat.quicksettings;
 
 import android.content.Context;
-import android.content.Intent;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -11,8 +9,6 @@ import android.widget.TextView;
 import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.statusbar.policy.AirplaneModeController;
-
-import de.robv.android.xposed.XposedHelpers;
 
 public class RowAirplane extends Row {
     private AirplaneModeController mAirplane;
@@ -28,7 +24,7 @@ public class RowAirplane extends Row {
 
     @Override
     public int getIcon() {
-        return TkR.drawable.ic_sysbar_airplane_on;
+        return TkR.drawable.ic_sysbar_airplane;
     }
 
     @Override

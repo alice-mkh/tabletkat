@@ -1,8 +1,6 @@
 package org.exalm.tabletkat.quicksettings;
 
 import android.content.Context;
-import android.content.Intent;
-import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
@@ -32,7 +30,7 @@ public class RowBrightness extends Row {
 
     @Override
     public int getIcon() {
-        return TkR.drawable.ic_sysbar_wifi_on;
+        return TkR.drawable.ic_sysbar_wifi;
     }
 
     @Override

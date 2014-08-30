@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:layout_width="64dp"
         android:scaleType="center"
+        android:alpha="0.69"
         />
     <TextView
         android:id="@+id/row_label"

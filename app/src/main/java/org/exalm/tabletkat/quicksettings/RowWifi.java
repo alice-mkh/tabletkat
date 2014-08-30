@@ -22,7 +22,7 @@ public class RowWifi extends Row {
 
     @Override
     public int getIcon() {
-        return TkR.drawable.ic_sysbar_wifi_on;
+        return TkR.drawable.ic_sysbar_wifi;
     }
 
     @Override

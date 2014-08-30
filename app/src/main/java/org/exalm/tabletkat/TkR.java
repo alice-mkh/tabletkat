@@ -19,13 +19,13 @@ public class TkR {
     public static class drawable {
         public static int ic_notification_dnd;
         public static int ic_notification_open;
-        public static int ic_sysbar_airplane_on;
+        public static int ic_sysbar_airplane;
         public static int ic_sysbar_bluetooth;
         public static int ic_sysbar_ime;
         public static int ic_sysbar_ime_pressed;
         public static int ic_sysbar_location;
-        public static int ic_sysbar_rotate_on;
-        public static int ic_sysbar_wifi_on;
+        public static int ic_sysbar_rotate;
+        public static int ic_sysbar_wifi;
     }
     public static class id {
         public static int background;
@@ -117,13 +117,13 @@ public class TkR {
 
         drawable.ic_notification_dnd = add(res, res2, R.drawable.ic_notification_dnd);
         drawable.ic_notification_open = add(res, res2, R.drawable.ic_notification_open);
-        drawable.ic_sysbar_airplane_on = add(res, res2, R.drawable.ic_sysbar_airplane_on);
+        drawable.ic_sysbar_airplane = add(res, res2, R.drawable.ic_sysbar_airplane);
         drawable.ic_sysbar_bluetooth = add(res, res2, R.drawable.ic_sysbar_bluetooth);
         drawable.ic_sysbar_ime = add(res, res2, R.drawable.ic_sysbar_ime);
         drawable.ic_sysbar_ime_pressed = add(res, res2, R.drawable.ic_sysbar_ime_pressed);
         drawable.ic_sysbar_location = add(res, res2, R.drawable.ic_sysbar_location);
-        drawable.ic_sysbar_rotate_on = add(res, res2, R.drawable.ic_sysbar_rotate_on);
-        drawable.ic_sysbar_wifi_on = add(res, res2, R.drawable.ic_sysbar_wifi_on);
+        drawable.ic_sysbar_rotate = add(res, res2, R.drawable.ic_sysbar_rotate);
+        drawable.ic_sysbar_wifi = add(res, res2, R.drawable.ic_sysbar_wifi);
 
         id.background = add(res, res2, R.id.background);
         id.bar_contents = add(res, res2, R.id.bar_contents);
