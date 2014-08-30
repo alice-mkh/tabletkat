@@ -33,6 +33,7 @@ import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.statusbar.policy.AirplaneModeController;
+import org.exalm.tabletkat.statusbar.policy.WifiController;
 import org.exalm.tabletkat.statusbar.policy.DoNotDisturbController;
 import org.exalm.tabletkat.statusbar.policy.RotationLockController;
 
@@ -43,6 +44,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
 
     AirplaneModeController mAirplane;
     RotationLockController mRotationController;
+	WifiController mWifiController;
     Object mBrightness;
     DoNotDisturbController mDoNotDisturb;
     View mRotationLockContainer;
@@ -101,6 +103,8 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
                 slider);
         mDoNotDisturb = new DoNotDisturbController(context,
                 (CompoundButton)findViewById(TkR.id.do_not_disturb_checkbox));
+		mWifiController = new WifiController(context,
+				(CompoundButton)findViewById(TkR.id.network_checkbox));
         findViewById(TkR.id.settings).setOnClickListener(this);
 
         ((TextView) findViewById(TkR.id.airplane_label)).setText(SystemR.string.status_bar_settings_airplane);

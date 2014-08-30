@@ -65,6 +65,7 @@ public class TkR {
         public static int network;
         public static int network_label;
         public static int network_text;
+		public static int network_checkbox;
         public static int no_recent_apps;
         public static int notification_scroller;
         public static int notificationArea;
@@ -160,6 +161,7 @@ public class TkR {
         id.network = add(res, res2, R.id.network);
         id.network_label = add(res, res2, R.id.network_label);
         id.network_text = add(res, res2, R.id.network_text);
+		id.network_checkbox = add(res, res2, R.id.network_checkbox);
         id.no_recent_apps = add(res, res2, R.id.no_recent_apps);
         id.notification_scroller = add(res, res2, R.id.notification_scroller);
         id.notificationArea = add(res, res2, R.id.notificationArea);
