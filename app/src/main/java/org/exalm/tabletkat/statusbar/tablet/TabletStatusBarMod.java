@@ -19,10 +19,8 @@ package org.exalm.tabletkat.statusbar.tablet;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.app.ActivityManager;
-import android.app.ActivityManagerNative;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -50,7 +48,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
-import android.view.IWindowManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -70,9 +67,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.exalm.tabletkat.R;
+import org.exalm.tabletkat.StatusBarManager;
 import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
+import org.exalm.tabletkat.ViewConstants;
 import org.exalm.tabletkat.ViewHelper;
 import org.exalm.tabletkat.statusbar.BaseStatusBarMod;
 import org.exalm.tabletkat.statusbar.CommandQueue;
@@ -306,13 +305,13 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         final WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_NAVIGATION_BAR,
+                XposedHelpers.getStaticIntField(TabletKatModule.mWindowManagerLayoutParamsClass, "TYPE_NAVIGATION_BAR"),
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                         | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
                         | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
                 PixelFormat.TRANSLUCENT);
 
-        if (ActivityManager.isHighEndGfx()) {
+        if ((Boolean) XposedHelpers.callStaticMethod(ActivityManager.class, "isHighEndGfx")) {
             lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
         }
 
@@ -358,7 +357,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         WindowManager.LayoutParams lp = mNotificationPanelParams = new WindowManager.LayoutParams(
                 res.getDimensionPixelSize(SystemR.dimen.notification_panel_width),
                 getNotificationPanelHeight(),
-                WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
+                XposedHelpers.getStaticIntField(TabletKatModule.mWindowManagerLayoutParamsClass, "TYPE_NAVIGATION_BAR_PANEL"),
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
                         | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
@@ -391,7 +390,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         lp = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
+                XposedHelpers.getStaticIntField(TabletKatModule.mWindowManagerLayoutParamsClass, "TYPE_NAVIGATION_BAR_PANEL"),
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
                         | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
@@ -416,7 +415,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         lp = new WindowManager.LayoutParams(
                 250,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
+                XposedHelpers.getStaticIntField(TabletKatModule.mWindowManagerLayoutParamsClass, "TYPE_NAVIGATION_BAR_PANEL"),
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                         | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
                         | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
@@ -511,7 +510,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     }
 
     protected View makeStatusBarView() {
-        mWindowManagerService = (IWindowManager) XposedHelpers.getObjectField(self, "mWindowManagerService");
+        mWindowManagerService = XposedHelpers.getObjectField(self, "mWindowManagerService");
         mHandler = (Handler) XposedHelpers.getObjectField(self, "mHandler");
 
         final Context context = mContext;
@@ -983,8 +982,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
     private void notifyUiVisibilityChanged(int vis) {
         try {
-            mWindowManagerService.statusBarVisibilityChanged(vis);
-        } catch (RemoteException ex) {
+            XposedHelpers.callMethod(mWindowManagerService, "statusBarVisibilityChanged", vis);
+        } catch (Exception ex) {
         }
     }
 
@@ -1046,9 +1045,10 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
     private boolean isImmersive() {
         try {
-            return ActivityManagerNative.getDefault().isTopActivityImmersive();
+            Object o = XposedHelpers.callStaticMethod(TabletKatModule.mActivityManagerNativeClass, "getDefault");
+            return (Boolean) XposedHelpers.callMethod(o, "isTopActivityImmersive");
             //Log.d(TAG, "Top activity is " + (immersive?"immersive":"not immersive"));
-        } catch (RemoteException ex) {
+        } catch (Exception ex) {
             // the end is nigh
             return false;
         }
@@ -1299,17 +1299,20 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         XposedHelpers.findAndHookMethod(tv, "setImeWindowStatus", IBinder.class, int.class, int.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                int IME_ACTIVE = XposedHelpers.getStaticIntField(InputMethodService.class, "IME_ACTIVE");
+                int IME_VISIBLE = XposedHelpers.getStaticIntField(InputMethodService.class, "IME_VISIBLE");
+
                 IBinder token = (IBinder) methodHookParam.args[0];
                 int vis = (Integer) methodHookParam.args[1];
                 int backDisposition = (Integer) methodHookParam.args[2];
 
                 mInputMethodSwitchButton.setImeWindowStatus(token,
-                        (vis & InputMethodService.IME_ACTIVE) != 0);
+                        (vis & IME_ACTIVE) != 0);
                 updateNotificationIcons();
                 mInputMethodsPanel.setImeToken(token);
 
                 boolean altBack = (backDisposition == InputMethodService.BACK_DISPOSITION_WILL_DISMISS)
-                        || ((vis & InputMethodService.IME_VISIBLE) != 0);
+                        || ((vis & IME_VISIBLE) != 0);
                 mAltBackButtonEnabledForIme = altBack;
 
                 setNavigationIconHints(
@@ -1317,7 +1320,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                                 : (mNavigationIconHints & ~StatusBarManager.NAVIGATION_HINT_BACK_ALT));
 
                 if (FAKE_SPACE_BAR) {
-                    mFakeSpaceBar.setVisibility(((vis & InputMethodService.IME_VISIBLE) != 0)
+                    mFakeSpaceBar.setVisibility(((vis & IME_VISIBLE) != 0)
                             ? View.VISIBLE : View.GONE);
                 }
                 return null;
@@ -1379,9 +1382,9 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-                        (int) mTkContext.getResources().getDimension(TabletKatModule.mDimenStatusBarRecentsWidth),
+                        (int) mContext.getResources().getDimension(TkR.dimen.status_bar_recents_width),
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
+                        XposedHelpers.getStaticIntField(TabletKatModule.mWindowManagerLayoutParamsClass, "TYPE_NAVIGATION_BAR_PANEL"),
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                                 | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
                                 | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
@@ -1404,12 +1407,12 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
-                        WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL,
+                        XposedHelpers.getStaticIntField(TabletKatModule.mWindowManagerLayoutParamsClass, "TYPE_NAVIGATION_BAR_PANEL"),
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                                 | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
                                 | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
                         (opaque ? PixelFormat.OPAQUE : PixelFormat.TRANSLUCENT));
-                if (ActivityManager.isHighEndGfx()) {
+                if ((Boolean) XposedHelpers.callStaticMethod(ActivityManager.class, "isHighEndGfx")) {
                     lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
                 } else {
                     lp.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
@@ -1539,7 +1542,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
                     final int sbMode = mStatusBarView == null ? -1 : computeBarMode(
                             oldVal, newVal, mStatusBarView.getBarTransitions(),
-                            View.NAVIGATION_BAR_TRANSIENT, View.NAVIGATION_BAR_TRANSLUCENT);
+                            ViewConstants.NAVIGATION_BAR_TRANSIENT, ViewConstants.NAVIGATION_BAR_TRANSLUCENT);
                     final boolean sbModeChanged = sbMode != -1;
 
                     if (sbModeChanged && sbMode != mStatusBarMode) {
@@ -1558,8 +1561,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                         }
                     }
                     // ready to unhide
-                    if ((vis & View.NAVIGATION_BAR_UNHIDE) != 0) {
-                        mSystemUiVisibility &= ~View.NAVIGATION_BAR_UNHIDE;
+                    if ((vis & ViewConstants.NAVIGATION_BAR_UNHIDE) != 0) {
+                        mSystemUiVisibility &= ~ViewConstants.NAVIGATION_BAR_UNHIDE;
                     }
 
                     // send updated sysui visibility to window manager
@@ -1628,8 +1631,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
                         mNotificationDNDDummyEntry = XposedHelpers.newInstance(TabletKatModule.mNotificationDataEntryClass,
                                 new Class<?>[]{IBinder.class, StatusBarNotification.class, TabletKatModule.mStatusBarIconViewClass},
-                                null, new StatusBarNotification("", 0, "", 0, 0, Notification.PRIORITY_MAX,
-                                dndNotification, android.os.Process.myUserHandle()), iconView);
+                                null, new StatusBarNotification("", null, 0, "", 0, 0, Notification.PRIORITY_MAX,
+                                dndNotification, android.os.Process.myUserHandle(), System.currentTimeMillis()), iconView);
 
                         mIconLayout.addView(iconView, params);
                     }
@@ -1662,7 +1665,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                     if (i >= N) break;
                     Object ent = XposedHelpers.callMethod(mNotificationData, "get", N - i - 1);
                     StatusBarNotification n = (StatusBarNotification) XposedHelpers.getObjectField(ent, "notification");
-                    if ((provisioned && n.getScore() >= HIDE_ICONS_BELOW_SCORE)
+                    if ((provisioned && (Integer) XposedHelpers.callMethod(n, "getScore") >= HIDE_ICONS_BELOW_SCORE)
                             || showNotificationEvenIfUnprovisioned(n)) {
                         toShow.add((View) XposedHelpers.getObjectField(ent, "icon"));
                     }
@@ -2076,7 +2079,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     private void suspendAutohide() {
         mHandler.removeCallbacks(mAutohide);
         mHandler.removeCallbacks(mCheckBarModes);
-        mAutohideSuspended = (mSystemUiVisibility & View.NAVIGATION_BAR_TRANSIENT) != 0;
+        mAutohideSuspended = (mSystemUiVisibility & ViewConstants.NAVIGATION_BAR_TRANSIENT) != 0;
     }
 
     private void cancelAutohide() {
@@ -2090,7 +2093,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     }
 
     private void checkUserAutohide(View v, MotionEvent event) {
-        if ((mSystemUiVisibility & View.NAVIGATION_BAR_TRANSIENT) != 0  // a transient bar is revealed
+        if ((mSystemUiVisibility & ViewConstants.NAVIGATION_BAR_TRANSIENT) != 0  // a transient bar is revealed
                 && event.getAction() == MotionEvent.ACTION_OUTSIDE // touch outside the source bar
                 && event.getX() == 0 && event.getY() == 0  // a touch outside both bars
                 ) {
@@ -2106,8 +2109,9 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     //We have an IME switcher button, so we don't want any notifications about that
     private boolean isNotificationBlacklisted(StatusBarNotification n) {
         if ("android".equals(n.getPackageName())) {
-            if (n.getNotification().kind != null) {
-                for (String aKind : n.getNotification().kind) {
+            String[] kind = (String[]) XposedHelpers.getObjectField(n.getNotification(), "kind");
+            if (kind != null) {
+                for (String aKind : kind) {
                     // IME switcher, created by InputMethodManagerService
                     if ("android.system.imeswitcher".equals(aKind)) return true;
                 }
@@ -2161,7 +2165,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     private final Runnable mAutohide = new Runnable() {
         @Override
         public void run() {
-            int requested = mSystemUiVisibility & ~View.NAVIGATION_BAR_TRANSIENT;
+            int requested = mSystemUiVisibility & ~ViewConstants.NAVIGATION_BAR_TRANSIENT;
             if (mSystemUiVisibility != requested) {
                 notifyUiVisibilityChanged(requested);
             }

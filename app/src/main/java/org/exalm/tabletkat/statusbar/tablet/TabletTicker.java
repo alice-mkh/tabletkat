@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.Gravity;
@@ -294,7 +295,7 @@ public class TabletTicker
         } else if (n.tickerText != null) {
             group = (ViewGroup)inflater.inflate(TkR.layout.system_bar_ticker_compat, mWindow, false);
             group.findViewById(TkR.id.background).setBackgroundResource(SystemR.drawable.system_bar_ticker_background);
-            Object o = XposedHelpers.newInstance(TabletKatModule.mStatusBarIconClass, notification.getPackageName(), notification.getUser(), n.icon, n.iconLevel, 0,
+            Object o = XposedHelpers.newInstance(TabletKatModule.mStatusBarIconClass, notification.getPackageName(), (UserHandle) XposedHelpers.callMethod(notification, "getUser"), n.icon, n.iconLevel, 0,
                     n.tickerText);
             final Drawable icon = (Drawable)XposedHelpers.callStaticMethod(TabletKatModule.mStatusBarIconViewClass,
                     "getIcon", mContext, o);

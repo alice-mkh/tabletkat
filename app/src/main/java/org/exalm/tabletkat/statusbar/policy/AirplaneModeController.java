@@ -26,6 +26,8 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.widget.CompoundButton;
 
+import de.robv.android.xposed.XposedHelpers;
+
 public class AirplaneModeController extends BroadcastReceiver
         implements CompoundButton.OnCheckedChangeListener {
     private static final String TAG = "StatusBar.AirplaneModeController";
@@ -84,7 +86,7 @@ public class AirplaneModeController extends BroadcastReceiver
                     Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
                     intent.addFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
                     intent.putExtra("state", enabled);
-                    mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
+                    mContext.sendBroadcastAsUser(intent, (UserHandle) XposedHelpers.getStaticObjectField(UserHandle.class, "ALL"));
                 }
             });
     }

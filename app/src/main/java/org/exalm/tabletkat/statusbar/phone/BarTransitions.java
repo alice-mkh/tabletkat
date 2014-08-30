@@ -33,6 +33,8 @@ import android.view.animation.LinearInterpolator;
 
 import org.exalm.tabletkat.SystemR;
 
+import de.robv.android.xposed.XposedHelpers;
+
 public class BarTransitions {
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_COLORS = false;
@@ -48,7 +50,7 @@ public class BarTransitions {
 
     private final String mTag;
     private final View mView;
-    private final boolean mSupportsTransitions = ActivityManager.isHighEndGfx();
+    private final boolean mSupportsTransitions;
     private final BarBackgroundDrawable mBarBackground;
 
     private int mMode;
@@ -58,6 +60,7 @@ public class BarTransitions {
         mView = view;
         mBarBackground = new BarBackgroundDrawable(mView.getContext(), gradientResourceId);
         reloadBackground();
+        mSupportsTransitions = (Boolean) XposedHelpers.callStaticMethod(ActivityManager.class, "isHighEndGfx");
     }
 
     public void reloadBackground(){

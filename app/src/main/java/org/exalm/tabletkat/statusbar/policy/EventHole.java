@@ -22,6 +22,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import de.robv.android.xposed.XposedHelpers;
+
 public class EventHole extends View implements ViewTreeObserver.OnComputeInternalInsetsListener {
     private static final String TAG = "StatusBar.EventHole";
 
@@ -45,13 +47,13 @@ public class EventHole extends View implements ViewTreeObserver.OnComputeInterna
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getViewTreeObserver().addOnComputeInternalInsetsListener(this);
+        XposedHelpers.callMethod(getViewTreeObserver(), "addOnComputeInternalInsetsListener", this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        getViewTreeObserver().removeOnComputeInternalInsetsListener(this);
+        XposedHelpers.callMethod(getViewTreeObserver(), "removeOnComputeInternalInsetsListener", this);
     }
 
     public void onComputeInternalInsets(ViewTreeObserver.InternalInsetsInfo info) {

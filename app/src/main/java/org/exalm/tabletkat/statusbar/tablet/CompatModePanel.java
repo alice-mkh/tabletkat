@@ -27,6 +27,8 @@ import android.widget.Toast;
 
 import org.exalm.tabletkat.TkR;
 
+import de.robv.android.xposed.XposedHelpers;
+
 public class CompatModePanel extends FrameLayout implements StatusBarPanel,
         View.OnClickListener {
     private static final boolean DEBUG = TabletStatusBarMod.DEBUG;
@@ -74,10 +76,12 @@ public class CompatModePanel extends FrameLayout implements StatusBarPanel,
 
     @Override
     public void onClick(View v) {
+        int COMPAT_MODE_ENABLED = XposedHelpers.getStaticIntField(ActivityManager.class, "COMPAT_MODE_ENABLED");
+        int COMPAT_MODE_DISABLED = XposedHelpers.getStaticIntField(ActivityManager.class, "COMPAT_MODE_DISABLED");
         if (v == mOnButton) {
-            mAM.setFrontActivityScreenCompatMode(ActivityManager.COMPAT_MODE_ENABLED);
+            XposedHelpers.callMethod(mAM, "setFrontActivityScreenCompatMode", COMPAT_MODE_ENABLED);
         } else if (v == mOffButton) {
-            mAM.setFrontActivityScreenCompatMode(ActivityManager.COMPAT_MODE_DISABLED);
+            XposedHelpers.callMethod(mAM, "setFrontActivityScreenCompatMode", COMPAT_MODE_DISABLED);
         }
     }
 
@@ -115,14 +119,18 @@ public class CompatModePanel extends FrameLayout implements StatusBarPanel,
     }
 
     private void refresh() {
-        int mode = mAM.getFrontActivityScreenCompatMode();
-        if (mode == ActivityManager.COMPAT_MODE_ALWAYS
-                || mode == ActivityManager.COMPAT_MODE_NEVER) {
+        int COMPAT_MODE_ENABLED = XposedHelpers.getStaticIntField(ActivityManager.class, "COMPAT_MODE_ENABLED");
+        int COMPAT_MODE_ALWAYS = XposedHelpers.getStaticIntField(ActivityManager.class, "COMPAT_MODE_ALWAYS");
+        int COMPAT_MODE_NEVER = XposedHelpers.getStaticIntField(ActivityManager.class, "COMPAT_MODE_NEVER");
+
+        int mode = (Integer) XposedHelpers.callMethod(mAM, "getFrontActivityScreenCompatMode");
+        if (mode == COMPAT_MODE_ALWAYS
+                || mode == COMPAT_MODE_NEVER) {
             // No longer have something to switch.
             closePanel();
             return;
         }
-        final boolean on = (mode == ActivityManager.COMPAT_MODE_ENABLED);
+        final boolean on = (mode == COMPAT_MODE_ENABLED);
         mOnButton.setChecked(on);
         mOffButton.setChecked(!on);
     }

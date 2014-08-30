@@ -21,6 +21,8 @@ import android.os.UserHandle;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import de.robv.android.xposed.XposedHelpers;
+
 public final class RotationLockController {
     private final Context mContext;
     private final CopyOnWriteArrayList<RotationLockControllerCallback> mCallbacks =
@@ -43,7 +45,7 @@ public final class RotationLockController {
         notifyChanged();
         if (RotationPolicy.isRotationLockToggleSupported(mContext)) {
             RotationPolicy.registerRotationPolicyListener(mContext,
-                    mRotationPolicyListener, UserHandle.USER_ALL);
+                    mRotationPolicyListener, XposedHelpers.getStaticIntField(UserHandle.class, "USER_ALL"));
         }
     }
 

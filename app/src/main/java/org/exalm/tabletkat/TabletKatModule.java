@@ -32,6 +32,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     private static TabletStatusBarMod statusBarMod;
     private static TabletRecentsMod recentsMod;
 
+    public static Class mActivityManagerNativeClass;
     public static Class mBaseStatusBarClass;
     public static Class mBaseStatusBarHClass;
     public static Class mBatteryControllerClass;
@@ -54,9 +55,12 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     public static Class mPhoneStatusBarPolicyClass;
     public static Class mStatusBarIconClass;
     public static Class mStatusBarIconViewClass;
+    public static Class mStatusBarManagerClass;
     public static Class mSystemUIClass;
     public static Class mToggleSliderClass;
     public static Class mTvStatusBarClass;
+    public static Class mWindowManagerGlobalClass;
+    public static Class mWindowManagerLayoutParamsClass;
 
     private static String MODULE_PATH = null;
     private static XSharedPreferences pref;
@@ -100,6 +104,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         if (recentsMod == null){
             recentsMod = new TabletRecentsMod();
         }
+        mActivityManagerNativeClass = findClass("android.app.ActivityManagerNative", loadPackageParam.classLoader);
         mBaseStatusBarClass = findClass("com.android.systemui.statusbar.BaseStatusBar", loadPackageParam.classLoader);
         mBaseStatusBarHClass = findClass("com.android.systemui.statusbar.BaseStatusBar.H", loadPackageParam.classLoader);
         mBatteryControllerClass = findClass("com.android.systemui.statusbar.policy.BatteryController", loadPackageParam.classLoader);
@@ -129,9 +134,12 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         mPhoneStatusBarPolicyClass = findClass("com.android.systemui.statusbar.phone.PhoneStatusBarPolicy", loadPackageParam.classLoader);
         mStatusBarIconClass = findClass("com.android.internal.statusbar.StatusBarIcon", loadPackageParam.classLoader);
         mStatusBarIconViewClass = findClass("com.android.systemui.statusbar.StatusBarIconView", loadPackageParam.classLoader);
+        mStatusBarManagerClass = findClass("android.app.StatusBarManager", loadPackageParam.classLoader);
         mSystemUIClass = findClass("com.android.systemui.SystemUI", loadPackageParam.classLoader);
         mToggleSliderClass = findClass("com.android.systemui.settings.ToggleSlider", loadPackageParam.classLoader);
         mTvStatusBarClass = findClass("com.android.systemui.statusbar.tv.TvStatusBar", loadPackageParam.classLoader);
+        mWindowManagerGlobalClass = findClass("android.view.WindowManagerGlobal", loadPackageParam.classLoader);
+        mWindowManagerLayoutParamsClass = findClass("android.view.WindowManager.LayoutParams", loadPackageParam.classLoader);
 
         if (checkIsDisabled()){
             return;

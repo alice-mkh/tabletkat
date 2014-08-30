@@ -29,6 +29,8 @@ import org.exalm.tabletkat.SystemR;
 
 import java.util.ArrayList;
 
+import de.robv.android.xposed.XposedHelpers;
+
 public class TabletBluetoothController {
     private final Context mContext;
     private final Handler mHandler = new Handler();
@@ -68,7 +70,7 @@ public class TabletBluetoothController {
         mIconId = SystemR.drawable.stat_sys_data_bluetooth;
         if (adapter != null) {
             mBluetoothEnabled = (adapter.getState() == BluetoothAdapter.STATE_ON);
-            if (adapter.getConnectionState() == BluetoothAdapter.STATE_CONNECTED) {
+            if ((Integer) XposedHelpers.callMethod(adapter, "getConnectionState") == BluetoothAdapter.STATE_CONNECTED) {
                 mIconId = SystemR.drawable.stat_sys_data_bluetooth_connected;
             }
         }

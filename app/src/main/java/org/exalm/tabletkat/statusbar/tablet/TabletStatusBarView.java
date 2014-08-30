@@ -16,24 +16,17 @@
 
 package org.exalm.tabletkat.statusbar.tablet;
 
-import android.animation.LayoutTransition;
-import android.app.StatusBarManager;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
-import org.exalm.tabletkat.R;
 import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
-import org.exalm.tabletkat.statusbar.phone.BarTransitions;
 
 import de.robv.android.xposed.XposedHelpers;
 

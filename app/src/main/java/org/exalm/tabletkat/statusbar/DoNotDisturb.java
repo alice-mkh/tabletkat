@@ -16,21 +16,23 @@
 
 package org.exalm.tabletkat.statusbar;
 
-import android.app.StatusBarManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.exalm.tabletkat.StatusBarManager;
 import org.exalm.tabletkat.statusbar.policy.Prefs;
+
+import de.robv.android.xposed.XposedHelpers;
 
 public class DoNotDisturb implements SharedPreferences.OnSharedPreferenceChangeListener {
     private Context mContext;
-    private StatusBarManager mStatusBar;
+    private Object mStatusBar;
     SharedPreferences mPrefs;
     private boolean mDoNotDisturb;
 
     public DoNotDisturb(Context context) {
         mContext = context;
-        mStatusBar = (StatusBarManager)context.getSystemService("statusbar");
+        mStatusBar = context.getSystemService("statusbar");
         mPrefs = Prefs.read(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mDoNotDisturb = mPrefs.getBoolean(Prefs.DO_NOT_DISTURB_PREF, Prefs.DO_NOT_DISTURB_DEFAULT);
@@ -50,7 +52,7 @@ public class DoNotDisturb implements SharedPreferences.OnSharedPreferenceChangeL
         final int disabled = StatusBarManager.DISABLE_NOTIFICATION_ICONS
                 | StatusBarManager.DISABLE_NOTIFICATION_ALERTS
                 | StatusBarManager.DISABLE_NOTIFICATION_TICKER;
-        mStatusBar.disable(mDoNotDisturb ? disabled : 0);
+        XposedHelpers.callMethod(mStatusBar, "disable", mDoNotDisturb ? disabled : 0);
     }
 }
 
