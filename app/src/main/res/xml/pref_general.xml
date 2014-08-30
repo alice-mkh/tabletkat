@@ -10,6 +10,7 @@
         android:key="enable_mod_recents"
         android:title="@string/pref_title_enable_mod_recents"
         android:summary="@string/pref_summary_enable_mod_recents"
+        android:dependency="enable_tablet_ui"
         android:defaultValue="true" />
 <!--
     <ListPreference
