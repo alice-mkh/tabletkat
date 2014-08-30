@@ -413,7 +413,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         mCompatModePanel.onFinishInflate();
         mStatusBarView.setIgnoreChildren(3, mCompatModeButton, mCompatModePanel);
         lp = new WindowManager.LayoutParams(
-                250,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 XposedHelpers.getStaticIntField(TabletKatModule.mWindowManagerLayoutParamsClass, "TYPE_NAVIGATION_BAR_PANEL"),
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
