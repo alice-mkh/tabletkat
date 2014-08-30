@@ -39,7 +39,6 @@ import android.inputmethodservice.InputMethodService;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.RemoteException;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -1496,6 +1495,11 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 // If they asked for FLAG_ONLY_ALERT_ONCE, then only show this notification
                 // if it's a new notification.
                 if (!firstTime && (n.getNotification().flags & Notification.FLAG_ONLY_ALERT_ONCE) != 0) {
+                    return null;
+                }
+
+                // Don't show minimum priority notifications
+                if (n.getNotification().priority == Notification.PRIORITY_MIN) {
                     return null;
                 }
                 // Show the ticker if one is requested. Also don't do this

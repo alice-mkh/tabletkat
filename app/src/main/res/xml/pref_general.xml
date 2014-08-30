@@ -5,6 +5,12 @@
         android:title="@string/pref_title_enable_tablet_ui"
         android:summary="@string/pref_summary_enable_tablet_ui"
         android:defaultValue="true" />
+
+    <SwitchPreference
+        android:key="enable_mod_recents"
+        android:title="@string/pref_title_enable_mod_recents"
+        android:summary="@string/pref_summary_enable_mod_recents"
+        android:defaultValue="true" />
 <!--
     <ListPreference
         android:key="when_to_use"
