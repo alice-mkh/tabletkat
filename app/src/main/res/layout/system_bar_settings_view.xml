@@ -60,12 +60,6 @@
                     android:textSize="18sp"
                     />
         </LinearLayout>
-        <View
-            android:layout_marginEnd="0dp"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:drawable/divider_horizontal_dark"
-        />
     </LinearLayout>
 </LinearLayout>
 
