@@ -18,7 +18,6 @@ package org.exalm.tabletkat.statusbar.tablet;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -33,9 +32,9 @@ import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.statusbar.policy.AirplaneModeController;
+import org.exalm.tabletkat.statusbar.policy.WifiController;
 import org.exalm.tabletkat.statusbar.policy.DoNotDisturbController;
 import org.exalm.tabletkat.statusbar.policy.RotationLockController;
-import org.exalm.tabletkat.statusbar.policy.WifiController;
 
 import de.robv.android.xposed.XposedHelpers;
 
@@ -98,8 +97,6 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
         ((TextView) XposedHelpers.getObjectField(slider, "mLabel")).setText(SystemR.string.status_bar_settings_auto_brightness_label);
         ((ViewGroup) findViewById(TkR.id.brightness)).addView(slider);
 
-        ImageView brightnessIconView = (ImageView)findViewById(SystemR.id.brightness_icon);
-        Drawable oldBrightnessIcon = brightnessIconView.getDrawable();
         mBrightness = XposedHelpers.newInstance(TabletKatModule.mBrightnessControllerClass, context,
                 (ImageView)findViewById(SystemR.id.brightness_icon),
                 slider);
@@ -114,9 +111,6 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
         ((TextView) findViewById(TkR.id.rotate_label)).setText(SystemR.string.status_bar_settings_auto_rotation);
         ((TextView) findViewById(TkR.id.do_not_disturb_label)).setText(SystemR.string.status_bar_settings_notifications);
         ((TextView) findViewById(TkR.id.settings_label)).setText(SystemR.string.status_bar_settings_settings_button);
-
-
-        brightnessIconView.setImageDrawable(oldBrightnessIcon);
     }
 
     @Override
