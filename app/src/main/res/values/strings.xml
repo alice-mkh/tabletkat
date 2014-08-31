@@ -9,10 +9,15 @@
     <string name="pref_summary_enable_tablet_ui">Use older tablet mode (Requires reboot)</string>
 
     <string name="pref_title_enable_mod_recents">Enable tablet recents</string>
-    <string name="pref_summary_enable_mod_recents">Pin Recents to left (Requires reboot)</string>
+    <string name="pref_summary_enable_mod_recents">Pin Recents to the left (Requires reboot)</string>
 
     <string name="pref_title_extended_settings">Extended settings</string>
     <string name="pref_summary_extended_settings">Allow additional features in the settings pane</string>
+
+    <string name="pref_title_ics_clock_font">ICS clock font</string>
+    <string name="pref_summary_ics_clock_font">Use a special font for clock</string>
+
+    <string name="pref_title_battery_percents">Show battery percents</string>
 
     <string name="message_reboot">Reboot to apply the changes</string>
 </resources>
