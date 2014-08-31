@@ -22,43 +22,30 @@ import android.content.Intent;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import org.exalm.tabletkat.OnPreferenceChangedListener;
 import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
-import org.exalm.tabletkat.statusbar.policy.AirplaneModeController;
-import org.exalm.tabletkat.statusbar.policy.DoNotDisturbController;
-import org.exalm.tabletkat.statusbar.policy.RotationLockController;
-import org.exalm.tabletkat.statusbar.policy.WifiController;
+import org.exalm.tabletkat.quicksettings.Row;
+import org.exalm.tabletkat.quicksettings.RowFactory;
+
+import java.util.ArrayList;
 
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
 public class SettingsView extends LinearLayout implements View.OnClickListener {
 
     static final String TAG = "SettingsView";
 
-    AirplaneModeController mAirplane;
-    WifiController mWifiController;
-    RotationLockController mRotationController;
-    Object mBrightness;
-    DoNotDisturbController mDoNotDisturb;
-    View mRotationLockContainer;
-    View mRotationLockSeparator;
     BroadcastReceiver settingsReceiver;
+    ArrayList<Row> rows;
 
-    private static String[] defaultRows = new String[]{"airplane", "wifi", "rotation", "brightness", "dnd"};
+    private static String[] defaultRows = new String[]{"airplane", "wifi", "rotate", "brightness", "dnd"};
 
     public SettingsView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -66,6 +53,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
 
     public SettingsView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        rows = new ArrayList<Row>();
     }
 
     private void rebuild(String[] strings) {
@@ -73,112 +61,21 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
         releaseControllers();
         container.removeAllViews();
         for (String s : strings){
-            View row = createRowFromString(s);
+            Row row = RowFactory.createRowFromString(getContext(), s);
             if (row == null){
                 continue;
             }
-            container.addView(row);
-
-            View sep = makeSeparator();
-            container.addView(sep);
-            if (s.equals("rotation")){
-                mRotationLockSeparator = sep;
-            }
+            rows.add(row);
+            container.addView(row.getView());
+            container.addView(row.getSeparator());
         }
     }
 
-    private View createRowFromString(String id) {
-        LinearLayout view = new LinearLayout(getContext());
-
-        DisplayMetrics d = getContext().getResources().getDisplayMetrics();
-        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64, d);
-        int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, d);
-        view.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
-        view.setPaddingRelative(0, 0, padding, 0);
-
-        LinearLayout row = (LinearLayout) inflate(getContext(), TkR.layout.system_bar_settings_row, view);
-        row = (LinearLayout) row.getChildAt(0);
-        TextView label = (TextView) row.findViewById(TkR.id.row_label);
-        ImageView icon = (ImageView) row.findViewById(TkR.id.row_icon);
-        Switch checkbox = (Switch) row.findViewById(TkR.id.row_checkbox);
-
-        XposedBridge.log(id);
-
-        if (id.equals("airplane")){
-            mAirplane = new AirplaneModeController(getContext(), checkbox);
-            icon.setImageResource(TkR.drawable.ic_sysbar_airplane_on);
-            label.setText(SystemR.string.status_bar_settings_airplane);
+    private void releaseControllers() {
+        for (Row row : rows){
+            row.releaseControllers();
         }
-        if (id.startsWith("wifi")){
-            icon.setImageResource(TkR.drawable.ic_sysbar_wifi_on);
-            row.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onClickNetwork();
-                }
-            });
-            label.setText(SystemR.string.status_bar_settings_wifi_button);
-            if (id.equals("wifi-switch")){
-                mWifiController = new WifiController(getContext(), checkbox);
-            }else{
-                row.removeView(checkbox);
-            }
-        }
-        if (id.equals("rotation")){
-            mRotationLockContainer = row;
-            mRotationController = new RotationLockController(getContext());
-            mRotationController.addRotationLockControllerCallback(
-                    new RotationLockController.RotationLockControllerCallback() {
-                        @Override
-                        public void onRotationLockStateChanged(boolean locked, boolean visible) {
-                            if (mRotationLockSeparator == null | mRotationLockContainer == null){
-                                return;
-                            }
-                            mRotationLockContainer.setVisibility(visible ? View.VISIBLE : View.GONE);
-                            mRotationLockSeparator.setVisibility(visible ? View.VISIBLE : View.GONE);
-                        }
-                    });
-
-            checkbox.setChecked(!mRotationController.isRotationLocked());
-            checkbox.setVisibility(mRotationController.isRotationLockAffordanceVisible()
-                    ? View.VISIBLE : View.GONE);
-            checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mRotationController.setRotationLocked(!buttonView.isChecked());
-                }
-            });
-
-            icon.setImageResource(TkR.drawable.ic_sysbar_rotate_on);
-            label.setText(SystemR.string.status_bar_settings_auto_rotation);
-        }
-        if (id.equals("brightness")){
-            row.removeView(checkbox);
-            row.removeView(label);
-
-            View slider = (View) XposedHelpers.newInstance(TabletKatModule.mToggleSliderClass, getContext());
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.FILL_PARENT);
-            lp.weight = 1;
-            lp.setMarginEnd((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, d));
-            slider.setLayoutParams(lp);
-            ((TextView) XposedHelpers.getObjectField(slider, "mLabel")).setText(SystemR.string.status_bar_settings_auto_brightness_label);
-            row.addView(slider);
-
-            mBrightness = XposedHelpers.newInstance(TabletKatModule.mBrightnessControllerClass, getContext(), icon, slider);
-        }
-        if (id.equals("dnd")){
-            mDoNotDisturb = new DoNotDisturbController(getContext(), checkbox);
-            icon.setImageResource(TkR.drawable.ic_notification_open);
-            label.setText(SystemR.string.status_bar_settings_notifications);
-        }
-        return view;
-    }
-
-    private View makeSeparator() {
-        View v = new View(getContext());
-        v.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
-        v.setBackgroundResource(android.R.drawable.divider_horizontal_dark);
-        return v;
+        rows.clear();
     }
 
     @Override
@@ -204,29 +101,10 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
 
             @Override
             public void init(XSharedPreferences pref) {
-                String[] customRows = new String[]{"airplane", "wifi-switch", "brightness", "rotation", "dnd"}; //TODO: Customization UI
+                String[] customRows = new String[]{"airplane", "wifi-switch", "rotate", "brightness", "dnd"}; //TODO: Customization UI
                 rebuild(pref.getBoolean("extended_settings", false) ? customRows : defaultRows);
             }
         });
-    }
-
-    private void releaseControllers() {
-        if (mAirplane != null) {
-            mAirplane.release();
-            mAirplane = null;
-        }
-        if (mWifiController != null) {
-            mWifiController.release();
-            mWifiController = null;
-        }
-        if (mDoNotDisturb != null) {
-            mDoNotDisturb.release();
-            mDoNotDisturb = null;
-        }
-        if (mRotationController != null) {
-            mRotationController.release();
-            mRotationController = null;
-        }
     }
 
     @Override
@@ -247,14 +125,6 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
 
     private Object getStatusBarManager() {
         return getContext().getSystemService("statusbar");
-    }
-
-    // Network
-    // ----------------------------
-    private void onClickNetwork() {
-        getContext().startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        XposedHelpers.callMethod(getStatusBarManager(), "collapsePanels");
     }
 
     // Settings

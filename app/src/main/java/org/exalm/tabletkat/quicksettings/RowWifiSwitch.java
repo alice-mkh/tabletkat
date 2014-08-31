@@ -1,0 +1,38 @@
+package org.exalm.tabletkat.quicksettings;
+
+import android.content.Context;
+import android.content.Intent;
+import android.provider.Settings;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.TextView;
+
+import org.exalm.tabletkat.SystemR;
+import org.exalm.tabletkat.TkR;
+import org.exalm.tabletkat.statusbar.policy.WifiController;
+
+import de.robv.android.xposed.XposedHelpers;
+
+public class RowWifiSwitch extends RowWifi {
+    private WifiController mWifiController;
+
+    public RowWifiSwitch(Context c) {
+        super(c);
+    }
+
+    @Override
+    public boolean hasSwitch() {
+        return true;
+    }
+
+    @Override
+    protected void registerControllers(ImageView icon, TextView label, Switch checkbox, View custom) {
+        mWifiController = new WifiController(mContext, checkbox);
+    }
+
+    @Override
+    public void releaseControllers() {
+        mWifiController.release();
+    }
+}
