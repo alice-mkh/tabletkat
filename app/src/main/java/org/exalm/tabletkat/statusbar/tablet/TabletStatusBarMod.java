@@ -443,7 +443,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         final Point size = new Point();
         d.getRealSize(size);
         int y = res.getDimensionPixelSize(TkR.dimen.notification_panel_min_height);
-        return Math.max(y, size.y);
+        return Math.min(y, size.y);
     }
 
     protected void loadDimens() {
