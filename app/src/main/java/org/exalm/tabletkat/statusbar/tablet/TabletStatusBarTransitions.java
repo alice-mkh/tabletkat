@@ -46,7 +46,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
     private int mRequestedMode;
     private final float mIconAlphaWhenOpaque;
 
-    private View mNotificationArea, mStatusIcons, mSignalCluster, mBattery, mBluetooth, mClock;
+    private View mNotificationArea, mStatusIcons, mSignalCluster, mBattery, mBatteryText, mBluetooth, mClock;
     private Animator mCurrentAnimation;
 
     public TabletStatusBarTransitions(TabletStatusBarView view, Object barService) {
@@ -62,6 +62,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
         mStatusIcons = mView.findViewById(SystemR.id.statusIcons);
         mSignalCluster = mView.findViewById(SystemR.id.signal_cluster);
         mBattery = mView.findViewById(SystemR.id.battery);
+        mBatteryText = mView.findViewById(TkR.id.battery_text);
         mBluetooth = mView.findViewById(TkR.id.bluetooth);
         mClock = mView.findViewById(SystemR.id.clock);
         applyModeBackground(-1, getMode(), false /*animate*/);
@@ -126,6 +127,8 @@ public final class TabletStatusBarTransitions extends BarTransitions {
                     animateTransitionTo(mStatusIcons, newAlpha),
                     animateTransitionTo(mSignalCluster, newAlpha),
                     animateTransitionTo(mBattery, newAlphaBC),
+                    animateTransitionTo(mBatteryText, newAlphaBC),
+                    animateTransitionTo(mBluetooth, newAlpha),
                     animateTransitionTo(mClock, newAlphaBC)
             );
             if (mode == MODE_LIGHTS_OUT) {
@@ -138,6 +141,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
             mStatusIcons.setAlpha(newAlpha);
             mSignalCluster.setAlpha(newAlpha);
             mBattery.setAlpha(newAlphaBC);
+            mBatteryText.setAlpha(newAlphaBC);
             mBluetooth.setAlpha(newAlpha);
             mClock.setAlpha(newAlphaBC);
         }

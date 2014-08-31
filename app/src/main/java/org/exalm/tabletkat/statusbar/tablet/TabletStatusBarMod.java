@@ -65,6 +65,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.exalm.tabletkat.OnPreferenceChangedListener;
 import org.exalm.tabletkat.R;
 import org.exalm.tabletkat.StatusBarManager;
 import org.exalm.tabletkat.SystemR;
@@ -76,6 +77,7 @@ import org.exalm.tabletkat.statusbar.BaseStatusBarMod;
 import org.exalm.tabletkat.statusbar.CommandQueue;
 import org.exalm.tabletkat.statusbar.DoNotDisturb;
 import org.exalm.tabletkat.statusbar.phone.BarTransitions;
+import org.exalm.tabletkat.statusbar.policy.BatteryPercentView;
 import org.exalm.tabletkat.statusbar.policy.CompatModeButton;
 import org.exalm.tabletkat.statusbar.policy.EventHole;
 import org.exalm.tabletkat.statusbar.policy.Prefs;
@@ -89,6 +91,7 @@ import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
+import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
@@ -205,6 +208,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     private int mInteractingWindows;
     private Boolean mScreenOn;
     private Context mLargeIconContext;
+    private BroadcastReceiver mSettingsReceiver;
 
     @Override
     public void reset() {
@@ -265,6 +269,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         mInteractingWindows = 0;
         mScreenOn = null;
         mLargeIconContext = null;
+        mSettingsReceiver = null;
     }
 
     public Context getContext() {
@@ -681,9 +686,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         return sb;
     }
 
-    public void setClockFont(TextView clock){
-        //TODO: Make an option
-        boolean useOldFont = false;
+    public void setClockFont(TextView clock, boolean useOldFont){
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) clock.getLayoutParams();
         if (useOldFont){
             params.setMarginStart(8);
@@ -702,10 +705,9 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
     //TODO: Refactor
     private void finalizeStatusBarView(TabletStatusBarView v) {
-        TextView clock = (TextView) XposedHelpers.newInstance(TabletKatModule.mClockClass, mContext);
+        final TextView clock = (TextView) XposedHelpers.newInstance(TabletKatModule.mClockClass, mContext);
         ViewHelper.replaceView(v, SystemR.id.clock, clock);
         clock.setTextColor(mContext.getResources().getColor(SystemR.color.status_bar_clock_color));
-        setClockFont(clock);
 
         FrameLayout f = (FrameLayout) v.findViewById(SystemR.id.signal_cluster);
         ViewStub cluster = new ViewStub(mLargeIconContext);
@@ -714,6 +716,10 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         cluster.inflate();
 
         ViewHelper.replaceView(v, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mLargeIconContext));
+        ViewHelper.replaceView(v, TkR.id.battery_text, (View) new BatteryPercentView(mContext));
+        final BatteryPercentView percent = (BatteryPercentView) v.findViewById(TkR.id.battery_text);
+        percent.attach(v.findViewById(SystemR.id.battery));
+        percent.setTextColor(mContext.getResources().getColor(SystemR.color.status_bar_clock_color));
 
         ViewGroup view = (ViewGroup)v.findViewById(TkR.id.navigationArea);
 
@@ -763,6 +769,29 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         ((ImageView) v.findViewById(TkR.id.dot1)).setImageResource(SystemR.drawable.ic_sysbar_lights_out_dot_large);
         ((ImageView) v.findViewById(TkR.id.dot2)).setImageResource(SystemR.drawable.ic_sysbar_lights_out_dot_small);
         ((ImageView) v.findViewById(TkR.id.dot3)).setImageResource(SystemR.drawable.ic_sysbar_lights_out_dot_small);
+
+        mSettingsReceiver = TabletKatModule.registerReceiver(mContext, new OnPreferenceChangedListener() {
+            @Override
+            public void onPreferenceChanged(String key, boolean value) {
+                if (key.equals("ics_clock_font")) {
+                    setClockFont(clock, value);
+                }
+                if (key.equals("battery_percents")){
+                    percent.setVisibility(value ? View.VISIBLE : View.GONE);
+                }
+            }
+
+            @Override
+            public void onPreferenceChanged(String key, int value) {
+
+            }
+
+            @Override
+            public void init(XSharedPreferences pref) {
+                setClockFont(clock, pref.getBoolean("ics_clock_font", false));
+                percent.setVisibility(pref.getBoolean("battery_percents", false) ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     public int getStatusBarHeight() {

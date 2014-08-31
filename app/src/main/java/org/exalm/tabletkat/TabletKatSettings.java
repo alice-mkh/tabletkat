@@ -57,6 +57,8 @@ public class TabletKatSettings extends PreferenceActivity {
             }
         });
         setUpPreferenceChangeListener(findPreference("extended_settings"));
+        setUpPreferenceChangeListener(findPreference("ics_clock_font"));
+        setUpPreferenceChangeListener(findPreference("battery_percents"));
 
 //        bindPreferenceSummaryToValue(findPreference("when_to_use"));
     }
@@ -159,6 +161,8 @@ public class TabletKatSettings extends PreferenceActivity {
                 }
             });
             setUpPreferenceChangeListener(findPreference("extended_settings"));
+            setUpPreferenceChangeListener(findPreference("ics_clock_font"));
+            setUpPreferenceChangeListener(findPreference("battery_percents"));
         }
     }
 }
