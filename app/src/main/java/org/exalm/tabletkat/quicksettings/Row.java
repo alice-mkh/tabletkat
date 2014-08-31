@@ -1,7 +1,6 @@
 package org.exalm.tabletkat.quicksettings;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;

@@ -25,6 +25,7 @@ public class RowFactory {
         classMapping.put("dnd", RowDnd.class);
         classMapping.put("location", RowLocation.class);
         classMapping.put("rotate", RowRotate.class);
+        classMapping.put("settings", RowSettings.class);
         classMapping.put("wifi", RowWifi.class);
         classMapping.put("wifi-switch", RowWifiSwitch.class);
     }

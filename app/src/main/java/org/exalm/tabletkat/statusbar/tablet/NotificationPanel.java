@@ -44,7 +44,6 @@ import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.ViewHelper;
 
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
 public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
@@ -354,7 +353,6 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
         LayoutInflater infl = LayoutInflater.from(getContext());
         LinearLayout l = (LinearLayout)infl.inflate(TkR.layout.system_bar_settings_view, mContentFrame, false);
         mSettingsView = (SettingsView) ViewHelper.replaceView(l, new SettingsView(getContext(), null));
-        mSettingsView.onFinishInflate();
         mSettingsView.setVisibility(View.GONE);
         mContentFrame.addView(mSettingsView);
     }

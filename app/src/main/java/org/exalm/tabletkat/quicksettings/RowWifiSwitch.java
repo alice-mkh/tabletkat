@@ -1,18 +1,12 @@
 package org.exalm.tabletkat.quicksettings;
 
 import android.content.Context;
-import android.content.Intent;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import org.exalm.tabletkat.SystemR;
-import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.statusbar.policy.WifiController;
-
-import de.robv.android.xposed.XposedHelpers;
 
 public class RowWifiSwitch extends RowWifi {
     private WifiController mWifiController;

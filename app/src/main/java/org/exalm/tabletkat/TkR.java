@@ -24,6 +24,7 @@ public class TkR {
         public static int ic_sysbar_ime;
         public static int ic_sysbar_ime_pressed;
         public static int ic_sysbar_location;
+        public static int ic_sysbar_quicksettings;
         public static int ic_sysbar_rotate;
         public static int ic_sysbar_wifi;
     }
@@ -72,9 +73,7 @@ public class TkR {
         public static int row_checkbox;
         public static int row_icon;
         public static int row_label;
-        public static int settings;
         public static int settings_container;
-        public static int settings_label;
         public static int ticker_expanded;
         public static int title_area;
         public static int use_physical_keyboard_label;
@@ -122,6 +121,7 @@ public class TkR {
         drawable.ic_sysbar_ime = add(res, res2, R.drawable.ic_sysbar_ime);
         drawable.ic_sysbar_ime_pressed = add(res, res2, R.drawable.ic_sysbar_ime_pressed);
         drawable.ic_sysbar_location = add(res, res2, R.drawable.ic_sysbar_location);
+        drawable.ic_sysbar_quicksettings = add(res, res2, R.drawable.ic_sysbar_quicksettings);
         drawable.ic_sysbar_rotate = add(res, res2, R.drawable.ic_sysbar_rotate);
         drawable.ic_sysbar_wifi = add(res, res2, R.drawable.ic_sysbar_wifi);
 
@@ -169,8 +169,6 @@ public class TkR {
         id.row_checkbox = add(res, res2, R.id.row_checkbox);
         id.row_icon = add(res, res2, R.id.row_icon);
         id.row_label = add(res, res2, R.id.row_label);
-        id.settings = add(res, res2, R.id.settings);
-        id.settings_label = add(res, res2, R.id.settings_label);
         id.settings_container = add(res, res2, R.id.settings_container);
         id.ticker_expanded = add(res, res2, R.id.ticker_expanded);
         id.title_area = add(res, res2, R.id.title_area);

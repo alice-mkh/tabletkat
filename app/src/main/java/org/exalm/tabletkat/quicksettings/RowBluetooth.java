@@ -8,11 +8,8 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TkR;
-import org.exalm.tabletkat.statusbar.policy.AirplaneModeController;
 import org.exalm.tabletkat.statusbar.policy.BluetoothController;
-import org.exalm.tabletkat.statusbar.policy.DoNotDisturbController;
 
 import de.robv.android.xposed.XposedHelpers;
 

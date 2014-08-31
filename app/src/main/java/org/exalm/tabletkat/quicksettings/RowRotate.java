@@ -31,7 +31,7 @@ public class RowRotate extends Row {
     }
 
     @Override
-    protected void registerControllers(ImageView icon, TextView label, Switch checkbox, View custom) {
+    protected void registerControllers(ImageView icon, TextView label, final Switch checkbox, View custom) {
         mRotationController = new RotationLockController(mContext);
         mRotationController.addRotationLockControllerCallback(
             new RotationLockController.RotationLockControllerCallback() {
@@ -39,6 +39,7 @@ public class RowRotate extends Row {
                 public void onRotationLockStateChanged(boolean locked, boolean visible) {
                     mRow.setVisibility(visible ? View.VISIBLE : View.GONE);
                     mSeparator.setVisibility(visible ? View.VISIBLE : View.GONE);
+                    checkbox.setChecked(!locked);
                 }
             }
         );

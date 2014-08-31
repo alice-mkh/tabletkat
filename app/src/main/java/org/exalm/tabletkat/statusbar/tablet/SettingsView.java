@@ -18,16 +18,10 @@ package org.exalm.tabletkat.statusbar.tablet;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.os.UserHandle;
-import android.provider.Settings;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.exalm.tabletkat.OnPreferenceChangedListener;
-import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.quicksettings.Row;
@@ -36,16 +30,15 @@ import org.exalm.tabletkat.quicksettings.RowFactory;
 import java.util.ArrayList;
 
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedHelpers;
 
-public class SettingsView extends LinearLayout implements View.OnClickListener {
+public class SettingsView extends LinearLayout {
 
     static final String TAG = "SettingsView";
 
     BroadcastReceiver settingsReceiver;
     ArrayList<Row> rows;
 
-    private static String[] defaultRows = new String[]{"airplane", "wifi", "rotate", "brightness", "dnd"};
+    private static String[] defaultRows = new String[]{"airplane", "wifi", "rotate", "brightness", "dnd", "settings"};
 
     public SettingsView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -60,6 +53,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
         LinearLayout container = (LinearLayout) findViewById(TkR.id.settings_container);
         releaseControllers();
         container.removeAllViews();
+        int i = 0;
         for (String s : strings){
             Row row = RowFactory.createRowFromString(getContext(), s);
             if (row == null){
@@ -67,7 +61,11 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
             }
             rows.add(row);
             container.addView(row.getView());
+            if (i >= strings.length - 1){
+                continue;
+            }
             container.addView(row.getSeparator());
+            i++;
         }
     }
 
@@ -76,14 +74,6 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
             row.releaseControllers();
         }
         rows.clear();
-    }
-
-    @Override
-    public void onFinishInflate() {
-        super.onFinishInflate();
-
-        findViewById(TkR.id.settings).setOnClickListener(this);
-        ((TextView) findViewById(TkR.id.settings_label)).setText(SystemR.string.status_bar_settings_settings_button);
     }
 
     @Override
@@ -101,7 +91,7 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
 
             @Override
             public void init(XSharedPreferences pref) {
-                String[] customRows = new String[]{"airplane", "wifi-switch", "rotate", "brightness", "dnd"}; //TODO: Customization UI
+                String[] customRows = new String[]{"wifi", "wifi", "wifi-switch", "wifi-switch", "bluetooth", "bluetooth", "location", "location", "airplane", "airplane", "rotate", "rotate", "brightness", "brightness", "dnd", "dnd", "settings"}; //TODO: Customization UI
                 rebuild(pref.getBoolean("extended_settings", false) ? customRows : defaultRows);
             }
         });
@@ -115,26 +105,6 @@ public class SettingsView extends LinearLayout implements View.OnClickListener {
             getContext().unregisterReceiver(settingsReceiver);
             settingsReceiver = null;
         }
-    }
-
-    public void onClick(View v) {
-        if (v.getId() == TkR.id.settings){
-            onClickSettings();
-        }
-    }
-
-    private Object getStatusBarManager() {
-        return getContext().getSystemService("statusbar");
-    }
-
-    // Settings
-    // ----------------------------
-    private void onClickSettings() {
-        int USER_CURRENT = XposedHelpers.getStaticIntField(UserHandle.class, "USER_CURRENT");
-        Intent i = new Intent(Settings.ACTION_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        UserHandle h = (UserHandle) XposedHelpers.newInstance(UserHandle.class, USER_CURRENT);
-        XposedHelpers.callMethod(getContext(), "startActivityAsUser", i, h);
-        XposedHelpers.callMethod(getStatusBarManager(), "collapsePanels");
     }
 }
 
