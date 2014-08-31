@@ -91,7 +91,7 @@ public class SettingsView extends LinearLayout {
 
             @Override
             public void init(XSharedPreferences pref) {
-                String[] customRows = new String[]{"wifi", "wifi", "wifi-switch", "wifi-switch", "bluetooth", "bluetooth", "location", "location", "airplane", "airplane", "rotate", "rotate", "brightness", "brightness", "dnd", "dnd", "settings"}; //TODO: Customization UI
+                String[] customRows = new String[]{"wifi-switch", "bluetooth", "location", "airplane", "rotate", "brightness", "dnd", "settings"}; //TODO: Customization UI
                 rebuild(pref.getBoolean("extended_settings", false) ? customRows : defaultRows);
             }
         });
