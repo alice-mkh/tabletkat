@@ -23,6 +23,7 @@ public class RowFactory {
         classMapping.put("bluetooth", RowBluetooth.class);
         classMapping.put("brightness", RowBrightness.class);
         classMapping.put("dnd", RowDnd.class);
+        classMapping.put("location", RowLocation.class);
         classMapping.put("rotate", RowRotate.class);
         classMapping.put("wifi", RowWifi.class);
         classMapping.put("wifi-switch", RowWifiSwitch.class);
