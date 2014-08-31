@@ -14,4 +14,6 @@
 
     <string name="accessibility_compatibility_zoom_button">Compatibility zoom button.</string>
     <string name="accessibility_compatibility_zoom_example">Zoom smaller to larger screen.</string>
+
+    <string name="status_bar_settings_bluetooth">Bluetooth</string>
 </resources>

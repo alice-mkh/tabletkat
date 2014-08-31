@@ -20,6 +20,7 @@ public class TkR {
         public static int ic_notification_dnd;
         public static int ic_notification_open;
         public static int ic_sysbar_airplane_on;
+        public static int ic_sysbar_bluetooth;
         public static int ic_sysbar_ime;
         public static int ic_sysbar_ime_pressed;
         public static int ic_sysbar_rotate_on;
@@ -94,6 +95,7 @@ public class TkR {
         public static int notifications_off_text;
         public static int notifications_off_title;
         public static int status_bar_date_formatter;
+        public static int status_bar_settings_bluetooth;
     }
 
     public static void init(XResources res, XModuleResources res2) {
@@ -114,6 +116,7 @@ public class TkR {
         drawable.ic_notification_dnd = add(res, res2, R.drawable.ic_notification_dnd);
         drawable.ic_notification_open = add(res, res2, R.drawable.ic_notification_open);
         drawable.ic_sysbar_airplane_on = add(res, res2, R.drawable.ic_sysbar_airplane_on);
+        drawable.ic_sysbar_bluetooth = add(res, res2, R.drawable.ic_sysbar_bluetooth);
         drawable.ic_sysbar_ime = add(res, res2, R.drawable.ic_sysbar_ime);
         drawable.ic_sysbar_ime_pressed = add(res, res2, R.drawable.ic_sysbar_ime_pressed);
         drawable.ic_sysbar_rotate_on = add(res, res2, R.drawable.ic_sysbar_rotate_on);
@@ -185,6 +188,7 @@ public class TkR {
         string.notifications_off_text = add(res, res2, R.string.notifications_off_text);
         string.notifications_off_title = add(res, res2, R.string.notifications_off_title);
         string.status_bar_date_formatter = add(res, res2, R.string.status_bar_date_formatter);
+        string.status_bar_settings_bluetooth = add(res, res2, R.string.status_bar_settings_bluetooth);
     }
 
     private static int add(XResources res, XModuleResources res2, int id){

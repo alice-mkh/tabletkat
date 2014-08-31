@@ -20,6 +20,7 @@ public class RowFactory {
     static {
         classMapping = new HashMap<String, Class>();
         classMapping.put("airplane", RowAirplane.class);
+        classMapping.put("bluetooth", RowBluetooth.class);
         classMapping.put("brightness", RowBrightness.class);
         classMapping.put("dnd", RowDnd.class);
         classMapping.put("rotate", RowRotate.class);
