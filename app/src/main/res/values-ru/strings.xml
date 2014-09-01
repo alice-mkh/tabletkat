@@ -1,0 +1,24 @@
+<resources>
+    <!--Strings from settings activity-->
+
+    <string name="pref_header_general">Основное</string>
+
+    <string name="pref_title_enable_tablet_ui">Планшетный интерфейс</string>
+    <string name="pref_summary_enable_tablet_ui">Использовать старый планшетный интерфейс (Требует перезагрузки)</string>
+
+    <string name="pref_title_enable_mod_recents">Планшетный экран недавних</string>
+    <string name="pref_summary_enable_mod_recents">Переместить Недавние налево (Требует перезагрузки)</string>
+
+    <string name="pref_title_extended_settings">Расширенные быстрые настройки</string>
+    <string name="pref_summary_extended_settings">Разрешить дополнительные пункты в быстрых настройках</string>
+
+    <string name="pref_title_ics_clock_font">Старый шрифт часов</string>
+    <string name="pref_summary_ics_clock_font">Использовать особый шрифт для часов</string>
+
+    <string name="pref_title_battery_percents">Проценты батареи</string>
+
+    <string name="pref_title_enable_mod_settings">Двухпанельные настройки (Только для больших экранов)</string>
+    <string name="pref_summary_enable_mod_settings">Включить двухпанельный режим в приложении настроек</string>
+
+    <string name="message_reboot">Перезагрузите устройство для применения изменений</string>
+</resources>

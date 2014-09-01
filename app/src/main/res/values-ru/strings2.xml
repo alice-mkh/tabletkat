@@ -1,0 +1,19 @@
+<resources>
+    <!-- Strings for SystemUI -->
+
+    <string name="compat_mode_on">Подогнать по размерам экрана</string>
+
+    <string name="compat_mode_off">Растянуть на весь экран</string>
+
+    <string name="notifications_off_title">Уведомления отключены</string>
+    <string name="notifications_off_text">Нажмите здесь, чтобы снова включить уведомления.</string>
+
+    <string name="compat_mode_help_header">Масштаб и совместимость</string>
+
+    <string name="compat_mode_help_body">Если приложение рассчитано на экран меньших размеров, рядом с часами появятся средства масштабирования.</string>
+
+    <string name="accessibility_compatibility_zoom_button">Кнопка масштабирования (режим совместимости)</string>
+    <string name="accessibility_compatibility_zoom_example">Уменьшение изображения для увеличения свободного места на экране.</string>
+
+    <string name="status_bar_settings_location">Местоположение</string>
+</resources>
