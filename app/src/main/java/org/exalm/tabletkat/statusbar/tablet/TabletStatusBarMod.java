@@ -687,14 +687,16 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     }
 
     public void setClockFont(TextView clock, boolean useOldFont){
+        DisplayMetrics d = getContext().getResources().getDisplayMetrics();
+
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) clock.getLayoutParams();
         if (useOldFont){
-            params.setMarginStart(8);
-            params.bottomMargin = 3;
+            params.setMarginStart((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, d));
+            params.bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, d);
             clock.setTypeface(Typeface.createFromFile("/system/fonts/AndroidClock_Solid.ttf"));
             clock.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 40);
         }else{
-            params.setMarginStart(6);
+            params.setMarginStart((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, d));
             params.bottomMargin = 0;
             clock.setTypeface(Typeface.DEFAULT);
             clock.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 30);
