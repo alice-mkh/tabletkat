@@ -37,15 +37,6 @@ public class MultiPaneSettingsMod implements IMod {
         Class manageApplicationsClass = XposedHelpers.findClass("com.android.settings.applications.ManageApplications", cl);
         Class manageApplicationsTabInfoClass = XposedHelpers.findClass("com.android.settings.applications.ManageApplications.TabInfo", cl);
         final Class settingsClass = XposedHelpers.findClass("com.android.settings.Settings", cl);
-        Class statusClass = XposedHelpers.findClass("com.android.settings.deviceinfo.Status", cl);
-
-        XposedHelpers.findAndHookMethod(statusClass,  "onCreate", Bundle.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                Activity a = (Activity) param.thisObject;
-                a.setTheme(android.R.style.Theme_DeviceDefault);
-            }
-        });
 
         XposedHelpers.findAndHookMethod(settingsClass , "onCreate", Bundle.class, new XC_MethodHook() {
             @Override
