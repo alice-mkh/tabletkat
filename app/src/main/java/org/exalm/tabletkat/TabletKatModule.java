@@ -130,6 +130,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
             Class c = findClass("com.sonymobile.systemui.statusbar.BatteryImage", loadPackageParam.classLoader);
             mBatteryMeterViewClass = c;
         }catch (ClassNotFoundError e){
+            XposedBridge.log(e);
             //Ok, it's not Xperia
             mBatteryMeterViewClass = findClass("com.android.systemui.BatteryMeterView", loadPackageParam.classLoader);
         }
@@ -198,7 +199,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 
     private boolean checkIsDisabled() {
         pref.reload();
-        return !pref.getBoolean("enable_tablet_ui", false);
+        return !pref.getBoolean("enable_tablet_ui", true);
     }
 
     private Object createStatusBar(String clsName, Context mContext, Object mComponents) {
