@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Display;
 
 import org.exalm.tabletkat.recent.TabletRecentsMod;
+import org.exalm.tabletkat.settings.MultiPaneSettingsMod;
 import org.exalm.tabletkat.statusbar.tablet.TabletStatusBarMod;
 
 import java.lang.reflect.InvocationTargetException;
@@ -31,9 +32,11 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     public static final boolean DEBUG = true;
 
     public static final String SYSTEMUI_PACKAGE = "com.android.systemui";
+    public static final String SETTINGS_PACKAGE = "com.android.settings";
 
     private static TabletStatusBarMod statusBarMod;
     private static TabletRecentsMod recentsMod;
+    private static MultiPaneSettingsMod settingsMod;
 
     public static Class mActivityManagerNativeClass;
     public static Class mBaseStatusBarClass;
@@ -98,6 +101,15 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 
     @Override
     public void handleLoadPackage(LoadPackageParam loadPackageParam) throws Throwable {
+        if (loadPackageParam.packageName.equals(SETTINGS_PACKAGE)){
+            if (settingsMod == null){
+                settingsMod = new MultiPaneSettingsMod();
+            }
+            if (isModEnabled("settings")) {
+                settingsMod.addHooks(loadPackageParam.classLoader);
+            }
+            return;
+        }
         if (!loadPackageParam.packageName.equals(SYSTEMUI_PACKAGE)){
             return;
         }
@@ -214,6 +226,22 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam initPackageResourcesParam) throws Throwable {
+        if (initPackageResourcesParam.packageName.equals(SETTINGS_PACKAGE)){
+            if (settingsMod == null){
+                settingsMod = new MultiPaneSettingsMod();
+            }
+            final XResources res = initPackageResourcesParam.res;
+            SystemR.init(res);
+
+            XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, initPackageResourcesParam.res);
+
+            TkR.init(res, res2);
+
+            if (isModEnabled("settings")) {
+                settingsMod.initResources(res, res2);
+            }
+            return;
+        }
         if (!initPackageResourcesParam.packageName.equals(SYSTEMUI_PACKAGE)){
             return;
         }

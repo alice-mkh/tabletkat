@@ -42,4 +42,10 @@
         android:summary="@string/pref_summary_extended_settings"
         android:dependency="enable_tablet_ui"
         android:defaultValue="false" />
+
+    <SwitchPreference
+        android:key="enable_mod_settings"
+        android:title="@string/pref_title_enable_mod_settings"
+        android:summary="@string/pref_summary_enable_mod_settings"
+        android:defaultValue="true" />
 </PreferenceScreen>

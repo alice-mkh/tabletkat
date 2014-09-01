@@ -19,5 +19,8 @@
 
     <string name="pref_title_battery_percents">Show battery percents</string>
 
+    <string name="pref_title_enable_mod_settings">Multi-pane settings</string>
+    <string name="pref_summary_enable_mod_settings">Enable multi-pane mode in the Settings app</string>
+
     <string name="message_reboot">Reboot to apply the changes</string>
 </resources>
