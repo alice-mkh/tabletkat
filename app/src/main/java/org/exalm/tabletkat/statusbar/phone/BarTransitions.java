@@ -39,6 +39,8 @@ public class BarTransitions {
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_COLORS = false;
 
+    public static final boolean HIGH_END = (Boolean) XposedHelpers.callStaticMethod(ActivityManager.class, "isHighEndGfx");
+
     public static final int MODE_OPAQUE = 0;
     public static final int MODE_SEMI_TRANSPARENT = 1;
     public static final int MODE_TRANSLUCENT = 2;
@@ -50,7 +52,6 @@ public class BarTransitions {
 
     private final String mTag;
     private final View mView;
-    private final boolean mSupportsTransitions;
     private final BarBackgroundDrawable mBarBackground;
 
     private int mMode;
@@ -60,11 +61,10 @@ public class BarTransitions {
         mView = view;
         mBarBackground = new BarBackgroundDrawable(mView.getContext(), gradientResourceId);
         reloadBackground();
-        mSupportsTransitions = (Boolean) XposedHelpers.callStaticMethod(ActivityManager.class, "isHighEndGfx");
     }
 
     public void reloadBackground(){
-        if (mSupportsTransitions) {
+        if (HIGH_END) {
             mView.setBackground(mBarBackground);
         }
     }
@@ -74,18 +74,23 @@ public class BarTransitions {
     }
 
     public void transitionTo(int mode, boolean animate) {
+        // low-end devices do not support translucent modes, fallback to opaque
+        if (!HIGH_END && (mode == MODE_SEMI_TRANSPARENT || mode == MODE_TRANSLUCENT)) {
+            mode = MODE_OPAQUE;
+        }
+
         if (mMode == mode) return;
         int oldMode = mMode;
         mMode = mode;
         if (DEBUG) Log.d(mTag, String.format("%s -> %s animate=%s",
                 modeToString(oldMode), modeToString(mode),  animate));
-        if (mSupportsTransitions) {
-            onTransition(oldMode, mMode, animate);
-        }
+        onTransition(oldMode, mMode, animate);
     }
 
     protected void onTransition(int oldMode, int newMode, boolean animate) {
-        applyModeBackground(oldMode, newMode, animate);
+        if (HIGH_END) {
+            applyModeBackground(oldMode, newMode, animate);
+        }
     }
 
     protected void applyModeBackground(int oldMode, int newMode, boolean animate) {
