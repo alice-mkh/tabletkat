@@ -1,0 +1,21 @@
+<resources>
+    <!--Strings from settings activity-->
+
+    <string name="pref_title_enable_tablet_ui">Activar tablet UI</string>
+    <string name="pref_summary_enable_tablet_ui">Utilice el modo tablet viejo (Requiere reiniciar)</string>
+
+    <string name="pref_title_enable_mod_recents">Activar tablet recents</string>
+    <string name="pref_summary_enable_mod_recents">Pin recientes a la izquierda (Requiere reiniciar)</string>
+
+    <string name="pref_title_extended_settings">Ajustes rápidos extendidos</string>
+    <string name="pref_summary_extended_settings">Permitir funciones adicionales en el panel de configuración</string>
+
+    <string name="pref_summary_ics_clock_font">Use una fuente especial para el reloj</string>
+
+    <string name="pref_title_battery_percents">Muestra el porcentaje de bateria</string>
+
+    <string name="pref_title_enable_mod_settings">Habilitar la configuración de múltiples paneles (Solo pantallas amplias)</string>
+    <string name="pref_summary_enable_mod_settings">Activar el modo multi-panel en la aplicación de configuración</string>
+
+    <string name="message_reboot">Reinicie para aplicar los cambios</string>
+</resources>

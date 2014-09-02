@@ -1,0 +1,20 @@
+<resources>
+    <!-- Strings for SystemUI -->
+
+    <string name="compat_mode_on">Aplicar zoom para llenar la pantalla</string>
+
+    <string name="compat_mode_off">Estire para llenar la pantalla</string>
+
+    <string name="notifications_off_title">Notificaciones off</string>
+    <string name="notifications_off_text">Toque aquí para activar las notificaciones de nuevo.</string>
+
+    <string name="compat_mode_help_header">Compatibilidad zoom</string>
+
+    <string name="compat_mode_help_body">Cuando una aplicación se ha diseñado para una pantalla más pequeña, un control de zoom aparecerá en el reloj.</string>
+
+    <string name="accessibility_compatibility_zoom_button">Botón de zoom de compatibilidad.</string>
+    <string name="accessibility_compatibility_zoom_example">Zoom más pequeña a la pantalla grande.</string>
+
+    <string name="status_bar_settings_bluetooth">Bluetooth</string>
+    <string name="status_bar_settings_location">Ubicación</string>
+</resources>
