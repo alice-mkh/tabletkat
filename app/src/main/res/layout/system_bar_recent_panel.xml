@@ -39,7 +39,7 @@
             android:id="@+id/recents_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/status_bar_recents_right_glow_margin"
+            android:layout_marginEnd="@dimen/system_bar_recents_right_glow_margin"
             android:divider="@null"
             android:stackFromBottom="true"
             android:fadingEdge="none"

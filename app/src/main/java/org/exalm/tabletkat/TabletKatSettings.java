@@ -49,13 +49,6 @@ public class TabletKatSettings extends PreferenceActivity {
                 return true;
             }
         });
-        findPreference("enable_mod_recents").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Toast.makeText(TabletKatSettings.this, getString(R.string.message_reboot), Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
         setUpPreferenceChangeListener(findPreference("extended_settings"));
         setUpPreferenceChangeListener(findPreference("ics_clock_font"));
         setUpPreferenceChangeListener(findPreference("battery_percents"));
@@ -147,13 +140,6 @@ public class TabletKatSettings extends PreferenceActivity {
             addPreferencesFromResource(R.xml.pref_general);
 
             findPreference("enable_tablet_ui").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    Toast.makeText(getActivity(), getString(R.string.message_reboot), Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-            });
-            findPreference("enable_mod_recents").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     Toast.makeText(getActivity(), getString(R.string.message_reboot), Toast.LENGTH_SHORT).show();

@@ -14,7 +14,7 @@ public class TkR {
         public static int system_bar_icon_padding;
         public static int system_bar_navigation_key_width;
         public static int system_bar_navigation_menu_key_width;
-        public static int status_bar_recents_thumbnail_width;
+        public static int system_bar_recents_thumbnail_width;
     }
     public static class drawable {
         public static int ic_notification_dnd;
@@ -86,6 +86,7 @@ public class TkR {
         public static int system_bar_input_methods_panel;
         public static int system_bar_notification_panel;
         public static int system_bar_recent_item;
+        public static int system_bar_recent_panel;
         public static int system_bar_settings_row;
         public static int system_bar_settings_view;
         public static int system_bar_ticker_compat;
@@ -112,7 +113,7 @@ public class TkR {
         dimen.system_bar_icon_padding = add(res, res2, R.dimen.system_bar_icon_padding);
         dimen.system_bar_navigation_key_width = add(res, res2, R.dimen.system_bar_navigation_key_width);
         dimen.system_bar_navigation_menu_key_width = add(res, res2, R.dimen.system_bar_navigation_menu_key_width);
-        dimen.status_bar_recents_thumbnail_width = add(res, res2, R.dimen.status_bar_recents_thumbnail_width);
+        dimen.system_bar_recents_thumbnail_width = add(res, res2, R.dimen.system_bar_recents_thumbnail_width);
 
         drawable.ic_notification_dnd = add(res, res2, R.drawable.ic_notification_dnd);
         drawable.ic_notification_open = add(res, res2, R.drawable.ic_notification_open);
@@ -181,6 +182,7 @@ public class TkR {
         layout.system_bar_input_methods_panel = add(res, res2, R.layout.system_bar_input_methods_panel);
         layout.system_bar_notification_panel = add(res, res2, R.layout.system_bar_notification_panel);
         layout.system_bar_recent_item = add(res, res2, R.layout.system_bar_recent_item);
+        layout.system_bar_recent_panel = add(res, res2, R.layout.system_bar_recent_panel);
         layout.system_bar_settings_row = add(res, res2, R.layout.system_bar_settings_row);
         layout.system_bar_settings_view = add(res, res2, R.layout.system_bar_settings_view);
         layout.system_bar_ticker_compat = add(res, res2, R.layout.system_bar_ticker_compat);

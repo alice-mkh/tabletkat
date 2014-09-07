@@ -9,7 +9,7 @@
     <string name="pref_summary_enable_tablet_ui">Use older tablet mode (Requires reboot)</string>
 
     <string name="pref_title_enable_mod_recents">Enable tablet recents</string>
-    <string name="pref_summary_enable_mod_recents">Pin Recents to the left (Requires reboot)</string>
+    <string name="pref_summary_enable_mod_recents">Pin Recents to the left</string>
 
     <string name="pref_title_extended_settings">Extended quick settings</string>
     <string name="pref_summary_extended_settings">Allow additional features in the settings pane</string>

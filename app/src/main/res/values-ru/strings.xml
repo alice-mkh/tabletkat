@@ -7,7 +7,7 @@
     <string name="pref_summary_enable_tablet_ui">Использовать старый планшетный интерфейс (Требует перезагрузки)</string>
 
     <string name="pref_title_enable_mod_recents">Планшетный экран недавних</string>
-    <string name="pref_summary_enable_mod_recents">Переместить Недавние налево (Требует перезагрузки)</string>
+    <string name="pref_summary_enable_mod_recents">Переместить Недавние налево</string>
 
     <string name="pref_title_extended_settings">Расширенные быстрые настройки</string>
     <string name="pref_summary_extended_settings">Разрешить дополнительные пункты в быстрых настройках</string>

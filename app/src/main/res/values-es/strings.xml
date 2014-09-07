@@ -5,7 +5,7 @@
     <string name="pref_summary_enable_tablet_ui">Utilice el modo tablet viejo (Requiere reiniciar)</string>
 
     <string name="pref_title_enable_mod_recents">Activar tablet recents</string>
-    <string name="pref_summary_enable_mod_recents">Pin recientes a la izquierda (Requiere reiniciar)</string>
+    <string name="pref_summary_enable_mod_recents">Pin recientes a la izquierda</string>
 
     <string name="pref_title_extended_settings">Ajustes rápidos extendidos</string>
     <string name="pref_summary_extended_settings">Permitir funciones adicionales en el panel de configuración</string>
