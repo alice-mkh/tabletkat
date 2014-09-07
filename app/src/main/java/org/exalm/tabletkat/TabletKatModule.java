@@ -79,8 +79,11 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     private static boolean mIsTabletConfiguration = true;
     private static Boolean mHasNavigationBar;
 
+    public static TabletKatModule self;
+
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
+        self = this;
         MODULE_PATH = startupParam.modulePath;
         pref = new XSharedPreferences("org.exalm.tabletkat");
         pref.makeWorldReadable();
@@ -185,8 +188,9 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         mBatteryControllerClass = findClass("com.android.systemui.statusbar.policy.BatteryController", loadPackageParam.classLoader);
         //Xperia custom battery meter
         try{
-            Class c = findClass("com.sonymobile.systemui.statusbar.BatteryImage", loadPackageParam.classLoader);
-            mBatteryMeterViewClass = c;
+//            Class c = findClass("com.sonymobile.systemui.statusbar.BatteryImage", loadPackageParam.classLoader);
+//            mBatteryMeterViewClass = c;
+            mBatteryMeterViewClass = findClass("com.android.systemui.BatteryMeterView", loadPackageParam.classLoader);
         }catch (ClassNotFoundError e){
             XposedBridge.log(e);
             //Ok, it's not Xperia

@@ -65,6 +65,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.exalm.tabletkat.CustomDimenReplacement;
 import org.exalm.tabletkat.OnPreferenceChangedListener;
 import org.exalm.tabletkat.R;
 import org.exalm.tabletkat.StatusBarManager;
@@ -715,10 +716,14 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         ViewStub cluster = new ViewStub(mLargeIconContext);
         ViewHelper.replaceView(f.getChildAt(0), cluster);
         cluster.setLayoutResource(SystemR.layout.signal_cluster_view);
-        cluster.inflate();
+        try {
+            cluster.inflate();
+        }catch (Throwable t){
+            XposedBridge.log(t);
+        }
 
         ViewHelper.replaceView(v, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mLargeIconContext));
-        ViewHelper.replaceView(v, TkR.id.battery_text, (View) new BatteryPercentView(mContext));
+        ViewHelper.replaceView(v, TkR.id.battery_text, new BatteryPercentView(mContext));
         final BatteryPercentView percent = (BatteryPercentView) v.findViewById(TkR.id.battery_text);
         percent.attach(v.findViewById(SystemR.id.battery));
         percent.setTextColor(mContext.getResources().getColor(SystemR.color.status_bar_clock_color));
@@ -765,6 +770,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             }
 
             view.addView(button);
+            XposedBridge.log(mContext.getString(descriptions[i]));
         }
 
         ((ImageView) v.findViewById(TkR.id.dot0)).setImageResource(SystemR.drawable.ic_sysbar_lights_out_dot_small);
@@ -2212,20 +2218,39 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             checkBarModes();
         }};
 
+    private void replaceDimen(final XResources res, final XModuleResources res2, final int id, final String str, final boolean inline){
+        final float orig = inline ? 0 :
+                res.getDimension(res.getIdentifier(str, "dimen", TabletKatModule.SYSTEMUI_PACKAGE));
+        res.setReplacement(TabletKatModule.SYSTEMUI_PACKAGE, "dimen", str, new CustomDimenReplacement() {
+                @Override
+                protected float getValue() {
+                    if (mIsTv){
+                        return res2.getDimension(id);
+                    }
+                    return !inline ? orig :
+                            res.getDimension(res.getIdentifier(str, "dimen", TabletKatModule.SYSTEMUI_PACKAGE));
+                }
+            }
+        );
+    }
+
     @Override
-    public void initResources(XResources res, final XModuleResources res2) {
+    public void initResources(final XResources res, final XModuleResources res2) {
         super.initResources(res, res2);
 
-        res.setReplacement(TabletKatModule.SYSTEMUI_PACKAGE, "dimen", "status_bar_icon_drawing_size", res2.fwd(R.dimen.system_bar_icon_drawing_size));
-
-        res.setReplacement(TabletKatModule.SYSTEMUI_PACKAGE, "dimen", "navbar_search_panel_height", res2.fwd(R.dimen.navbar_search_panel_height));
-        res.setReplacement(TabletKatModule.SYSTEMUI_PACKAGE, "dimen", "navbar_search_outerring_diameter", res2.fwd(R.dimen.navbar_search_outerring_diameter));
-        res.setReplacement(TabletKatModule.SYSTEMUI_PACKAGE, "dimen", "navbar_search_outerring_radius", res2.fwd(R.dimen.navbar_search_outerring_radius));
+        replaceDimen(res, res2, R.dimen.system_bar_icon_drawing_size, "status_bar_icon_drawing_size", false);
+        replaceDimen(res, res2, R.dimen.navbar_search_panel_height, "navbar_search_panel_height", true);
+        replaceDimen(res, res2, R.dimen.navbar_search_outerring_diameter, "navbar_search_outerring_diameter", true);
+        replaceDimen(res, res2, R.dimen.navbar_search_outerring_radius, "navbar_search_outerring_radius", true);
 
         //Fixing Google Now ring. We have to rotate it for landscape handsets and to move to the left for everything
         res.hookLayout(TabletKatModule.SYSTEMUI_PACKAGE, "layout", "status_bar_search_panel", new XC_LayoutInflated() {
             @Override
             public void handleLayoutInflated(LayoutInflatedParam param) throws Throwable {
+                if (!mIsTv){
+                    return;
+                }
+
                 ViewGroup v = (ViewGroup) param.view;
                 int glow_pad_view = param.res.getIdentifier("glow_pad_view", "id", TabletKatModule.SYSTEMUI_PACKAGE);
                 int search_bg_protect = param.res.getIdentifier("search_bg_protect", "id", TabletKatModule.SYSTEMUI_PACKAGE);
