@@ -17,7 +17,7 @@
 
     <string name="pref_title_battery_percents">Проценты батареи</string>
 
-    <string name="pref_title_enable_mod_settings">Двухпанельные настройки (Только для больших экранов)</string>
+    <string name="pref_title_enable_mod_settings">Двухпанельные настройки</string>
     <string name="pref_summary_enable_mod_settings">Включить двухпанельный режим в приложении настроек</string>
 
     <string name="message_reboot">Перезагрузите устройство для применения изменений</string>

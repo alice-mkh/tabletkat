@@ -14,7 +14,7 @@
 
     <string name="pref_title_battery_percents">Muestra el porcentaje de bateria</string>
 
-    <string name="pref_title_enable_mod_settings">Habilitar la configuración de múltiples paneles (Solo pantallas amplias)</string>
+    <string name="pref_title_enable_mod_settings">Habilitar la configuración de múltiples paneles</string>
     <string name="pref_summary_enable_mod_settings">Activar el modo multi-panel en la aplicación de configuración</string>
 
     <string name="message_reboot">Reinicie para aplicar los cambios</string>

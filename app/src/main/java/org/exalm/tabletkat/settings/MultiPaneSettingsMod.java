@@ -170,6 +170,6 @@ public class MultiPaneSettingsMod implements IMod {
     }
 
     private boolean isMultiPane(Resources r){
-        return r.getBoolean(com.android.internal.R.bool.preferences_prefer_dual_pane); //TODO
+        return true;//r.getBoolean(com.android.internal.R.bool.preferences_prefer_dual_pane); //TODO
     }
 }
