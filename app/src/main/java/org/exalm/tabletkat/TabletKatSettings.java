@@ -1,5 +1,6 @@
 package org.exalm.tabletkat;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -42,13 +43,7 @@ public class TabletKatSettings extends PreferenceActivity {
 //        getPreferenceScreen().addPreference(fakeHeader);
 //        addPreferencesFromResource(R.xml.pref_notification);
 
-        findPreference("enable_tablet_ui").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Toast.makeText(TabletKatSettings.this, getString(R.string.message_reboot), Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
+        setUpPreferenceChangeListener(findPreference("enable_tablet_ui"));
         setUpPreferenceChangeListener(findPreference("extended_settings"));
         setUpPreferenceChangeListener(findPreference("ics_clock_font"));
         setUpPreferenceChangeListener(findPreference("battery_percents"));
@@ -139,13 +134,7 @@ public class TabletKatSettings extends PreferenceActivity {
             getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
             addPreferencesFromResource(R.xml.pref_general);
 
-            findPreference("enable_tablet_ui").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    Toast.makeText(getActivity(), getString(R.string.message_reboot), Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-            });
+            setUpPreferenceChangeListener(findPreference("enable_tablet_ui"));
             setUpPreferenceChangeListener(findPreference("extended_settings"));
             setUpPreferenceChangeListener(findPreference("ics_clock_font"));
             setUpPreferenceChangeListener(findPreference("battery_percents"));

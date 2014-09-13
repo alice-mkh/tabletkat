@@ -2086,6 +2086,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                     mWindowManager.removeViewImmediate(mStatusBarView);
                 }
                 mContext.unregisterReceiver(mBroadcastReceiver);
+                reset();
             }
         });
         XposedHelpers.findAndHookMethod(TabletKatModule.mDateViewClass, "updateClock", new XC_MethodReplacement() {

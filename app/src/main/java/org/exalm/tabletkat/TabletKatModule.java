@@ -1,5 +1,7 @@
 package org.exalm.tabletkat;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +10,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
+import android.os.Handler;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.DisplayInfo;
 
@@ -79,7 +81,11 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     private static boolean mIsTabletConfiguration = true;
     private static Boolean mHasNavigationBar;
 
+    private static Object mSystemUI;
+
     public static TabletKatModule self;
+    private static BroadcastReceiver mReceiver;
+    private static Configuration mConfiguration;
 
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
@@ -93,7 +99,6 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         findAndHookMethod(c, "getNonDecorDisplayWidth", int.class, int.class, int.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                XposedBridge.log("shouldUseTabletUI: " + shouldUseTabletUI());
                 setNavigationBarProperties(methodHookParam, shouldUseTabletUI());
                 if (shouldUseTabletUI()) {
                     int fullWidth = (Integer) methodHookParam.args[0];
@@ -232,7 +237,11 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
                 Context mContext = (Context) getObjectField(self, "mContext");
                 Object mComponents = getObjectField(self, "mComponents");
 
-                if (DEBUG) Log.d(TAG, "createStatusBarFromConfig");
+                mSystemUI = self;
+                mConfiguration = mContext.getResources().getConfiguration();
+                refreshReceiver(mContext);
+
+                debug("createStatusBarFromConfig");
                 String clsName = "com.android.systemui.statusbar.tv.TvStatusBar";
 
                 if (!shouldUseTabletUI() || clsName == null || clsName.length() == 0) {
@@ -249,8 +258,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         findAndHookMethod(systemBarsClass, "onConfigurationChanged", Configuration.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                Configuration c = (Configuration) methodHookParam.args[0];
-                Object self = methodHookParam.thisObject;
+                mConfiguration = (Configuration) methodHookParam.args[0];
+                final Object self = methodHookParam.thisObject;
                 Object mStatusBar = getObjectField(self, "mStatusBar");
 
                 if (mStatusBar != null) {
@@ -258,10 +267,18 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
                     boolean shouldUseTabletUI = shouldUseTabletUI();
                     mIsTabletConfiguration = true; //TODO: Add additional modes
                     if (isTabletUI != shouldUseTabletUI){
-                        callMethod(self, "onServiceStartAttempt");
-                        callMethod(self, "createStatusBarFromConfig");
+                        long l = (Long) callMethod(mSystemUI, "onServiceStartAttempt");
+                        Handler h = new Handler(){};
+                        h.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                callMethod(mSystemUI, "createStatusBarFromConfig");
+                                Object mStatusBar = getObjectField(self, "mStatusBar");
+                                callMethod(mStatusBar, "onConfigurationChanged", mConfiguration);
+                            }
+                        }, l);
                     }else {
-                        callMethod(mStatusBar, "onConfigurationChanged", c);
+                        callMethod(mStatusBar, "onConfigurationChanged", mConfiguration);
                     }
                 }
                 return null;
@@ -299,7 +316,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         statusBarMod.init(mStatusBar);
         if (mStatusBar != null) {
             callMethod(mStatusBar, "start");
-            if (DEBUG) Log.d(TAG, "started " + mStatusBar.getClass().getSimpleName());
+            debug("started " + mStatusBar.getClass().getSimpleName());
         }
         return mStatusBar;
     }
@@ -376,6 +393,44 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         l.init(pref);
         c.registerReceiver(r, f);
         return r;
+    }
+
+    private void refreshReceiver(Context c){
+        if (mReceiver == null){
+            mReceiver = registerReceiver(c, new OnPreferenceChangedListener(){
+                @Override
+                public void onPreferenceChanged(String key, boolean value) {
+                    if (key.equals("enable_tablet_ui")){
+                        refreshSystemUI(value);
+                    }
+                }
+
+                @Override
+                public void onPreferenceChanged(String key, int value) {
+
+                }
+
+                @Override
+                public void init(XSharedPreferences pref) {
+
+                }
+            });
+        }
+    }
+
+    public static void refreshSystemUI(boolean flag){
+        if (mSystemUI == null) {
+            return;
+        }
+
+        long l = (Long) callMethod(mSystemUI, "onServiceStartAttempt");
+        Handler h = new Handler(){};
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                callMethod(mSystemUI, "createStatusBarFromConfig");
+            }
+        }, l);
     }
 
     public static Object invokeOriginalMethod(XC_MethodHook.MethodHookParam param) throws IllegalAccessException, InvocationTargetException{
