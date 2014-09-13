@@ -6,7 +6,7 @@
     <string name="pref_header_general">General</string>
 
     <string name="pref_title_enable_tablet_ui">Enable tablet UI</string>
-    <string name="pref_summary_enable_tablet_ui">Use older tablet mode (Requires reboot)</string>
+    <string name="pref_summary_enable_tablet_ui">Use older tablet mode</string>
 
     <string name="pref_title_enable_mod_recents">Enable tablet recents</string>
     <string name="pref_summary_enable_mod_recents">Pin Recents to the left</string>
