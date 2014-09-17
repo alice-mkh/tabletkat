@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="launcher2_cell_count_x">5</integer>
+    <integer name="launcher2_cell_count_y">4</integer>
+</resources>

@@ -22,5 +22,8 @@
     <string name="pref_title_enable_mod_settings">Enable multi-pane settings</string>
     <string name="pref_summary_enable_mod_settings">Enable multi-pane mode in the Settings app</string>
 
+    <string name="pref_title_enable_mod_launcher">Enable tablet launcher layout</string>
+    <string name="pref_summary_enable_mod_launcher">Launcher2 (Nexus 10 default) only</string>
+
     <string name="message_reboot">Reboot to apply the changes</string>
 </resources>

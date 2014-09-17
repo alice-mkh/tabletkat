@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="launcher2_cell_layout_left_padding_port">8dp</dimen>
+    <dimen name="launcher2_cell_layout_left_padding_land">8dp</dimen>
+    <dimen name="launcher2_cell_layout_right_padding_port">8dp</dimen>
+    <dimen name="launcher2_cell_layout_right_padding_land">8dp</dimen>
+    <dimen name="launcher2_cell_layout_top_padding_port">8dp</dimen>
+    <dimen name="launcher2_cell_layout_top_padding_land">8dp</dimen>
+    <dimen name="launcher2_cell_layout_bottom_padding_port">8dp</dimen>
+    <dimen name="launcher2_cell_layout_bottom_padding_land">8dp</dimen>
+</resources>

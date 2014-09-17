@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="launcher2_workspace_width_gap_land">0dp</dimen>
+    <dimen name="launcher2_workspace_width_gap_port">0dp</dimen>
+    <dimen name="launcher2_workspace_height_gap_land">0dp</dimen>
+    <dimen name="launcher2_workspace_height_gap_port">8dp</dimen>
+</resources>

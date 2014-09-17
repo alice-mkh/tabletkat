@@ -63,4 +63,24 @@
 
     <!-- Height of search panel including navigation bar height -->
     <dimen name="navbar_search_panel_height">280dip</dimen>
+
+    <dimen name="launcher2_cell_layout_left_padding_port">0dp</dimen>
+    <dimen name="launcher2_cell_layout_left_padding_land">0dp</dimen>
+    <dimen name="launcher2_cell_layout_right_padding_port">0dp</dimen>
+    <dimen name="launcher2_cell_layout_right_padding_land">0dp</dimen>
+    <dimen name="launcher2_cell_layout_top_padding_port">6dp</dimen>
+    <dimen name="launcher2_cell_layout_top_padding_land">0dp</dimen>
+    <dimen name="launcher2_cell_layout_bottom_padding_port">0dp</dimen>
+    <dimen name="launcher2_cell_layout_bottom_padding_land">0dp</dimen>
+
+    <dimen name="launcher2_qsb_bar_height">56dp</dimen>
+    <dimen name="launcher2_qsb_bar_height_inset">37dp</dimen>
+    <dimen name="launcher2_search_bar_height">40dp</dimen>
+
+    <dimen name="launcher2_workspace_top_padding">36dp</dimen>
+
+    <dimen name="launcher2_workspace_width_gap_land">0dp</dimen>
+    <dimen name="launcher2_workspace_width_gap_port">0dp</dimen>
+    <dimen name="launcher2_workspace_height_gap_land">0dp</dimen>
+    <dimen name="launcher2_workspace_height_gap_port">0dp</dimen>
 </resources>

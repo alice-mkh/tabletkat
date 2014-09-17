@@ -1,7 +1,5 @@
 package org.exalm.tabletkat;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.DisplayInfo;
 
+import org.exalm.tabletkat.launcher.LauncherMod;
 import org.exalm.tabletkat.recent.TabletRecentsMod;
 import org.exalm.tabletkat.settings.MultiPaneSettingsMod;
 import org.exalm.tabletkat.statusbar.tablet.TabletStatusBarMod;
@@ -43,6 +42,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     private static TabletStatusBarMod statusBarMod;
     private static TabletRecentsMod recentsMod;
     private static MultiPaneSettingsMod settingsMod;
+    private static LauncherMod launcherMod;
 
     public static Class mActivityManagerNativeClass;
     public static Class mBaseStatusBarClass;
@@ -173,6 +173,15 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
             }
             if (isModEnabled("settings")) {
                 settingsMod.addHooks(loadPackageParam.classLoader);
+            }
+            return;
+        }
+        if (LauncherMod.isSupported(loadPackageParam.packageName)) {
+            if (isModEnabled("launcher")) {
+                if (launcherMod == null || !loadPackageParam.packageName.equals(launcherMod.getPackage())) {
+                    launcherMod = new LauncherMod();
+                }
+                launcherMod.addHooks(loadPackageParam.packageName, loadPackageParam.classLoader);
             }
             return;
         }
@@ -336,6 +345,22 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 
             if (isModEnabled("settings")) {
                 settingsMod.initResources(res, res2);
+            }
+            return;
+        }
+        if (LauncherMod.isSupported(initPackageResourcesParam.packageName)) {
+            if (isModEnabled("launcher")) {
+                if (launcherMod == null || !initPackageResourcesParam.packageName.equals(launcherMod.getPackage())) {
+                    launcherMod = new LauncherMod();
+                }
+                final XResources res = initPackageResourcesParam.res;
+                SystemR.init(res);
+
+                XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, initPackageResourcesParam.res);
+
+                TkR.init(res, res2);
+
+                launcherMod.initResources(res, res2);
             }
             return;
         }
