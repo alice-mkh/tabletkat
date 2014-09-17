@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">TabletKat</string>
+
+    <!--Strings from settings activity-->
+
+    <string name="pref_header_general">Allgemein</string>
+
+    <string name="pref_title_enable_tablet_ui">Tablet Oberfläche aktivieren</string>
+    <string name="pref_summary_enable_tablet_ui">Nutze ältere Tablet Oberfläche</string>
+
+    <string name="pref_title_enable_mod_recents">Tablet Verlauf aktivieren</string>
+    <string name="pref_summary_enable_mod_recents">Programmverlauf erscheint am linken Bildschirmrand</string>
+
+    <string name="pref_title_extended_settings">Erweiterte Schnelleinstellungen</string>
+    <string name="pref_summary_extended_settings">Bietet zusätzliche Optionen in den Schnelleinstellungen</string>
+
+    <string name="pref_title_ics_clock_font">ICS Schriftart</string>
+    <string name="pref_summary_ics_clock_font">Benutzt eine spezielle Schriftart für die Uhr</string>
+
+    <string name="pref_title_battery_percents">Akkustand in Prozent anzeigen</string>
+
+    <string name="pref_title_enable_mod_settings">Zweispaltige Systemeinstellungen</string>
+    <string name="pref_summary_enable_mod_settings">Ermöglicht zweispaltige Darstellung in den Systemeinstellungen</string>
+
+    <string name="message_reboot">Neustart notwendig, um die Änderungen anzuwenden</string>
+</resources>

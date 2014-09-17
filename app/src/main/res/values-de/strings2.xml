@@ -1,0 +1,19 @@
+<resources>
+    <!-- Strings for SystemUI -->
+
+    <string name="compat_mode_on">Zoom auf Bildschirmgröße</string>
+
+    <string name="compat_mode_off">Auf Bildschirmgröße anpassen</string>
+
+    <string name="notifications_off_title">Benachrichtigungen aus</string>
+    <string name="notifications_off_text">Tippen Sie hier, um die Benachrichtigungen wieder zu aktivieren.</string>
+
+    <string name="compat_mode_help_header">Kompatibilitätszoom</string>
+
+    <string name="compat_mode_help_body">Wenn eine App für einen kleineren Bildschirm ausgelegt ist, wird ein Zoom-Steuerelement neben der Uhr angezeigt.</string>
+
+    <string name="accessibility_compatibility_zoom_button">Schaltfläche für Kompatibilitätszoom</string>
+    <string name="accessibility_compatibility_zoom_example">Zoom auf einen größeren Bildschirm</string>
+
+    <string name="status_bar_settings_location">Standort</string>
+</resources>
