@@ -84,29 +84,29 @@
             >
             <ImageView
                 android:id="@+id/dot0"
-                android:layout_width="80dip"
-                android:layout_height="48dip"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 />
             <ImageView
                 android:id="@+id/dot1"
-                android:layout_width="80dip"
-                android:layout_height="48dip"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_toEndOf="@+id/dot0"
                 android:layout_alignParentBottom="true"
                 />
             <ImageView
                 android:id="@+id/dot2"
-                android:layout_width="80dip"
-                android:layout_height="48dip"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_toEndOf="@+id/dot1"
                 android:layout_alignParentBottom="true"
                 />
             <ImageView
                 android:id="@+id/dot3"
-                android:layout_width="80dip"
-                android:layout_height="48dip"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 />

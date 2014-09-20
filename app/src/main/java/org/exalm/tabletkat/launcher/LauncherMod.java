@@ -184,7 +184,7 @@ public class LauncherMod implements IMod {
 
     private void createTabletActionBar(RelativeLayout l){
         DisplayMetrics d = l.getResources().getDisplayMetrics();
-        int dimen_toolbar_button_horizontal_padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, d);
+        int dimen_toolbar_button_horizontal_padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, d);
 
         ImageView searchButton = (ImageView) XposedHelpers.newInstance(mHoloImageViewClass, l.getContext());
         searchButton.setImageResource(drawable_ic_home_all_apps);

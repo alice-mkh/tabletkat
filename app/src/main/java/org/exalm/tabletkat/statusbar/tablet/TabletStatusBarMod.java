@@ -470,14 +470,14 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         mLargeIconContext = mContext.createConfigurationContext(c);
 
         mNaturalBarHeight = res.getDimensionPixelSize(
-        TkR.dimen.system_bar_height);
+              TkR.dimen.system_bar_height);
 
         int newIconSize = res.getDimensionPixelSize(
                 TkR.dimen.system_bar_icon_drawing_size);
         int newIconHPadding = res.getDimensionPixelSize(
                 TkR.dimen.system_bar_icon_padding);
 
-        loadDimens2();
+        loadDimens2(false);
 
         XposedHelpers.setIntField(self, "mRowHeight", res.getDimensionPixelSize(SystemR.dimen.notification_row_min_height));
 
@@ -496,13 +496,13 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         }
     }
 
-    protected void loadDimens2() {
+    protected void loadDimens2(boolean force) {
         final Resources res = mContext.getResources();
 
-        int newNavIconWidth = res.getDimensionPixelSize(TkR.dimen.system_bar_navigation_menu_key_width);
+        int newNavIconWidth = res.getDimensionPixelSize(TkR.dimen.system_bar_navigation_key_width);
         int newMenuNavIconWidth = res.getDimensionPixelSize(TkR.dimen.system_bar_navigation_menu_key_width);
 
-        if (mNavigationArea != null && newNavIconWidth != mNavIconWidth) {
+        if (mNavigationArea != null && (newNavIconWidth != mNavIconWidth)) {
             mNavIconWidth = newNavIconWidth;
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -518,12 +518,23 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             mStatusBarView.findViewById(SystemR.id.search_light).setLayoutParams(params);
         }
 
-        if (mNavigationArea != null && newMenuNavIconWidth != mMenuNavIconWidth) {
+        if (mNavigationArea != null && (force || newMenuNavIconWidth != mMenuNavIconWidth)) {
             mMenuNavIconWidth = newMenuNavIconWidth;
 
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     mMenuNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
             mMenuButton.setLayoutParams(lp);
+        }
+        if (mShadow != null && (force || newNavIconWidth != mNavIconWidth)) {
+            mNavIconWidth = newNavIconWidth;
+
+            int[] id = new int[]{TkR.id.dot0, TkR.id.dot1, TkR.id.dot2, TkR.id.dot3};
+            for (int i : id) {
+                ImageView dot = (ImageView) mShadow.findViewById(i);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) dot.getLayoutParams();
+                params.width = mNavIconWidth;
+                dot.setLayoutParams(params);
+            }
         }
     }
 
@@ -545,7 +556,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         final TabletStatusBarView sb = (TabletStatusBarView) ViewHelper.replaceView(temp, new TabletStatusBarView(context, mBarService));
 
         finalizeStatusBarView(sb);
-        loadDimens2();
+        loadDimens2(true);
 
         sb.getBarTransitions().init();
 
@@ -658,37 +669,6 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                         return false;
                     }
                 });
-
-        // tuning parameters
-        final int LIGHTS_GOING_OUT_SYSBAR_DURATION = 750;
-        final int LIGHTS_GOING_OUT_SHADOW_DURATION = 750;
-        final int LIGHTS_GOING_OUT_SHADOW_DELAY    = 0;
-
-        final int LIGHTS_COMING_UP_SYSBAR_DURATION = 200;
-//        final int LIGHTS_COMING_UP_SYSBAR_DELAY    = 50;
-        final int LIGHTS_COMING_UP_SHADOW_DURATION = 0;
-
-        LayoutTransition xition = new LayoutTransition();
-        xition.setAnimator(LayoutTransition.APPEARING,
-                ObjectAnimator.ofFloat(null, "alpha", 0.5f, 1f));
-        xition.setDuration(LayoutTransition.APPEARING, LIGHTS_COMING_UP_SYSBAR_DURATION);
-        xition.setStartDelay(LayoutTransition.APPEARING, 0);
-        xition.setAnimator(LayoutTransition.DISAPPEARING,
-                ObjectAnimator.ofFloat(null, "alpha", 1f, 0f));
-        xition.setDuration(LayoutTransition.DISAPPEARING, LIGHTS_GOING_OUT_SYSBAR_DURATION);
-        xition.setStartDelay(LayoutTransition.DISAPPEARING, 0);
-        ((ViewGroup)sb.findViewById(TkR.id.bar_contents_holder)).setLayoutTransition(xition);
-
-        xition = new LayoutTransition();
-        xition.setAnimator(LayoutTransition.APPEARING,
-                ObjectAnimator.ofFloat(null, "alpha", 0f, 1f));
-        xition.setDuration(LayoutTransition.APPEARING, LIGHTS_GOING_OUT_SHADOW_DURATION);
-        xition.setStartDelay(LayoutTransition.APPEARING, LIGHTS_GOING_OUT_SHADOW_DELAY);
-        xition.setAnimator(LayoutTransition.DISAPPEARING,
-                ObjectAnimator.ofFloat(null, "alpha", 1f, 0f));
-        xition.setDuration(LayoutTransition.DISAPPEARING, LIGHTS_COMING_UP_SHADOW_DURATION);
-        xition.setStartDelay(LayoutTransition.DISAPPEARING, 0);
-        ((ViewGroup)sb.findViewById(TkR.id.bar_shadow_holder)).setLayoutTransition(xition);
 
         // set the initial view visibility
         setAreThereNotifications();
@@ -2261,7 +2241,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 int search_bg_protect = param.res.getIdentifier("search_bg_protect", "id", TabletKatModule.SYSTEMUI_PACKAGE);
 
                 DisplayMetrics displayMetrics = v.getContext().getResources().getDisplayMetrics();
-                int margin = (int) (-150F * displayMetrics.density);
+                int margin = (int) (-90F * displayMetrics.density);
 
                 View glowpad = v.findViewById(glow_pad_view);
                 RelativeLayout l2 = (RelativeLayout) v.findViewById(search_bg_protect);

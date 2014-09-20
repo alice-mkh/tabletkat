@@ -33,8 +33,6 @@ import de.robv.android.xposed.XposedHelpers;
 
 public final class TabletStatusBarTransitions extends BarTransitions {
     private static final float ICON_ALPHA_WHEN_NOT_OPAQUE = 1;
-    private static final float ICON_ALPHA_WHEN_LIGHTS_OUT_BATTERY_CLOCK = 0.5f;
-    private static final float ICON_ALPHA_WHEN_LIGHTS_OUT_NON_BATTERY_CLOCK = 0.5f;
 
     private static final float KEYGUARD_QUIESCENT_ALPHA = 0.5f;
     private static final int CONTENT_FADE_DURATION = 200;
