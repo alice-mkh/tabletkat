@@ -38,10 +38,12 @@ public class BatteryPercentView extends TextView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        String str = "";
         if (mBatteryMeterView != null) {
-            setText(getPercents());
-        }else{
-            setText("");
+            str = getPercents();
+        }
+        if (!str.equals(getText())){
+            setText(str);
         }
         super.onDraw(canvas);
     }
