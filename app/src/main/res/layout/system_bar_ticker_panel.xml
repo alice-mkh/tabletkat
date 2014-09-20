@@ -32,7 +32,7 @@
 
     <ImageView
         android:id="@+id/large_icon"
-        android:layout_width="48dp"
+        android:layout_width="64dp"
         android:layout_height="48dp"
         android:scaleType="center"
         android:visibility="gone"

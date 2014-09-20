@@ -90,7 +90,7 @@ public class TabletTicker
         mWindowManager = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
         final Resources res = mContext.getResources();
         mLargeIconHeight = res.getDimensionPixelSize(
-                android.R.dimen.notification_large_icon_height);
+                TkR.dimen.system_bar_height);
     }
 
     public void add(IBinder key, StatusBarNotification notification) {
