@@ -34,7 +34,7 @@ import de.robv.android.xposed.XposedHelpers;
 public final class TabletStatusBarTransitions extends BarTransitions {
     private static final float ICON_ALPHA_WHEN_NOT_OPAQUE = 1;
     private static final float ICON_ALPHA_WHEN_LIGHTS_OUT_BATTERY_CLOCK = 0.5f;
-    private static final float ICON_ALPHA_WHEN_LIGHTS_OUT_NON_BATTERY_CLOCK = 0;
+    private static final float ICON_ALPHA_WHEN_LIGHTS_OUT_NON_BATTERY_CLOCK = 0.5f;
 
     private static final float KEYGUARD_QUIESCENT_ALPHA = 0.5f;
     private static final int CONTENT_FADE_DURATION = 200;
@@ -43,7 +43,6 @@ public final class TabletStatusBarTransitions extends BarTransitions {
     private final Object mBarService;
 
     private boolean mLightsOut;
-    private int mRequestedMode;
     private final float mIconAlphaWhenOpaque;
 
     private View mNotificationArea, mStatusIcons, mSignalCluster, mBattery, mBatteryText, mBluetooth, mClock;
@@ -73,25 +72,12 @@ public final class TabletStatusBarTransitions extends BarTransitions {
         return ObjectAnimator.ofFloat(v, "alpha", v.getAlpha(), toAlpha);
     }
 
-    private float getNonBatteryClockAlphaFor(int mode) {
-        return mode == MODE_LIGHTS_OUT ? ICON_ALPHA_WHEN_LIGHTS_OUT_NON_BATTERY_CLOCK
-                : !isOpaque(mode) ? ICON_ALPHA_WHEN_NOT_OPAQUE
-                : mIconAlphaWhenOpaque;
-    }
-
-    private float getBatteryClockAlpha(int mode) {
-        return mode == MODE_LIGHTS_OUT ? ICON_ALPHA_WHEN_LIGHTS_OUT_BATTERY_CLOCK
-                : getNonBatteryClockAlphaFor(mode);
+    private float getIconAlphaFor(int mode) {
+        return !isOpaque(mode) ? ICON_ALPHA_WHEN_NOT_OPAQUE : mIconAlphaWhenOpaque;
     }
 
     private boolean isOpaque(int mode) {
         return !(mode == MODE_SEMI_TRANSPARENT || mode == MODE_TRANSLUCENT);
-    }
-
-    @Override
-    public void transitionTo(int mode, boolean animate) {
-        mRequestedMode = mode;
-        super.transitionTo(mode, animate);
     }
 
     @Override
@@ -108,15 +94,14 @@ public final class TabletStatusBarTransitions extends BarTransitions {
         setKeyButtonViewQuiescentAlpha(mView.getRecentsButton(), alpha, animate);
         setKeyButtonViewQuiescentAlpha(mView.getMenuButton(), alpha, animate);
 
-//        setKeyButtonViewQuiescentAlpha(mView.getSearchLight(), KEYGUARD_QUIESCENT_ALPHA, animate);
+        setKeyButtonViewQuiescentAlpha(mView.getSearchLight(), KEYGUARD_QUIESCENT_ALPHA, animate);
 //        setKeyButtonViewQuiescentAlpha(mView.getCameraButton(), KEYGUARD_QUIESCENT_ALPHA, animate);
 
         // apply to lights out
         applyLightsOut(mode == MODE_LIGHTS_OUT, animate, force);
 
         if (mNotificationArea == null) return; // pre-init
-        float newAlpha = getNonBatteryClockAlphaFor(mode);
-        float newAlphaBC = getBatteryClockAlpha(mode);
+        float newAlpha = getIconAlphaFor(mode);
         if (mCurrentAnimation != null) {
             mCurrentAnimation.cancel();
         }
@@ -126,10 +111,10 @@ public final class TabletStatusBarTransitions extends BarTransitions {
                     animateTransitionTo(mNotificationArea, newAlpha),
                     animateTransitionTo(mStatusIcons, newAlpha),
                     animateTransitionTo(mSignalCluster, newAlpha),
-                    animateTransitionTo(mBattery, newAlphaBC),
-                    animateTransitionTo(mBatteryText, newAlphaBC),
+                    animateTransitionTo(mBattery, newAlpha),
+                    animateTransitionTo(mBatteryText, newAlpha),
                     animateTransitionTo(mBluetooth, newAlpha),
-                    animateTransitionTo(mClock, newAlphaBC)
+                    animateTransitionTo(mClock, newAlpha)
             );
             if (mode == MODE_LIGHTS_OUT) {
                 anims.setDuration(LIGHTS_OUT_DURATION);
@@ -140,10 +125,10 @@ public final class TabletStatusBarTransitions extends BarTransitions {
             mNotificationArea.setAlpha(newAlpha);
             mStatusIcons.setAlpha(newAlpha);
             mSignalCluster.setAlpha(newAlpha);
-            mBattery.setAlpha(newAlphaBC);
-            mBatteryText.setAlpha(newAlphaBC);
+            mBattery.setAlpha(newAlpha);
+            mBatteryText.setAlpha(newAlpha);
             mBluetooth.setAlpha(newAlpha);
-            mClock.setAlpha(newAlphaBC);
+            mClock.setAlpha(newAlpha);
         }
     }
 
@@ -154,7 +139,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
 
     public void applyBackButtonQuiescentAlpha(int mode, boolean animate) {
         float backAlpha = 0;
-//        backAlpha = maxVisibleQuiescentAlpha(backAlpha, mView.getSearchLight());
+        backAlpha = maxVisibleQuiescentAlpha(backAlpha, mView.getSearchLight());
 //        backAlpha = maxVisibleQuiescentAlpha(backAlpha, mView.getCameraButton());
         backAlpha = maxVisibleQuiescentAlpha(backAlpha, mView.getHomeButton());
         backAlpha = maxVisibleQuiescentAlpha(backAlpha, mView.getRecentsButton());
@@ -178,7 +163,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
     public void setContentVisible(boolean visible) {
         final float alpha = visible ? 1 : 0;
 //        fadeContent(mView.getCameraButton(), alpha);
-//        fadeContent(mView.getSearchLight(), alpha);
+        fadeContent(mView.getSearchLight(), alpha);
     }
 
     private void fadeContent(View v, float alpha) {

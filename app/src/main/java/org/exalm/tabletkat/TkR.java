@@ -63,7 +63,6 @@ public class TkR {
         public static int item_vertical_separator;
         public static int large_icon;
         public static int left_icon;
-        public static int navigationArea;
         public static int network_text;
         public static int no_recent_apps;
         public static int notification_scroller;
@@ -160,7 +159,6 @@ public class TkR {
         id.item_vertical_separator = add(res, res2, R.id.item_vertical_separator);
         id.large_icon = add(res, res2, R.id.large_icon);
         id.left_icon = add(res, res2, R.id.left_icon);
-        id.navigationArea = add(res, res2, R.id.navigationArea);
         id.network_text = add(res, res2, R.id.network_text);
         id.no_recent_apps = add(res, res2, R.id.no_recent_apps);
         id.notification_scroller = add(res, res2, R.id.notification_scroller);

@@ -434,12 +434,12 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         mRecentButton.setOnTouchListener(mRecentsPreloadOnTouchListener);
 
-        mPile = mNotificationPanel.findViewById(SystemR.id.content);
+        mPile = (ViewGroup) mNotificationPanel.findViewById(SystemR.id.content);
         XposedHelpers.setObjectField(self, "mPile", mPile);
-        XposedHelpers.callMethod(mPile, "removeAllViews");
+        mPile.removeAllViews();
         XposedHelpers.callMethod(mPile, "setLongPressListener", getNotificationLongClicker());
 
-        ScrollView scroller = (ScrollView) XposedHelpers.callMethod(mPile, "getParent");
+        ScrollView scroller = (ScrollView) mPile.getParent();
         scroller.setFillViewport(true);
     }
 
@@ -476,26 +476,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 TkR.dimen.system_bar_icon_drawing_size);
         int newIconHPadding = res.getDimensionPixelSize(
                 TkR.dimen.system_bar_icon_padding);
-        int newNavIconWidth = res.getDimensionPixelSize(TkR.dimen.system_bar_navigation_menu_key_width);
-        int newMenuNavIconWidth = res.getDimensionPixelSize(TkR.dimen.system_bar_navigation_menu_key_width);
 
-        if (mNavigationArea != null && newNavIconWidth != mNavIconWidth) {
-            mNavIconWidth = newNavIconWidth;
-
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    mNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-            mBackButton.setLayoutParams(lp);
-            mHomeButton.setLayoutParams(lp);
-            mRecentButton.setLayoutParams(lp);
-        }
-
-        if (mNavigationArea != null && newMenuNavIconWidth != mMenuNavIconWidth) {
-            mMenuNavIconWidth = newMenuNavIconWidth;
-
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    mMenuNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-            mMenuButton.setLayoutParams(lp);
-        }
+        loadDimens2();
 
         XposedHelpers.setIntField(self, "mRowHeight", res.getDimensionPixelSize(SystemR.dimen.notification_row_min_height));
 
@@ -511,6 +493,37 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             mMaxNotificationIcons = numIcons;
             if (DEBUG) Log.d(TAG, "max notification icons: " + mMaxNotificationIcons);
             reloadAllNotificationIcons();
+        }
+    }
+
+    protected void loadDimens2() {
+        final Resources res = mContext.getResources();
+
+        int newNavIconWidth = res.getDimensionPixelSize(TkR.dimen.system_bar_navigation_menu_key_width);
+        int newMenuNavIconWidth = res.getDimensionPixelSize(TkR.dimen.system_bar_navigation_menu_key_width);
+
+        if (mNavigationArea != null && newNavIconWidth != mNavIconWidth) {
+            mNavIconWidth = newNavIconWidth;
+
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    mNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+            mBackButton.setLayoutParams(lp);
+            mHomeButton.setLayoutParams(lp);
+            mRecentButton.setLayoutParams(lp);
+
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            params.width = mNavIconWidth;
+            params.addRule(RelativeLayout.ALIGN_PARENT_START);
+            params.leftMargin = mNavIconWidth;
+            mStatusBarView.findViewById(SystemR.id.search_light).setLayoutParams(params);
+        }
+
+        if (mNavigationArea != null && newMenuNavIconWidth != mMenuNavIconWidth) {
+            mMenuNavIconWidth = newMenuNavIconWidth;
+
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    mMenuNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+            mMenuButton.setLayoutParams(lp);
         }
     }
 
@@ -532,11 +545,13 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         final TabletStatusBarView sb = (TabletStatusBarView) ViewHelper.replaceView(temp, new TabletStatusBarView(context, mBarService));
 
         finalizeStatusBarView(sb);
+        loadDimens2();
 
         sb.getBarTransitions().init();
 
         mStatusBarView = sb;
 
+        mStatusBarView.setDisabledFlags(mDisabled);
         mStatusBarView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -583,7 +598,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         // The navigation buttons
         mBackButton = (ImageView)sb.findViewById(SystemR.id.back);
-        mNavigationArea = (ViewGroup) sb.findViewById(TkR.id.navigationArea);
+        mNavigationArea = (ViewGroup) sb.findViewById(SystemR.id.nav_buttons);
         mHomeButton = mNavigationArea.findViewById(SystemR.id.home);
         mMenuButton = mNavigationArea.findViewById(SystemR.id.menu);
         mRecentButton = mNavigationArea.findViewById(SystemR.id.recent_apps);
@@ -728,9 +743,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         percent.attach(v.findViewById(SystemR.id.battery));
         percent.setTextColor(mContext.getResources().getColor(SystemR.color.status_bar_clock_color));
 
-        ViewGroup view = (ViewGroup)v.findViewById(TkR.id.navigationArea);
-
-        view.removeAllViews();
+        ViewGroup view = (ViewGroup)v.findViewById(SystemR.id.nav_buttons);
 
         int[] ids = {SystemR.id.back, SystemR.id.home, SystemR.id.recent_apps, SystemR.id.menu};
         int[] keyCodes = {4, 3, -1, 82};
@@ -748,12 +761,10 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         };
 
         for (int i = 0; i < ids.length; i++) {
-            int width = ids[i] == SystemR.id.menu ? mMenuNavIconWidth : mNavIconWidth;
-            View button = (View) XposedHelpers.newInstance(TabletKatModule.mKeyButtonViewClass, mContext, null);
+            ImageView button = (ImageView) XposedHelpers.newInstance(TabletKatModule.mKeyButtonViewClass, mContext, null);
             button.setId(ids[i]);
-            button.setLayoutParams(new ViewGroup.LayoutParams(width, ViewGroup.LayoutParams.MATCH_PARENT));
 
-            ((ImageView) button).setImageResource(src[i]);
+            button.setImageResource(src[i]);
             button.setContentDescription(mContext.getResources().getString(descriptions[i]));
 
             if (keyCodes[i] > 0){
@@ -770,8 +781,15 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             }
 
             view.addView(button);
-            XposedBridge.log(mContext.getString(descriptions[i]));
         }
+
+        ImageView searchLight = (ImageView) XposedHelpers.newInstance(TabletKatModule.mKeyButtonViewClass, mContext, null);
+        searchLight.setId(SystemR.id.search_light);
+        searchLight.setImageResource(SystemR.drawable.search_light);
+        searchLight.setContentDescription(mContext.getResources().getString(SystemR.string.accessibility_search_light));
+        searchLight.setScaleType(ImageView.ScaleType.CENTER);
+        searchLight.setVisibility(View.GONE);
+        ((ViewGroup) view.getParent()).addView(searchLight);
 
         ((ImageView) v.findViewById(TkR.id.dot0)).setImageResource(SystemR.drawable.ic_sysbar_lights_out_dot_small);
         ((ImageView) v.findViewById(TkR.id.dot1)).setImageResource(SystemR.drawable.ic_sysbar_lights_out_dot_large);
@@ -970,19 +988,6 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         }
     }
 
-    private void setNavigationVisibility(int visibility) {
-        boolean disableHome = ((visibility & StatusBarManager.DISABLE_HOME) != 0);
-        boolean disableRecent = ((visibility & StatusBarManager.DISABLE_RECENT) != 0);
-        boolean disableBack = ((visibility & StatusBarManager.DISABLE_BACK) != 0);
-
-        mBackButton.setVisibility(disableBack ? View.INVISIBLE : View.VISIBLE);
-        mHomeButton.setVisibility(disableHome ? View.INVISIBLE : View.VISIBLE);
-        mRecentButton.setVisibility(disableRecent ? View.INVISIBLE : View.VISIBLE);
-
-        mInputMethodSwitchButton.setScreenLocked(
-                (visibility & StatusBarManager.DISABLE_SYSTEM_INFO) != 0);
-    }
-
     private boolean hasTicker(Notification n) {
         return n.tickerView != null || !TextUtils.isEmpty(n.tickerText);
     }
@@ -1008,12 +1013,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         mNavigationIconHints = hints;
 
+        mStatusBarView.setNavigationIconHints(hints);
         checkBarModes();
-
-        mBackButton.setImageResource(
-                (0 != (hints & StatusBarManager.NAVIGATION_HINT_BACK_ALT))
-                        ? SystemR.drawable.ic_sysbar_back_ime
-                        : SystemR.drawable.ic_sysbar_back);
     }
 
     private void notifyUiVisibilityChanged(int vis) {
@@ -1239,24 +1240,24 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         }
 
         ArrayList<View> toRemove = new ArrayList<View>();
-        int n = (Integer) XposedHelpers.callMethod(mPile, "getChildCount");
+        int n = mPile.getChildCount();
         for (int i=0; i<n; i++) {
-            View child = (View) XposedHelpers.callMethod(mPile, "getChildAt", i);
+            View child = mPile.getChildAt(i);
             if (!toShow.contains(child)) {
                 toRemove.add(child);
             }
         }
 
         for (View remove : toRemove) {
-            XposedHelpers.callMethod(mPile, "removeView", remove);
+            mPile.removeView(remove);
         }
 
         for (int i=0; i<toShow.size(); i++) {
             View v = toShow.get(i);
             if (v.getParent() == null) {
                 // the notification panel has the most important things at the bottom
-                int count = (Integer) XposedHelpers.callMethod(mPile, "getChildCount");
-                XposedHelpers.callMethod(mPile, "addView", v, Math.min(toShow.size() - 1 - i, count));
+                int count = mPile.getChildCount();
+                mPile.addView(v, Math.min(toShow.size() - 1 - i, count));
             }
         }
 
@@ -1285,12 +1286,14 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                         flags |= CommandQueue.FLAG_EXCLUDE_RECENTS_PANEL;
                     }
                 }
+                mStatusBarView.notifyScreenOn(false);
                 animateCollapsePanels(flags);
             }
             if (Intent.ACTION_SCREEN_OFF.equals(action)) {
                 mScreenOn = false;
                 // no waiting!
                 finishBarAnimations();
+                mStatusBarView.notifyScreenOn(true);
             }
             else if (Intent.ACTION_SCREEN_ON.equals(action)) {
                 mScreenOn = true;
@@ -1788,7 +1791,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                 return mNotificationPanel.getVisibility() == View.VISIBLE
-                        || (mDisabled & StatusBarManager.DISABLE_HOME) != 0;
+                        || (mDisabled & StatusBarManager.DISABLE_SEARCH) != 0;
             }
         });
 /*        XposedHelpers.findAndHookMethod(tv, "onDestroy", new XC_MethodHook() {
@@ -1981,8 +1984,9 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 }
                 if ((diff & (StatusBarManager.DISABLE_RECENT
                         | StatusBarManager.DISABLE_BACK
-                        | StatusBarManager.DISABLE_HOME)) != 0) {
-                    setNavigationVisibility(state);
+                        | StatusBarManager.DISABLE_HOME
+                        | StatusBarManager.DISABLE_SEARCH)) != 0) {
+                    mStatusBarView.setDisabledFlags(state);
 
                     if ((state & StatusBarManager.DISABLE_RECENT) != 0) {
                         // close recents if it's visible

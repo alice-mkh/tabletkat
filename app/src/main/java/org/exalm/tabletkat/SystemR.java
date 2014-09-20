@@ -38,6 +38,7 @@ public class SystemR {
         //public static int notify_item_glow_bottom;
         public static int recents_thumbnail_bg;
         public static int recents_thumbnail_fg;
+        public static int search_light;
         public static int stat_sys_data_bluetooth;
         public static int stat_sys_data_bluetooth_connected;
         public static int status_bar_item_background;
@@ -58,9 +59,11 @@ public class SystemR {
         public static int menu;
         public static int mobile_signal;
         public static int mobile_type;
+        public static int nav_buttons;
         public static int notification_button;
         public static int notificationIcons;
         public static int recent_apps;
+        public static int search_light;
         public static int settings_button;
         public static int signal_cluster;
         public static int signal_cluster_view;
@@ -88,6 +91,7 @@ public class SystemR {
         public static int accessibility_menu;
         public static int accessibility_notifications_button;
         public static int accessibility_recent;
+        public static int accessibility_search_light;
         public static int accessibility_settings_button;
         public static int config_statusBarComponent;
         public static int status_bar_input_method_settings_configure_input_methods;
@@ -134,6 +138,7 @@ public class SystemR {
 //        drawable.notify_item_glow_bottom = res.getIdentifier("notify_item_glow_bottom", "drawable", SYSTEMUI_PACKAGE);
         drawable.recents_thumbnail_bg = res.getIdentifier("recents_thumbnail_bg", "drawable", SYSTEMUI_PACKAGE);
         drawable.recents_thumbnail_fg = res.getIdentifier("recents_thumbnail_fg", "drawable", SYSTEMUI_PACKAGE);
+        drawable.search_light = res.getIdentifier("search_light", "drawable", SYSTEMUI_PACKAGE);
         drawable.stat_sys_data_bluetooth = res.getIdentifier("stat_sys_data_bluetooth", "drawable", SYSTEMUI_PACKAGE);
         drawable.stat_sys_data_bluetooth_connected = res.getIdentifier("stat_sys_data_bluetooth_connected", "drawable", SYSTEMUI_PACKAGE);
         drawable.status_bar_item_background = res.getIdentifier("status_bar_item_background", "drawable", SYSTEMUI_PACKAGE);
@@ -153,9 +158,11 @@ public class SystemR {
         id.menu = res.getIdentifier("menu", "id", SYSTEMUI_PACKAGE);
         id.mobile_signal = res.getIdentifier("mobile_signal", "id", SYSTEMUI_PACKAGE);
         id.mobile_type = res.getIdentifier("mobile_type", "id", SYSTEMUI_PACKAGE);
+        id.nav_buttons = res.getIdentifier("nav_buttons", "id", SYSTEMUI_PACKAGE);
         id.notification_button = res.getIdentifier("notification_button", "id", SYSTEMUI_PACKAGE);
         id.notificationIcons = res.getIdentifier("notificationIcons", "id", SYSTEMUI_PACKAGE);
         id.recent_apps = res.getIdentifier("recent_apps", "id", SYSTEMUI_PACKAGE);
+        id.search_light = res.getIdentifier("search_light", "id", SYSTEMUI_PACKAGE);
         id.settings_button = res.getIdentifier("settings_button", "id", SYSTEMUI_PACKAGE);
         id.signal_cluster = res.getIdentifier("signal_cluster", "id", SYSTEMUI_PACKAGE);
         id.signal_cluster_view = res.getIdentifier("signal_cluster_view", "id", SYSTEMUI_PACKAGE);
@@ -186,6 +193,7 @@ public class SystemR {
         string.accessibility_menu = res.getIdentifier("accessibility_menu", "string", SYSTEMUI_PACKAGE);
         string.accessibility_notifications_button = res.getIdentifier("accessibility_notifications_button", "string", SYSTEMUI_PACKAGE);
         string.accessibility_recent = res.getIdentifier("accessibility_recent", "string", SYSTEMUI_PACKAGE);
+        string.accessibility_search_light = res.getIdentifier("accessibility_search_light", "string", SYSTEMUI_PACKAGE);
         string.accessibility_settings_button = res.getIdentifier("accessibility_settings_button", "string", SYSTEMUI_PACKAGE);
         string.config_statusBarComponent = res.getIdentifier("config_statusBarComponent", "string", SYSTEMUI_PACKAGE);
         string.status_bar_input_method_settings_configure_input_methods = res.getIdentifier("status_bar_input_method_settings_configure_input_methods", "string", SYSTEMUI_PACKAGE);
