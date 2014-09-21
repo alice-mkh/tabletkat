@@ -204,6 +204,7 @@ public class InputMethodsPanel extends LinearLayout implements StatusBarPanel,
         if (closeKeyboard) {
             mImm.hideSoftInputFromWindow(getWindowToken(), 0);
         }
+        updateHardKeyboardEnabled();
     }
 
     private void startActivity(Intent intent) {
