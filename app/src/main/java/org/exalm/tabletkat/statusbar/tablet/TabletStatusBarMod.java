@@ -381,6 +381,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         // Search Panel
         mStatusBarView.setBar(self);
         mHomeButton.setOnTouchListener(mHomeSearchActionListener);
+        mShowSearchHoldoff = mContext.getResources().getInteger(
+                SystemR.integer.config_show_search_delay);
         updateSearchPanel();
 
         // Input methods Panel
