@@ -231,7 +231,7 @@ public class TabletTicker
                 TYPE_NAVIGATION_BAR_PANEL, windowFlags,
                 PixelFormat.TRANSLUCENT);
         lp.gravity = Gravity.BOTTOM | Gravity.END;
-//        lp.windowAnimations = com.android.internal.R.style.Animation_Toast;
+        lp.windowAnimations = com.android.internal.R.style.Animation_Toast;
 
         mLayoutTransition = new LayoutTransition();
         mLayoutTransition.addTransitionListener(this);
