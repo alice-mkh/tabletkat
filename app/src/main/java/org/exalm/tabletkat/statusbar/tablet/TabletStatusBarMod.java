@@ -525,17 +525,6 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                     mMenuNavIconWidth, ViewGroup.LayoutParams.MATCH_PARENT);
             mMenuButton.setLayoutParams(lp);
         }
-        if (mShadow != null && (force || newNavIconWidth != mNavIconWidth)) {
-            mNavIconWidth = newNavIconWidth;
-
-            int[] id = new int[]{TkR.id.dot0, TkR.id.dot1, TkR.id.dot2, TkR.id.dot3};
-            for (int i : id) {
-                ImageView dot = (ImageView) mShadow.findViewById(i);
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) dot.getLayoutParams();
-                params.width = mNavIconWidth;
-                dot.setLayoutParams(params);
-            }
-        }
     }
 
     protected View makeStatusBarView() {
@@ -556,7 +545,6 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         final TabletStatusBarView sb = (TabletStatusBarView) ViewHelper.replaceView(temp, new TabletStatusBarView(context, mBarService));
 
         finalizeStatusBarView(sb);
-        loadDimens2(true);
 
         sb.getBarTransitions().init();
 
@@ -614,6 +602,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         mMenuButton = mNavigationArea.findViewById(SystemR.id.menu);
         mRecentButton = mNavigationArea.findViewById(SystemR.id.recent_apps);
         mRecentButton.setOnClickListener(mOnClickListener);
+
+        loadDimens2(true);
 
         LayoutTransition lt = new LayoutTransition();
         lt.setDuration(250);
