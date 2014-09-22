@@ -30,7 +30,7 @@ public class RowBrightness extends Row {
 
     @Override
     public int getIcon() {
-        return TkR.drawable.ic_sysbar_wifi;
+        return TkR.drawable.ic_sysbar_brightness;
     }
 
     @Override

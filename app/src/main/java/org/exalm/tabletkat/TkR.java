@@ -21,6 +21,7 @@ public class TkR {
         public static int ic_notification_open;
         public static int ic_sysbar_airplane;
         public static int ic_sysbar_bluetooth;
+        public static int ic_sysbar_brightness;
         public static int ic_sysbar_ime;
         public static int ic_sysbar_ime_pressed;
         public static int ic_sysbar_location;
@@ -118,6 +119,7 @@ public class TkR {
         drawable.ic_notification_open = add(res, res2, R.drawable.ic_notification_open);
         drawable.ic_sysbar_airplane = add(res, res2, R.drawable.ic_sysbar_airplane);
         drawable.ic_sysbar_bluetooth = add(res, res2, R.drawable.ic_sysbar_bluetooth);
+        drawable.ic_sysbar_brightness = add(res, res2, R.drawable.ic_sysbar_brightness);
         drawable.ic_sysbar_ime = add(res, res2, R.drawable.ic_sysbar_ime);
         drawable.ic_sysbar_ime_pressed = add(res, res2, R.drawable.ic_sysbar_ime_pressed);
         drawable.ic_sysbar_location = add(res, res2, R.drawable.ic_sysbar_location);
