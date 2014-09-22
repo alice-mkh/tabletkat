@@ -462,6 +462,10 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mSettingsView != null) {
+            return super.onInterceptTouchEvent(ev);
+        }
+
         MotionEvent cancellation = MotionEvent.obtain(ev);
         cancellation.setAction(MotionEvent.ACTION_CANCEL);
 
@@ -475,6 +479,10 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if (mSettingsView != null) {
+            return super.onTouchEvent(ev);
+        }
+
         boolean handled = (Boolean)XposedHelpers.callMethod(mExpandHelper, "onTouchEvent", ev) ||
                 super.onTouchEvent(ev);
         return handled;
