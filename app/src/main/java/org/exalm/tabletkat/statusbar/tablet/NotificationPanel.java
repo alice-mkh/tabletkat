@@ -406,10 +406,21 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
             fadeAnim.setInterpolator(appearing ? sAccelerateInterpolator : sDecelerateInterpolator);
 
             mContentAnim = new AnimatorSet();
-            mContentAnim
-                .play(fadeAnim)
-                .with(posAnim)
-                ;
+            if (mBar.mHeadsUpNotificationView != null) {
+                Animator headsUpFadeAnim = ObjectAnimator.ofFloat(mBar.mHeadsUpNotificationView, "alpha",
+                        appearing ? 0.0f : 1.0f);
+                headsUpFadeAnim.setInterpolator(appearing ? sDecelerateInterpolator : sAccelerateInterpolator);
+                mContentAnim
+                    .play(fadeAnim)
+                    .with(posAnim)
+                    .with(headsUpFadeAnim)
+                    ;
+            } else {
+                mContentAnim
+                    .play(fadeAnim)
+                    .with(posAnim)
+                    ;
+            }
             mContentAnim.setDuration((DEBUG?10:1)*(appearing ? OPEN_DURATION : CLOSE_DURATION));
             mContentAnim.addListener(this);
         }

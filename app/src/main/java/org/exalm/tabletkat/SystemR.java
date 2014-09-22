@@ -74,8 +74,10 @@ public class SystemR {
     public static class integer {
         public static int config_maxNotificationIcons;
         public static int config_show_search_delay;
+        public static int heads_up_notification_decay;
     }
     public static class layout {
+        public static int heads_up;
         public static int signal_cluster_view;
         public static int status_bar_recent_item;
     }
@@ -172,7 +174,9 @@ public class SystemR {
 
         integer.config_maxNotificationIcons = res.getIdentifier("config_maxNotificationIcons", "integer", SYSTEMUI_PACKAGE);
         integer.config_show_search_delay = res.getIdentifier("config_show_search_delay", "integer", SYSTEMUI_PACKAGE);
+        integer.heads_up_notification_decay = res.getIdentifier("heads_up_notification_decay", "integer", SYSTEMUI_PACKAGE);
 
+        layout.heads_up = res.getIdentifier("heads_up", "layout", SYSTEMUI_PACKAGE);
         //MediaTek dual-SIM support
         int mtk = res.getIdentifier("gemini_signal_cluster_view", "layout", SYSTEMUI_PACKAGE);
         if (mtk > 0){

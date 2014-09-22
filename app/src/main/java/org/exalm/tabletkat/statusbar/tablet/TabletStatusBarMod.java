@@ -17,7 +17,6 @@
 package org.exalm.tabletkat.statusbar.tablet;
 
 import android.animation.LayoutTransition;
-import android.animation.ObjectAnimator;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -30,6 +29,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
+import android.database.ContentObserver;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -39,6 +39,7 @@ import android.inputmethodservice.InputMethodService;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -211,6 +212,10 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     private Context mLargeIconContext;
     private BroadcastReceiver mSettingsReceiver;
 
+    // for heads up notifications
+    FrameLayout mHeadsUpNotificationView;
+    private int mHeadsUpNotificationDecay;
+
     @Override
     public void reset() {
         super.reset();
@@ -271,6 +276,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         mScreenOn = null;
         mLargeIconContext = null;
         mSettingsReceiver = null;
+        mHeadsUpNotificationDecay = 0;
+        mHeadsUpNotificationView = null;
     }
 
     public Context getContext() {
@@ -299,6 +306,26 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                     break;
             }
             return false;
+        }
+    };
+
+    private final ContentObserver mHeadsUpObserver = new ContentObserver(mHandler) {
+        @Override
+        public void onChange(boolean selfChange) {
+            boolean wasUsing = XposedHelpers.getBooleanField(self, "mUseHeadsUp");
+            boolean mUseHeadsUp = ENABLE_HEADS_UP && 0 != Settings.Global.getInt(
+                    mContext.getContentResolver(), SETTING_HEADS_UP, 0);
+            XposedHelpers.setBooleanField(self, "mUseHeadsUp", mUseHeadsUp);
+            Log.d(TAG, "heads up is " + (mUseHeadsUp ? "enabled" : "disabled"));
+            if (wasUsing != mUseHeadsUp) {
+                if (!mUseHeadsUp) {
+                    Log.d(TAG, "dismissing any existing heads up notification on disable event");
+                    mHandler.sendEmptyMessage(MSG_HIDE_HEADS_UP);
+                    removeHeadsUpView();
+                } else {
+                    addHeadsUpView();
+                }
+            }
         }
     };
 
@@ -378,6 +405,13 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         mWindowManager.addView(mNotificationPanel, lp);
 
+        if (ENABLE_HEADS_UP) {
+            mHeadsUpNotificationView =
+                    (FrameLayout) View.inflate(context, SystemR.layout.heads_up, null);
+            mHeadsUpNotificationView.setVisibility(View.GONE);
+            XposedHelpers.callMethod(mHeadsUpNotificationView, "setBar", self);
+        }
+
         // Search Panel
         mStatusBarView.setBar(self);
         mHomeButton.setOnTouchListener(mHomeSearchActionListener);
@@ -445,6 +479,31 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         scroller.setFillViewport(true);
     }
 
+    private void addHeadsUpView() {
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL, // above the status bar!
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                        | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
+                PixelFormat.TRANSLUCENT);
+        lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+        lp.gravity = Gravity.BOTTOM;
+        lp.setTitle("Heads Up");
+        lp.packageName = mContext.getPackageName();
+        lp.windowAnimations = android.R.style.Animation_InputMethod;
+
+        mWindowManager.addView(mHeadsUpNotificationView, lp);
+    }
+
+    private void removeHeadsUpView() {
+        mWindowManager.removeView(mHeadsUpNotificationView);
+    }
+
+
     private int getNotificationPanelHeight() {
         final Resources res = mContext.getResources();
         final Display d = mWindowManager.getDefaultDisplay();
@@ -481,6 +540,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         loadDimens2(false);
 
+        mHeadsUpNotificationDecay = res.getInteger(SystemR.integer.heads_up_notification_decay);
         XposedHelpers.setIntField(self, "mRowHeight", res.getDimensionPixelSize(SystemR.dimen.notification_row_min_height));
 
         if (newIconHPadding != mIconHPadding || newIconSize != mIconSize) {
@@ -945,7 +1005,35 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 break;
             case MSG_STOP_TICKER:
                 mTicker.halt();
+                mFeedbackIconArea.setVisibility(View.VISIBLE);
                 break;
+            case MSG_SHOW_HEADS_UP:
+                setHeadsUpVisibility(true);
+                break;
+            case MSG_HIDE_HEADS_UP:
+                setHeadsUpVisibility(false);
+                break;
+            case MSG_ESCALATE_HEADS_UP:
+                escalateHeadsUp();
+                setHeadsUpVisibility(false);
+                break;
+        }
+    }
+
+    /**  if the interrupting notification had a fullscreen intent, fire it now.  */
+    private void escalateHeadsUp() {
+        Object entry = XposedHelpers.getObjectField(self, "mInterruptingNotificationEntry");
+        if (entry != null) {
+            final StatusBarNotification sbn = (StatusBarNotification) XposedHelpers.getObjectField(entry, "notification");
+            final Notification notification = sbn.getNotification();
+            if (notification.fullScreenIntent != null) {
+                if (DEBUG)
+                    Log.d(TAG, "converting a heads up to fullScreen");
+                try {
+                    notification.fullScreenIntent.send();
+                } catch (PendingIntent.CanceledException e) {
+                }
+            }
         }
     }
 
@@ -1264,6 +1352,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             if (Intent.ACTION_SCREEN_OFF.equals(action)) {
                 mScreenOn = false;
                 // no waiting!
+                notifyHeadsUpScreenOn(false);
                 finishBarAnimations();
                 mStatusBarView.notifyScreenOn(true);
             }
@@ -1272,6 +1361,16 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             }
         }
     };
+
+    private void setHeadsUpVisibility(boolean vis) {
+        if (!ENABLE_HEADS_UP) return;
+        if (DEBUG) Log.v(TAG, (vis ? "showing" : "hiding") + " heads up window");
+        mHeadsUpNotificationView.setVisibility(vis ? View.VISIBLE : View.GONE);
+        if (!vis) {
+            if (DEBUG) Log.d(TAG, "setting heads up entry to null");
+            XposedHelpers.setObjectField(self, "mInterruptingNotificationEntry", null);
+        }
+    }
 
     public void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
         pw.print("mDisabled=0x");
@@ -1844,11 +1943,27 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 }
 
                 if (DEBUG) Log.d(TAG, "addNotification(" + key + " -> " + notification + ")");
-                addNotificationViews(key, notification);
+                Object shadeEntry = addNotificationViews(key, notification);
 
-                final boolean immersive = isImmersive();
-                if (false && immersive) {
-                    // TODO: immersive mode popups for tablet
+                if (XposedHelpers.getBooleanField(self, "mUseHeadsUp") && shouldInterrupt(notification)) {
+                    if (DEBUG) Log.d(TAG, "launching notification in heads up mode");
+                    Object interruptionCandidate = XposedHelpers.newInstance(
+                            TabletKatModule.mNotificationDataEntryClass, key, notification, null);
+                    if (inflateViews(interruptionCandidate, (ViewGroup)
+                            XposedHelpers.callMethod(mHeadsUpNotificationView, "getHolder"))) {
+                        XposedHelpers.setLongField(self, "mInterruptingNotificationTime", System.currentTimeMillis());
+                        XposedHelpers.setObjectField(self, "mInterruptingNotificationEntry", interruptionCandidate);
+                        XposedHelpers.callMethod(shadeEntry, "setInterruption");
+
+                        // 1. Populate mHeadsUpNotificationView
+                        XposedHelpers.callMethod(mHeadsUpNotificationView, "setNotification", interruptionCandidate);
+
+                        // 2. Animate mHeadsUpNotificationView in
+                        mHandler.sendEmptyMessage(MSG_SHOW_HEADS_UP);
+
+                        // 3. Set alarm to age the notification off
+                        resetHeadsUpDecayTimer();
+                    }
                 } else if (notification.getNotification().fullScreenIntent != null) {
                     // not immersive & a full-screen alert should be shown
                     Log.w(TAG, "Notification has fullScreenIntent and activity is not immersive;"
@@ -1867,16 +1982,34 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             }
         });
 
+        XposedHelpers.findAndHookMethod(tv, "resetHeadsUpDecayTimer", new XC_MethodReplacement() {
+            @Override
+            protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                if (XposedHelpers.getBooleanField(self, "mUseHeadsUp") && mHeadsUpNotificationDecay > 0
+                        && (Boolean) XposedHelpers.callMethod(mHeadsUpNotificationView, "isClearable")) {
+                    mHandler.removeMessages(MSG_HIDE_HEADS_UP);
+                    mHandler.sendEmptyMessageDelayed(MSG_HIDE_HEADS_UP, mHeadsUpNotificationDecay);
+                }
+                return null;
+            }
+        });
+
         XposedHelpers.findAndHookMethod(tv, "removeNotification", IBinder.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                 IBinder key = (IBinder) methodHookParam.args[0];
 
                 if (DEBUG) Log.d(TAG, "removeNotification(" + key + ")");
-                removeNotificationViews(key);
+                StatusBarNotification old = removeNotificationViews(key);
                 mTicker.remove(key);
                 setAreThereNotifications();
                 mNotificationPanel.updateClearButton();
+
+                Object entry = XposedHelpers.getObjectField(self, "mInterruptingNotificationEntry");
+                if (ENABLE_HEADS_UP && entry != null
+                        && old == (StatusBarNotification) XposedHelpers.getObjectField(entry, "notification")) {
+                    mHandler.sendEmptyMessage(MSG_HIDE_HEADS_UP);
+                }
                 return null;
             }
         });
@@ -2065,6 +2198,27 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 reset();
             }
         });
+        XposedHelpers.findAndHookMethod(base, "onHeadsUpDismissed", new XC_MethodReplacement() {
+            @Override
+            protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                Object mInterruptingNotificationEntry = XposedHelpers.getObjectField(self, "mInterruptingNotificationEntry");
+                if (mInterruptingNotificationEntry == null) return null;
+                mHandler.sendEmptyMessage(MSG_HIDE_HEADS_UP);
+                if ((Boolean) XposedHelpers.callMethod(mHeadsUpNotificationView, "isClearable")) {
+                    try {
+                        StatusBarNotification notification = (StatusBarNotification)
+                                XposedHelpers.getObjectField(mInterruptingNotificationEntry, "notification");
+                        XposedHelpers.callMethod(mBarService, "onNotificationClear",
+                                notification.getPackageName(),
+                                notification.getTag(),
+                                notification.getId());
+                    } catch (Exception ex) {
+                        // oh well
+                    }
+                }
+                return null;
+            }
+        });
         XposedHelpers.findAndHookMethod(TabletKatModule.mDateViewClass, "updateClock", new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
@@ -2195,6 +2349,17 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             checkBarModes();
         }};
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mHeadsUpObserver.onChange(true); // set up
+        if (ENABLE_HEADS_UP) {
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.Global.getUriFor(SETTING_HEADS_UP), true,
+                    mHeadsUpObserver);
+        }
+    }
+
     private void replaceDimen(final XResources res, final XModuleResources res2, final int id, final String str, final boolean inline){
         final float orig = inline ? 0 :
                 res.getDimension(res.getIdentifier(str, "dimen", TabletKatModule.SYSTEMUI_PACKAGE));
@@ -2214,6 +2379,30 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     @Override
     public void initResources(final XResources res, final XModuleResources res2) {
         super.initResources(res, res2);
+
+        res.hookLayout(TabletKatModule.SYSTEMUI_PACKAGE, "layout", "heads_up", new XC_LayoutInflated() {
+            @Override
+            public void handleLayoutInflated(LayoutInflatedParam param) throws Throwable {
+                if (!mIsTv){
+                    return;
+                }
+
+                ViewGroup v = (ViewGroup) param.view;
+                DisplayMetrics d = v.getResources().getDisplayMetrics();
+
+                int content_slider = param.res.getIdentifier("content_slider", "id", TabletKatModule.SYSTEMUI_PACKAGE);
+                View contentSlider = v.findViewById(content_slider);
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)
+                        contentSlider.getLayoutParams();
+
+                params.gravity = Gravity.END;
+                params.width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 478, d);
+                params.setMarginStart(0);
+                params.setMarginEnd(0);
+
+                contentSlider.setLayoutParams(params);
+            }
+        });
 
         replaceDimen(res, res2, R.dimen.system_bar_icon_drawing_size, "status_bar_icon_drawing_size", false);
         replaceDimen(res, res2, R.dimen.navbar_search_panel_height, "navbar_search_panel_height", true);

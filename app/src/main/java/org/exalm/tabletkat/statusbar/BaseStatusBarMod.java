@@ -56,9 +56,12 @@ public class BaseStatusBarMod implements IMod {
     protected static final int MSG_CLOSE_RECENTS_PANEL = 1021;
     protected static final int MSG_OPEN_SEARCH_PANEL = 1024;
     protected static final int MSG_CLOSE_SEARCH_PANEL = 1025;
+    protected static final int MSG_SHOW_HEADS_UP = 1026;
     protected static final int MSG_HIDE_HEADS_UP = 1027;
+    protected static final int MSG_ESCALATE_HEADS_UP = 1028;
     protected static final boolean ENABLE_HEADS_UP = true;
     public static final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
+    protected static final String SETTING_HEADS_UP = "heads_up_enabled";
     protected Object mNotificationData;
     protected WindowManager mWindowManager;
     protected Handler mHandler;
@@ -314,8 +317,10 @@ public class BaseStatusBarMod implements IMod {
         return (View.OnLongClickListener) XposedHelpers.callMethod(self, "getNotificationLongClicker");
     }
 
-    protected void addNotificationViews(IBinder key, StatusBarNotification notification) {
-        addNotificationViews(XposedHelpers.callMethod(self, "createNotificationViews", key, notification));
+    protected Object addNotificationViews(IBinder key, StatusBarNotification notification) {
+        Object o = XposedHelpers.callMethod(self, "createNotificationViews", key, notification);
+        addNotificationViews(o);
+        return o;
     }
 
     protected void addNotificationViews(Object o) {
@@ -412,7 +417,18 @@ public class BaseStatusBarMod implements IMod {
 
     public void animateCollapsePanels(int i) {
         XposedHelpers.callMethod(self, "animateCollapsePanels", i);
+    }
 
+    protected boolean shouldInterrupt(StatusBarNotification sbn) {
+        return (Boolean) XposedHelpers.callMethod(self, "shouldInterrupt", sbn);
+    }
+
+    public void resetHeadsUpDecayTimer() {
+        XposedHelpers.callMethod(self, "resetHeadsUpDecayTimer");
+    }
+
+    protected void notifyHeadsUpScreenOn(boolean screenOn) {
+        XposedHelpers.callMethod(self, "notifyHeadsUpScreenOn", screenOn);
     }
 
     public class TouchOutsideListener implements View.OnTouchListener {

@@ -306,18 +306,4 @@ public class TabletStatusBarView extends FrameLayout {
             view.setVisibility(visible ? VISIBLE : GONE);
         }
     }
-                    /*
-    private void setNavigationVisibility(int visibility) {
-        boolean disableHome = ((visibility & StatusBarManager.DISABLE_HOME) != 0);
-        boolean disableRecent = ((visibility & StatusBarManager.DISABLE_RECENT) != 0);
-        boolean disableBack = ((visibility & StatusBarManager.DISABLE_BACK) != 0);
-
-        mBackButton.setVisibility(disableBack ? View.INVISIBLE : View.VISIBLE);
-        mHomeButton.setVisibility(disableHome ? View.INVISIBLE : View.VISIBLE);
-        mRecentButton.setVisibility(disableRecent ? View.INVISIBLE : View.VISIBLE);
-
-        mInputMethodSwitchButton.setScreenLocked(
-                (visibility & StatusBarManager.DISABLE_SYSTEM_INFO) != 0);
-
-        mStatusBarView.getBarTransitions().applyBackButtonQuiescentAlpha(mStatusBarView.getBarTransitions().getMode(), true /*animate*/
 }
