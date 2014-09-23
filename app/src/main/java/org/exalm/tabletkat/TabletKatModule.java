@@ -273,8 +273,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 
                 if (mStatusBar != null) {
                     boolean isTabletUI = mTvStatusBarClass.isInstance(mStatusBar);
+                    mIsTabletConfiguration = true;//mConfiguration.orientation == Configuration.ORIENTATION_LANDSCAPE; //TODO: Add additional modes
                     boolean shouldUseTabletUI = shouldUseTabletUI();
-                    mIsTabletConfiguration = true; //TODO: Add additional modes
                     if (isTabletUI != shouldUseTabletUI){
                         long l = (Long) callMethod(mSystemUI, "onServiceStartAttempt");
                         Handler h = new Handler(){};
@@ -296,8 +296,11 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     }
 
     private boolean shouldUseTabletUI() {
+        if (!mIsTabletConfiguration) {
+            return false;
+        }
         pref.reload();
-        return pref.getBoolean("enable_tablet_ui", true) && mIsTabletConfiguration;
+        return pref.getBoolean("enable_tablet_ui", true);
     }
 
     private static boolean isModEnabled(String id) {
