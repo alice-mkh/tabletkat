@@ -470,12 +470,12 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         mRecentButton.setOnTouchListener(mRecentsPreloadOnTouchListener);
 
-        mPile = (ViewGroup) mNotificationPanel.findViewById(SystemR.id.content);
+        mPile = mNotificationPanel.findViewById(SystemR.id.content);
         XposedHelpers.setObjectField(self, "mPile", mPile);
-        mPile.removeAllViews();
+        XposedHelpers.callMethod(mPile, "removeAllViews");
         XposedHelpers.callMethod(mPile, "setLongPressListener", getNotificationLongClicker());
 
-        ScrollView scroller = (ScrollView) mPile.getParent();
+        ScrollView scroller = (ScrollView) XposedHelpers.callMethod(mPile, "getParent");
         scroller.setFillViewport(true);
     }
 
@@ -505,12 +505,10 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
 
     private int getNotificationPanelHeight() {
-        final Resources res = mContext.getResources();
         final Display d = mWindowManager.getDefaultDisplay();
         final Point size = new Point();
         d.getRealSize(size);
-        int y = res.getDimensionPixelSize(TkR.dimen.notification_panel_min_height);
-        return Math.min(y, size.y);
+        return size.y;
     }
 
     protected void loadDimens() {
@@ -1300,24 +1298,24 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         }
 
         ArrayList<View> toRemove = new ArrayList<View>();
-        int n = mPile.getChildCount();
+        int n = (Integer) XposedHelpers.callMethod(mPile, "getChildCount");
         for (int i=0; i<n; i++) {
-            View child = mPile.getChildAt(i);
+            View child = (View) XposedHelpers.callMethod(mPile, "getChildAt", i);
             if (!toShow.contains(child)) {
                 toRemove.add(child);
             }
         }
 
         for (View remove : toRemove) {
-            mPile.removeView(remove);
+            XposedHelpers.callMethod(mPile, "removeView", remove);
         }
 
         for (int i=0; i<toShow.size(); i++) {
             View v = toShow.get(i);
             if (v.getParent() == null) {
                 // the notification panel has the most important things at the bottom
-                int count = mPile.getChildCount();
-                mPile.addView(v, Math.min(toShow.size() - 1 - i, count));
+                int count = (Integer) XposedHelpers.callMethod(mPile, "getChildCount");
+                XposedHelpers.callMethod(mPile, "addView", v, Math.min(toShow.size() - 1 - i, count));
             }
         }
 

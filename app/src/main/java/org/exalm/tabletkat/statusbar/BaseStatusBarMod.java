@@ -66,7 +66,7 @@ public class BaseStatusBarMod implements IMod {
     protected WindowManager mWindowManager;
     protected Handler mHandler;
     protected View.OnTouchListener mRecentsPreloadOnTouchListener;
-    protected ViewGroup mPile;
+    protected Object mPile;
     protected Object mWindowManagerService;
     protected Object mBarService;
     protected Object mSearchPanelView;
@@ -115,7 +115,7 @@ public class BaseStatusBarMod implements IMod {
                 StatusBarNotification notification = (StatusBarNotification)methodHookParam.args[1];
                 Object mInterruptingNotificationEntry = XposedHelpers.getObjectField(self, "mInterruptingNotificationEntry");
                 mRecentsPreloadOnTouchListener = (View.OnTouchListener) XposedHelpers.getObjectField(self, "mRecentsPreloadOnTouchListener");
-                mPile = (ViewGroup) XposedHelpers.getObjectField(self, "mPile");
+                mPile = XposedHelpers.getObjectField(self, "mPile");
 
                 if (DEBUG) Log.d(TAG, "updateNotification(" + key + " -> " + notification + ")");
 
@@ -263,7 +263,7 @@ public class BaseStatusBarMod implements IMod {
 
                 mHandler = (Handler) XposedHelpers.getObjectField(self, "mHandler");
                 mRecentsPreloadOnTouchListener = (View.OnTouchListener) XposedHelpers.getObjectField(self, "mRecentsPreloadOnTouchListener");
-                mPile = (ViewGroup) XposedHelpers.getObjectField(self, "mPile");
+                mPile = XposedHelpers.getObjectField(self, "mPile");
                 mBarService = XposedHelpers.getObjectField(self, "mBarService");
                 mSearchPanelView = XposedHelpers.getObjectField(self, "mSearchPanelView");
                 mCommandQueue = XposedHelpers.getObjectField(self, "mCommandQueue");
