@@ -1,0 +1,19 @@
+<resources>
+    <!-- Strings for SystemUI -->
+
+    <string name="compat_mode_on">Zoom p/ preencher a tela</string>
+
+    <string name="compat_mode_off">Ampliar p/ preencher tela</string>
+
+    <string name="notifications_off_title">Notificações desativadas</string>
+    <string name="notifications_off_text">Toque aqui para ativar as notificações novamente.</string>
+
+    <string name="compat_mode_help_header">Zoom em modo de compatibilidade</string>
+    
+    <string name="compat_mode_help_body">Quando um aplicativo é desenvolvido para uma tela menor, um controle de zoom é exibido perto do relógio.</string>
+
+    <string name="accessibility_compatibility_zoom_button">Botão de zoom da compatibilidade.</string>
+    <string name="accessibility_compatibility_zoom_example">Aumentar a tela com zoom.</string>
+
+    <string name="status_bar_settings_location">Localização</string>
+</resources>
