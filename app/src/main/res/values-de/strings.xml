@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">TabletKat</string>
-
     <!--Strings from settings activity-->
 
     <string name="pref_header_general">Allgemein</string>
