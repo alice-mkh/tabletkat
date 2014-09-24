@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">TabletKat</string>
+
+    <!--Strings from settings activity-->
+
+    <string name="pref_header_general">Geral</string>
+
+    <string name="pref_title_enable_tablet_ui">Ativar interface p/ tablets (Tablet UI)</string>
+    <string name="pref_summary_enable_tablet_ui">Usar o antigo modo tablet</string>
+
+    <string name="pref_title_enable_mod_recents">Ativar "Recentes" p/ tablet</string>
+    <string name="pref_summary_enable_mod_recents">Mostra as tarefas recentes à esquerda da tela.</string>
+
+    <string name="pref_title_extended_settings">Ajustes rápidos estendidos</string>
+    <string name="pref_summary_extended_settings">Permite funções adicionais no painel de configurações.</string>
+
+    <string name="pref_title_ics_clock_font">Fonte de relógio ICS</string>
+    <string name="pref_summary_ics_clock_font">Usar uma fonte especial para o relógio</string>
+
+    <string name="pref_title_battery_percents">Mostrar indicador percentual da bateria</string>
+
+    <string name="pref_title_enable_mod_settings">Configurações em múltiplos painéis</string>
+    <string name="pref_summary_enable_mod_settings">Habilita o modo de múltiplos painéis no aplicativo de configurações.</string>
+
+    <string name="pref_title_enable_mod_launcher">Ativar o layout p/ tablets no launcher</string>
+    <string name="pref_summary_enable_mod_launcher">Somente p/ o Launcher2 (padrão do Nexus 10).</string>
+
+    <string name="message_reboot">Reinicie para aplicar as alterações.</string>
+</resources>
