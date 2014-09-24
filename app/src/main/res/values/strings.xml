@@ -3,27 +3,27 @@
 
     <!--Strings from settings activity-->
 
-    <string name="pref_header_general">General</string>
+    <string name="pref_header_general">Geral</string>
 
-    <string name="pref_title_enable_tablet_ui">Enable tablet UI</string>
-    <string name="pref_summary_enable_tablet_ui">Use older tablet mode</string>
+    <string name="pref_title_enable_tablet_ui">Ativar interface para tablets (Tablet UI)</string>
+    <string name="pref_summary_enable_tablet_ui">Usar o antigo modo tablet</string>
 
-    <string name="pref_title_enable_mod_recents">Enable tablet recents</string>
-    <string name="pref_summary_enable_mod_recents">Pin Recents to the left</string>
+    <string name="pref_title_enable_mod_recents">Ativar "Recentes" para tablet</string>
+    <string name="pref_summary_enable_mod_recents">Mostra os aplicativos recentes na parte esquerda da tela.</string>
 
-    <string name="pref_title_extended_settings">Extended quick settings</string>
-    <string name="pref_summary_extended_settings">Allow additional features in the settings pane</string>
+    <string name="pref_title_extended_settings">Ajustes rápidos estendidos</string>
+    <string name="pref_summary_extended_settings">Permite funções adicionais no painel de configurações.</string>
 
-    <string name="pref_title_ics_clock_font">ICS clock font</string>
-    <string name="pref_summary_ics_clock_font">Use a special font for clock</string>
+    <string name="pref_title_ics_clock_font">Fonte de relógio ICS</string>
+    <string name="pref_summary_ics_clock_font">Usar uma fonte especial para o relógio</string>
 
-    <string name="pref_title_battery_percents">Show battery percents</string>
+    <string name="pref_title_battery_percents">Mostrar porcentagem da bateria</string>
 
-    <string name="pref_title_enable_mod_settings">Enable multi-pane settings</string>
-    <string name="pref_summary_enable_mod_settings">Enable multi-pane mode in the Settings app</string>
+    <string name="pref_title_enable_mod_settings">Configurações em múltiplos painéis</string>
+    <string name="pref_summary_enable_mod_settings">Ativa o modo de múltiplos painéis no aplicativo de configurações.</string>
 
-    <string name="pref_title_enable_mod_launcher">Enable tablet launcher layout</string>
-    <string name="pref_summary_enable_mod_launcher">Launcher2 (Nexus 10 default) only</string>
+    <string name="pref_title_enable_mod_launcher">Ativar layout para tablets no launcher</string>
+    <string name="pref_summary_enable_mod_launcher">Somente para o Launcher2 (padrão do Nexus 10)</string>
 
-    <string name="message_reboot">Reboot to apply the changes</string>
+    <string name="message_reboot">Reinicie para aplicar as alterações.</string>
 </resources>
