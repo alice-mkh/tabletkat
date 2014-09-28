@@ -99,8 +99,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         findAndHookMethod(c, "getNonDecorDisplayWidth", int.class, int.class, int.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                setNavigationBarProperties(methodHookParam, shouldUseTabletUI());
-                if (shouldUseTabletUI()) {
+                setNavigationBarProperties(methodHookParam, shouldUseTabletUI(null));
+                if (shouldUseTabletUI(null)) {
                     int fullWidth = (Integer) methodHookParam.args[0];
                     return fullWidth;
                 }
@@ -110,8 +110,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         findAndHookMethod(c, "getNonDecorDisplayHeight", int.class, int.class, int.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                setNavigationBarProperties(methodHookParam, shouldUseTabletUI());
-                if (shouldUseTabletUI()){
+                setNavigationBarProperties(methodHookParam, shouldUseTabletUI(null));
+                if (shouldUseTabletUI(null)){
                     int fullHeight = (Integer) methodHookParam.args[1];
                     int rotation = getIntField(methodHookParam.thisObject, "mSeascapeRotation");
                     int[] mNavigationBarHeightForRotation = (int[]) getObjectField(methodHookParam.thisObject, "mNavigationBarHeightForRotation");
@@ -123,7 +123,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         findAndHookMethod(c, "getConfigDisplayHeight", int.class, int.class, int.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                if (shouldUseTabletUI()){
+                if (shouldUseTabletUI(null)){
                     int fullWidth = (Integer) methodHookParam.args[0];
                     int fullHeight = (Integer) methodHookParam.args[1];
                     int rotation = (Integer) methodHookParam.args[2];
@@ -253,13 +253,12 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
                 debug("createStatusBarFromConfig");
                 String clsName = "com.android.systemui.statusbar.tv.TvStatusBar";
 
-                if (!shouldUseTabletUI() || clsName == null || clsName.length() == 0) {
+                if (!shouldUseTabletUI(mContext.getResources().getConfiguration())) {
                     clsName = "com.android.systemui.statusbar.phone.PhoneStatusBar";
-                    setObjectField(self, "mStatusBar", createStatusBar(clsName, mContext, mComponents));
-                    return null;
                 }
 
                 setObjectField(self, "mStatusBar", createStatusBar(clsName, mContext, mComponents));
+
                 return null;
             }
         });
@@ -273,19 +272,9 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 
                 if (mStatusBar != null) {
                     boolean isTabletUI = mTvStatusBarClass.isInstance(mStatusBar);
-                    mIsTabletConfiguration = true;//mConfiguration.orientation == Configuration.ORIENTATION_LANDSCAPE; //TODO: Add additional modes
-                    boolean shouldUseTabletUI = shouldUseTabletUI();
+                    boolean shouldUseTabletUI = shouldUseTabletUI(mConfiguration);
                     if (isTabletUI != shouldUseTabletUI){
-                        long l = (Long) callMethod(mSystemUI, "onServiceStartAttempt");
-                        Handler h = new Handler(){};
-                        h.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                callMethod(mSystemUI, "createStatusBarFromConfig");
-                                Object mStatusBar = getObjectField(self, "mStatusBar");
-                                callMethod(mStatusBar, "onConfigurationChanged", mConfiguration);
-                            }
-                        }, l);
+                        refreshSystemUI(shouldUseTabletUI);
                     }else {
                         callMethod(mStatusBar, "onConfigurationChanged", mConfiguration);
                     }
@@ -295,7 +284,10 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         });
     }
 
-    private boolean shouldUseTabletUI() {
+    private boolean shouldUseTabletUI(Configuration conf) {
+        if (conf != null) {
+            mIsTabletConfiguration = true;//conf.orientation == Configuration.ORIENTATION_LANDSCAPE;
+        }
         if (!mIsTabletConfiguration) {
             return false;
         }
@@ -325,8 +317,11 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         }
         setObjectField(mStatusBar, "mContext", mContext);
         setObjectField(mStatusBar, "mComponents", mComponents);
-        statusBarMod.init(mStatusBar);
         if (mStatusBar != null) {
+            if (mTvStatusBarClass.isInstance(mStatusBar)) {
+                statusBarMod.init(mStatusBar);
+            }
+
             callMethod(mStatusBar, "start");
             debug("started " + mStatusBar.getClass().getSimpleName());
         }
@@ -452,6 +447,9 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         }
 
         long l = (Long) callMethod(mSystemUI, "onServiceStartAttempt");
+        if (l < 500L) {
+            l = 500L;
+        }
         Handler h = new Handler(){};
         h.postDelayed(new Runnable() {
             @Override

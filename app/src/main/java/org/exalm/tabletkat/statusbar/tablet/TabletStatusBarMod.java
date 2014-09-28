@@ -1052,6 +1052,9 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
     // called by TabletTicker when it's done with all queued ticks
     public void doneTicking() {
+        if (mFeedbackIconArea == null) {
+            return;
+        }
         mFeedbackIconArea.setVisibility(View.VISIBLE);
     }
 
@@ -2104,6 +2107,14 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         XposedHelpers.findAndHookMethod(tv, "topAppWindowChanged", boolean.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                if (!mIsTv){
+                    return TabletKatModule.invokeOriginalMethod(methodHookParam);
+                }
+
+                if (mMenuButton == null) {
+                    return null;
+                }
+
                 boolean showMenu = (Boolean) methodHookParam.args[0];
 
                 if (DEBUG) {
@@ -2191,6 +2202,21 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 }
                 if (mStatusBarView != null) {
                     mWindowManager.removeViewImmediate(mStatusBarView);
+                }
+                if (mNotificationPanel != null) {
+                    mWindowManager.removeViewImmediate(mNotificationPanel);
+                }
+                if (mInputMethodsPanel != null) {
+                    mWindowManager.removeViewImmediate(mInputMethodsPanel);
+                }
+                if (mCompatModePanel != null) {
+                    mWindowManager.removeViewImmediate(mCompatModePanel);
+                }
+                if (mCompatibilityHelpDialog != null) {
+                    mWindowManager.removeViewImmediate(mCompatibilityHelpDialog);
+                }
+                if (mTicker != null) {
+                    mTicker.halt();
                 }
                 mContext.unregisterReceiver(mBroadcastReceiver);
                 reset();

@@ -91,6 +91,7 @@ public class BaseStatusBarMod implements IMod {
         mCommandQueue = null;
         mContext = null;
         self = null;
+        mIsTv = false;
     }
 
     @Override
@@ -111,6 +112,10 @@ public class BaseStatusBarMod implements IMod {
         XposedHelpers.findAndHookMethod(tv, "updateNotification", IBinder.class, StatusBarNotification.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                if (!mIsTv || self == null) {
+                    return null;
+                }
+
                 IBinder key = (IBinder)methodHookParam.args[0];
                 StatusBarNotification notification = (StatusBarNotification)methodHookParam.args[1];
                 Object mInterruptingNotificationEntry = XposedHelpers.getObjectField(self, "mInterruptingNotificationEntry");
