@@ -34,7 +34,7 @@ public class MultiPaneSettingsMod implements IMod {
     @Override
     public void addHooks(final ClassLoader cl) {
         Class dataUsageSummaryClass = XposedHelpers.findClass("com.android.settings.DataUsageSummary", cl);
-        final Class homeSettingsClass = XposedHelpers.findClass("com.android.settings.HomeSettings", cl);
+//        final Class homeSettingsClass = XposedHelpers.findClass("com.android.settings.HomeSettings", cl);
         Class manageApplicationsClass = XposedHelpers.findClass("com.android.settings.applications.ManageApplications", cl);
         Class manageApplicationsTabInfoClass = XposedHelpers.findClass("com.android.settings.applications.ManageApplications.TabInfo", cl);
         final Class settingsClass = XposedHelpers.findClass("com.android.settings.Settings", cl);
@@ -81,6 +81,13 @@ public class MultiPaneSettingsMod implements IMod {
             }
         });
 
+        XposedHelpers.findAndHookMethod(settingsClass, "isValidFragment", String.class, new XC_MethodReplacement() {
+            @Override
+            protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                return true;
+            }
+        });
+/*
         XposedHelpers.findAndHookMethod(settingsClass, "isValidFragment", String.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -88,7 +95,7 @@ public class MultiPaneSettingsMod implements IMod {
                 param.setResult(b || param.args[0].equals(homeSettingsClass.getName()));
             }
         });
-
+*/
         XposedHelpers.findAndHookMethod(settingsClass, "onIsMultiPane", new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
