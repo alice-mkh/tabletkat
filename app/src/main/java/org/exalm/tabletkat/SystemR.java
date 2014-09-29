@@ -83,6 +83,7 @@ public class SystemR {
     }
     public static class string {
         public static int accessibility_back;
+        public static int accessibility_battery_level;
         public static int accessibility_bluetooth_connected;
         public static int accessibility_bluetooth_disconnected;
         public static int accessibility_clear_all;
@@ -187,6 +188,7 @@ public class SystemR {
         layout.status_bar_recent_item = res.getIdentifier("status_bar_recent_item", "layout", SYSTEMUI_PACKAGE);
 
         string.accessibility_back = res.getIdentifier("accessibility_back", "string", SYSTEMUI_PACKAGE);
+        string.accessibility_battery_level = res.getIdentifier("accessibility_battery_level", "string", SYSTEMUI_PACKAGE);
         string.accessibility_bluetooth_connected = res.getIdentifier("accessibility_bluetooth_connected", "string", SYSTEMUI_PACKAGE);
         string.accessibility_bluetooth_disconnected = res.getIdentifier("accessibility_bluetooth_disconnected", "string", SYSTEMUI_PACKAGE);
         string.accessibility_clear_all = res.getIdentifier("accessibility_clear_all", "string", SYSTEMUI_PACKAGE);

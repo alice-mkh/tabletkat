@@ -75,7 +75,6 @@ public class NotificationPanelTitle extends RelativeLayout implements View.OnCli
 
         ViewHelper.replaceView(this, TkR.id.battery_text, new BatteryPercentView(getContext()));
         BatteryPercentView v = (BatteryPercentView) findViewById(TkR.id.battery_text);
-        v.attach(findViewById(SystemR.id.battery));
         v.setShowOnFull(true);
 
         ((TextView) findViewById(TkR.id.network_text)).setText(SystemR.string.status_bar_settings_settings_button);

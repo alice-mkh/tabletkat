@@ -770,7 +770,6 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         ViewHelper.replaceView(v, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mLargeIconContext));
         ViewHelper.replaceView(v, TkR.id.battery_text, new BatteryPercentView(mContext));
         final BatteryPercentView percent = (BatteryPercentView) v.findViewById(TkR.id.battery_text);
-        percent.attach(v.findViewById(SystemR.id.battery));
         percent.setTextColor(mContext.getResources().getColor(SystemR.color.status_bar_clock_color));
 
         ViewGroup view = (ViewGroup)v.findViewById(SystemR.id.nav_buttons);
