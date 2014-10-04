@@ -40,8 +40,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     public static final String SETTINGS_PACKAGE = "com.android.settings";
 
     private static TabletStatusBarMod statusBarMod;
-    private static TabletRecentsMod recentsMod;
-    private static MultiPaneSettingsMod settingsMod;
+    public static TabletRecentsMod recentsMod;
+    private static IMod settingsMod;
     private static LauncherMod launcherMod;
 
     public static Class mActivityManagerNativeClass;
@@ -65,6 +65,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     public static Class mNotificationDataEntryClass;
     public static Class mNotificationRowLayoutClass;
     public static Class mPhoneStatusBarPolicyClass;
+    public static Class mRecentTasksLoaderClass;
     public static Class mStatusBarIconClass;
     public static Class mStatusBarIconViewClass;
     public static Class mStatusBarManagerClass;
@@ -227,6 +228,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         mNotificationRowLayoutClass = findClass("com.android.systemui.statusbar.policy.NotificationRowLayout", loadPackageParam.classLoader);
         mPhoneStatusBarPolicyClass = findClass("com.android.systemui.statusbar.phone.PhoneStatusBarPolicy", loadPackageParam.classLoader);
         mStatusBarIconClass = findClass("com.android.internal.statusbar.StatusBarIcon", loadPackageParam.classLoader);
+        mRecentTasksLoaderClass = findClass("com.android.systemui.recent.RecentTasksLoader", loadPackageParam.classLoader);
         mStatusBarIconViewClass = findClass("com.android.systemui.statusbar.StatusBarIconView", loadPackageParam.classLoader);
         mStatusBarManagerClass = findClass("android.app.StatusBarManager", loadPackageParam.classLoader);
         mSystemUIClass = findClass("com.android.systemui.SystemUI", loadPackageParam.classLoader);
@@ -318,11 +320,13 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         setObjectField(mStatusBar, "mContext", mContext);
         setObjectField(mStatusBar, "mComponents", mComponents);
         if (mStatusBar != null) {
-            if (mTvStatusBarClass.isInstance(mStatusBar)) {
-                statusBarMod.init(mStatusBar);
-            }
+            statusBarMod.init(mStatusBar);
+            recentsMod.setBar(mStatusBar);
+            recentsMod.registerReceiver(mContext);
 
             callMethod(mStatusBar, "start");
+            statusBarMod.onStart();
+            recentsMod.createPanel(mStatusBar);
             debug("started " + mStatusBar.getClass().getSimpleName());
         }
         return mStatusBar;
@@ -334,11 +338,10 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
             if (settingsMod == null){
                 settingsMod = new MultiPaneSettingsMod();
             }
-            final XResources res = initPackageResourcesParam.res;
-            SystemR.init(res);
-
+            XResources res = initPackageResourcesParam.res;
             XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, initPackageResourcesParam.res);
 
+            SystemR.init(res, res2);
             TkR.init(res, res2);
 
             if (isModEnabled("settings")) {
@@ -351,11 +354,10 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
                 if (launcherMod == null || !initPackageResourcesParam.packageName.equals(launcherMod.getPackage())) {
                     launcherMod = new LauncherMod();
                 }
-                final XResources res = initPackageResourcesParam.res;
-                SystemR.init(res);
-
+                XResources res = initPackageResourcesParam.res;
                 XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, initPackageResourcesParam.res);
 
+                SystemR.init(res, res2);
                 TkR.init(res, res2);
 
                 launcherMod.initResources(res, res2);
@@ -372,12 +374,11 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         if (recentsMod == null){
             recentsMod = new TabletRecentsMod();
         }
-        final XResources res = initPackageResourcesParam.res;
-        debug("Replacing SystemUI resources");
-        SystemR.init(res);
-
+        XResources res = initPackageResourcesParam.res;
         XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, initPackageResourcesParam.res);
 
+        debug("Replacing SystemUI resources");
+        SystemR.init(res, res2);
         TkR.init(res, res2);
 
         statusBarMod.initResources(res, res2);

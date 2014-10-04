@@ -38,7 +38,6 @@ import org.exalm.tabletkat.IMod;
 import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.statusbar.tablet.StatusBarPanel;
 
-import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedHelpers;
 
@@ -259,33 +258,27 @@ public class BaseStatusBarMod implements IMod {
             }
         });
 
-        XposedHelpers.findAndHookMethod(base, "start", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if (!mIsTv){
-                    return;
-                }
-
-                mHandler = (Handler) XposedHelpers.getObjectField(self, "mHandler");
-                mRecentsPreloadOnTouchListener = (View.OnTouchListener) XposedHelpers.getObjectField(self, "mRecentsPreloadOnTouchListener");
-                mPile = XposedHelpers.getObjectField(self, "mPile");
-                mBarService = XposedHelpers.getObjectField(self, "mBarService");
-                mSearchPanelView = XposedHelpers.getObjectField(self, "mSearchPanelView");
-                mCommandQueue = XposedHelpers.getObjectField(self, "mCommandQueue");
-                onStart();
-            }
-        });
         //AOSPA hook
         try {
             XposedHelpers.findAndHookMethod(base, "updateHoverState", XC_MethodReplacement.DO_NOTHING);
         }catch (NoSuchMethodError e){}
     }
 
-    protected void onStart() {}
+    public void onStart() {
+        if (!mIsTv){
+            return;
+        }
+
+        mHandler = (Handler) XposedHelpers.getObjectField(self, "mHandler");
+        mRecentsPreloadOnTouchListener = (View.OnTouchListener) XposedHelpers.getObjectField(self, "mRecentsPreloadOnTouchListener");
+        mPile = XposedHelpers.getObjectField(self, "mPile");
+        mBarService = XposedHelpers.getObjectField(self, "mBarService");
+        mSearchPanelView = XposedHelpers.getObjectField(self, "mSearchPanelView");
+        mCommandQueue = XposedHelpers.getObjectField(self, "mCommandQueue");
+    }
 
     @Override
     public void initResources(XResources res, XModuleResources res2) {
-
     }
 
     protected boolean inKeyguardRestrictedInputMode() {

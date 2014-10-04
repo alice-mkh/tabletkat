@@ -15,6 +15,7 @@ public class TkR {
         public static int system_bar_navigation_key_width;
         public static int system_bar_navigation_menu_key_width;
         public static int system_bar_recents_thumbnail_width;
+        public static int system_bar_recents_width;
     }
     public static class drawable {
         public static int ic_notification_dnd;
@@ -114,6 +115,7 @@ public class TkR {
         dimen.system_bar_navigation_key_width = add(res, res2, R.dimen.system_bar_navigation_key_width);
         dimen.system_bar_navigation_menu_key_width = add(res, res2, R.dimen.system_bar_navigation_menu_key_width);
         dimen.system_bar_recents_thumbnail_width = add(res, res2, R.dimen.system_bar_recents_thumbnail_width);
+        dimen.system_bar_recents_width = add(res, res2, R.dimen.system_bar_recents_width);
 
         drawable.ic_notification_dnd = add(res, res2, R.drawable.ic_notification_dnd);
         drawable.ic_notification_open = add(res, res2, R.drawable.ic_notification_open);

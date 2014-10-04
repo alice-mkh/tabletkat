@@ -44,6 +44,8 @@ public class TabletKatSettings extends PreferenceActivity {
 //        addPreferencesFromResource(R.xml.pref_notification);
 
         setUpPreferenceChangeListener(findPreference("enable_tablet_ui"));
+        setUpPreferenceChangeListener(findPreference("enable_mod_recents"));
+        setUpPreferenceChangeListener(findPreference("overlay_recents"));
         setUpPreferenceChangeListener(findPreference("extended_settings"));
         setUpPreferenceChangeListener(findPreference("ics_clock_font"));
         setUpPreferenceChangeListener(findPreference("battery_percents"));
@@ -135,6 +137,8 @@ public class TabletKatSettings extends PreferenceActivity {
             addPreferencesFromResource(R.xml.pref_general);
 
             setUpPreferenceChangeListener(findPreference("enable_tablet_ui"));
+            setUpPreferenceChangeListener(findPreference("enable_mod_recents"));
+            setUpPreferenceChangeListener(findPreference("overlay_recents"));
             setUpPreferenceChangeListener(findPreference("extended_settings"));
             setUpPreferenceChangeListener(findPreference("ics_clock_font"));
             setUpPreferenceChangeListener(findPreference("battery_percents"));

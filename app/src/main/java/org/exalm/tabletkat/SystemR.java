@@ -1,5 +1,6 @@
 package org.exalm.tabletkat;
 
+import android.content.res.XModuleResources;
 import android.content.res.XResources;
 
 public class SystemR {
@@ -35,7 +36,6 @@ public class SystemR {
         public static int ic_sysbar_recent;
         public static int nav_background;
         public static int notification_panel_bg;
-        //public static int notify_item_glow_bottom;
         public static int recents_thumbnail_bg;
         public static int recents_thumbnail_fg;
         public static int search_light;
@@ -66,10 +66,10 @@ public class SystemR {
         public static int search_light;
         public static int settings_button;
         public static int signal_cluster;
-        public static int signal_cluster_view;
         public static int statusIcons;
         public static int text;
         public static int wifi_signal;
+        public static int recents_root;
     }
     public static class integer {
         public static int config_maxNotificationIcons;
@@ -80,6 +80,7 @@ public class SystemR {
         public static int heads_up;
         public static int signal_cluster_view;
         public static int status_bar_recent_item;
+        public static int status_bar_recent_panel;
     }
     public static class string {
         public static int accessibility_back;
@@ -108,108 +109,121 @@ public class SystemR {
         public static int status_bar_use_physical_keyboard;
     }
 
-    public static void init(XResources res){
+    private static int get(XResources res, XModuleResources res2, String name, String type) {
+        int id = res.getIdentifier(name, type, SYSTEMUI_PACKAGE);
+/*        if (id <= 0) {
+            try {
+                int i = res2.getIdentifier(name, type, "org.exalm.tabletkat");
+                id = res.addResource(res2, res2.fwd(i).getId());
+            }catch (Throwable t){
+                XposedBridge.log(t);
+            }
+        }*/
+        return id;
+    }
+
+    public static void init(XResources res, XModuleResources res2){
         if (initialized){
             return;
         }
         initialized = true;
 
-        color.status_bar_clock_color = res.getIdentifier("status_bar_clock_color", "color", SYSTEMUI_PACKAGE);
-        color.system_bar_background_opaque = res.getIdentifier("system_bar_background_opaque", "color", SYSTEMUI_PACKAGE);
-        color.system_bar_background_semi_transparent = res.getIdentifier("system_bar_background_semi_transparent", "color", SYSTEMUI_PACKAGE);
+        color.status_bar_clock_color = get(res, res2, "status_bar_clock_color", "color");
+        color.system_bar_background_opaque = get(res, res2, "system_bar_background_opaque", "color");
+        color.system_bar_background_semi_transparent = get(res, res2, "system_bar_background_semi_transparent", "color");
 
-        dimen.notification_panel_header_padding_top = res.getIdentifier("notification_panel_header_padding_top", "dimen", SYSTEMUI_PACKAGE);
-        dimen.notification_panel_width = res.getIdentifier("notification_panel_width", "dimen", SYSTEMUI_PACKAGE);
-        dimen.notification_row_max_height = res.getIdentifier("notification_row_max_height", "dimen", SYSTEMUI_PACKAGE);
-        dimen.notification_row_min_height = res.getIdentifier("notification_row_min_height", "dimen", SYSTEMUI_PACKAGE);
-        dimen.status_bar_icon_drawing_alpha = res.getIdentifier("status_bar_icon_drawing_alpha", "dimen", SYSTEMUI_PACKAGE);
-        dimen.status_bar_icon_size = res.getIdentifier("status_bar_icon_size", "dimen", SYSTEMUI_PACKAGE);
+        dimen.notification_panel_header_padding_top = get(res, res2, "notification_panel_header_padding_top", "dimen");
+        dimen.notification_panel_width = get(res, res2, "notification_panel_width", "dimen");
+        dimen.notification_row_max_height = get(res, res2, "notification_row_max_height", "dimen");
+        dimen.notification_row_min_height = get(res, res2, "notification_row_min_height", "dimen");
+        dimen.status_bar_icon_drawing_alpha = get(res, res2, "status_bar_icon_drawing_alpha", "dimen");
+        dimen.status_bar_icon_size = get(res, res2, "status_bar_icon_size", "dimen");
 
-        drawable.ic_notifications = res.getIdentifier("ic_notifications", "drawable", SYSTEMUI_PACKAGE);
-        drawable.ic_notify_clear = res.getIdentifier("ic_notify_clear", "drawable", SYSTEMUI_PACKAGE);
-        drawable.ic_notify_settings = res.getIdentifier("ic_notify_settings", "drawable", SYSTEMUI_PACKAGE);
-        drawable.ic_sysbar_back = res.getIdentifier("ic_sysbar_back", "drawable", SYSTEMUI_PACKAGE);
-        drawable.ic_sysbar_back_ime = res.getIdentifier("ic_sysbar_back_ime", "drawable", SYSTEMUI_PACKAGE);
-        drawable.ic_sysbar_highlight = res.getIdentifier("ic_sysbar_highlight", "drawable", SYSTEMUI_PACKAGE);
-        drawable.ic_sysbar_home = res.getIdentifier("ic_sysbar_home", "drawable", SYSTEMUI_PACKAGE);
-        drawable.ic_sysbar_menu = res.getIdentifier("ic_sysbar_menu", "drawable", SYSTEMUI_PACKAGE);
-        drawable.ic_sysbar_lights_out_dot_large = res.getIdentifier("ic_sysbar_lights_out_dot_large", "drawable", SYSTEMUI_PACKAGE);
-        drawable.ic_sysbar_lights_out_dot_small = res.getIdentifier("ic_sysbar_lights_out_dot_small", "drawable", SYSTEMUI_PACKAGE);
-        drawable.ic_sysbar_recent = res.getIdentifier("ic_sysbar_recent", "drawable", SYSTEMUI_PACKAGE);
-        drawable.notification_panel_bg = res.getIdentifier("notification_panel_bg", "drawable", SYSTEMUI_PACKAGE);
-        drawable.nav_background = res.getIdentifier("nav_background", "drawable", SYSTEMUI_PACKAGE);
-//        drawable.notify_item_glow_bottom = res.getIdentifier("notify_item_glow_bottom", "drawable", SYSTEMUI_PACKAGE);
-        drawable.recents_thumbnail_bg = res.getIdentifier("recents_thumbnail_bg", "drawable", SYSTEMUI_PACKAGE);
-        drawable.recents_thumbnail_fg = res.getIdentifier("recents_thumbnail_fg", "drawable", SYSTEMUI_PACKAGE);
-        drawable.search_light = res.getIdentifier("search_light", "drawable", SYSTEMUI_PACKAGE);
-        drawable.stat_sys_data_bluetooth = res.getIdentifier("stat_sys_data_bluetooth", "drawable", SYSTEMUI_PACKAGE);
-        drawable.stat_sys_data_bluetooth_connected = res.getIdentifier("stat_sys_data_bluetooth_connected", "drawable", SYSTEMUI_PACKAGE);
-        drawable.status_bar_item_background = res.getIdentifier("status_bar_item_background", "drawable", SYSTEMUI_PACKAGE);
-        drawable.system_bar_background = res.getIdentifier("system_bar_background", "drawable", SYSTEMUI_PACKAGE);
-        drawable.system_bar_notification_header_bg = res.getIdentifier("system_bar_notification_header_bg", "drawable", SYSTEMUI_PACKAGE);
-        drawable.system_bar_ticker_background = res.getIdentifier("system_bar_ticker_background", "drawable", SYSTEMUI_PACKAGE);
+        drawable.ic_notifications = get(res, res2, "ic_notifications", "drawable");
+        drawable.ic_notify_clear = get(res, res2, "ic_notify_clear", "drawable");
+        drawable.ic_notify_settings = get(res, res2, "ic_notify_settings", "drawable");
+        drawable.ic_sysbar_back = get(res, res2, "ic_sysbar_back", "drawable");
+        drawable.ic_sysbar_back_ime = get(res, res2, "ic_sysbar_back_ime", "drawable");
+        drawable.ic_sysbar_highlight = get(res, res2, "ic_sysbar_highlight", "drawable");
+        drawable.ic_sysbar_home = get(res, res2, "ic_sysbar_home", "drawable");
+        drawable.ic_sysbar_menu = get(res, res2, "ic_sysbar_menu", "drawable");
+        drawable.ic_sysbar_lights_out_dot_large = get(res, res2, "ic_sysbar_lights_out_dot_large", "drawable");
+        drawable.ic_sysbar_lights_out_dot_small = get(res, res2, "ic_sysbar_lights_out_dot_small", "drawable");
+        drawable.ic_sysbar_recent = get(res, res2, "ic_sysbar_recent", "drawable");
+        drawable.notification_panel_bg = get(res, res2, "notification_panel_bg", "drawable");
+        drawable.nav_background = get(res, res2, "nav_background", "drawable");
+        drawable.recents_thumbnail_bg = get(res, res2, "recents_thumbnail_bg", "drawable");
+        drawable.recents_thumbnail_fg = get(res, res2, "recents_thumbnail_fg", "drawable");
+        drawable.search_light = get(res, res2, "search_light", "drawable");
+        drawable.stat_sys_data_bluetooth = get(res, res2, "stat_sys_data_bluetooth", "drawable");
+        drawable.stat_sys_data_bluetooth_connected = get(res, res2, "stat_sys_data_bluetooth_connected", "drawable");
+        drawable.status_bar_item_background = get(res, res2, "status_bar_item_background", "drawable");
+        drawable.system_bar_background = get(res, res2, "system_bar_background", "drawable");
+        drawable.system_bar_notification_header_bg = get(res, res2, "system_bar_notification_header_bg", "drawable");
+        drawable.system_bar_ticker_background = get(res, res2, "system_bar_ticker_background", "drawable");
 
-        id.app_thumbnail = res.getIdentifier("app_thumbnail", "id", SYSTEMUI_PACKAGE);
-        id.back = res.getIdentifier("back", "id", SYSTEMUI_PACKAGE);
-        id.battery = res.getIdentifier("battery", "id", SYSTEMUI_PACKAGE);
-        id.brightness_icon = res.getIdentifier("brightness_icon", "id", SYSTEMUI_PACKAGE);
-        id.clear_all_button = res.getIdentifier("clear_all_button", "id", SYSTEMUI_PACKAGE);
-        id.clock = res.getIdentifier("clock", "id", SYSTEMUI_PACKAGE);
-        id.content = res.getIdentifier("content", "id", SYSTEMUI_PACKAGE);
-        id.date =res.getIdentifier("date", "id", SYSTEMUI_PACKAGE);
-        id.home = res.getIdentifier("home", "id", SYSTEMUI_PACKAGE);
-        id.menu = res.getIdentifier("menu", "id", SYSTEMUI_PACKAGE);
-        id.mobile_signal = res.getIdentifier("mobile_signal", "id", SYSTEMUI_PACKAGE);
-        id.mobile_type = res.getIdentifier("mobile_type", "id", SYSTEMUI_PACKAGE);
-        id.nav_buttons = res.getIdentifier("nav_buttons", "id", SYSTEMUI_PACKAGE);
-        id.notification_button = res.getIdentifier("notification_button", "id", SYSTEMUI_PACKAGE);
-        id.notificationIcons = res.getIdentifier("notificationIcons", "id", SYSTEMUI_PACKAGE);
-        id.recent_apps = res.getIdentifier("recent_apps", "id", SYSTEMUI_PACKAGE);
-        id.search_light = res.getIdentifier("search_light", "id", SYSTEMUI_PACKAGE);
-        id.settings_button = res.getIdentifier("settings_button", "id", SYSTEMUI_PACKAGE);
-        id.signal_cluster = res.getIdentifier("signal_cluster", "id", SYSTEMUI_PACKAGE);
-        id.signal_cluster_view = res.getIdentifier("signal_cluster_view", "id", SYSTEMUI_PACKAGE);
-        id.statusIcons = res.getIdentifier("statusIcons", "id", SYSTEMUI_PACKAGE);
-        id.text = res.getIdentifier("text", "id", SYSTEMUI_PACKAGE);
-        id.wifi_signal = res.getIdentifier("wifi_signal", "id", SYSTEMUI_PACKAGE);
+        id.app_thumbnail = get(res, res2, "app_thumbnail", "id");
+        id.back = get(res, res2, "back", "id");
+        id.battery = get(res, res2, "battery", "id");
+        id.brightness_icon = get(res, res2, "brightness_icon", "id");
+        id.clear_all_button = get(res, res2, "clear_all_button", "id");
+        id.clock = get(res, res2, "clock", "id");
+        id.content = get(res, res2, "content", "id");
+        id.date =get(res, res2, "date", "id");
+        id.home = get(res, res2, "home", "id");
+        id.menu = get(res, res2, "menu", "id");
+        id.mobile_signal = get(res, res2, "mobile_signal", "id");
+        id.mobile_type = get(res, res2, "mobile_type", "id");
+        id.nav_buttons = get(res, res2, "nav_buttons", "id");
+        id.notification_button = get(res, res2, "notification_button", "id");
+        id.notificationIcons = get(res, res2, "notificationIcons", "id");
+        id.recent_apps = get(res, res2, "recent_apps", "id");
+        id.search_light = get(res, res2, "search_light", "id");
+        id.settings_button = get(res, res2, "settings_button", "id");
+        id.signal_cluster = get(res, res2, "signal_cluster", "id");
+        id.statusIcons = get(res, res2, "statusIcons", "id");
+        id.text = get(res, res2, "text", "id");
+        id.wifi_signal = get(res, res2, "wifi_signal", "id");
+        id.recents_root = get(res, res2, "recents_root", "id");
 
-        integer.config_maxNotificationIcons = res.getIdentifier("config_maxNotificationIcons", "integer", SYSTEMUI_PACKAGE);
-        integer.config_show_search_delay = res.getIdentifier("config_show_search_delay", "integer", SYSTEMUI_PACKAGE);
-        integer.heads_up_notification_decay = res.getIdentifier("heads_up_notification_decay", "integer", SYSTEMUI_PACKAGE);
+        integer.config_maxNotificationIcons = get(res, res2, "config_maxNotificationIcons", "integer");
+        integer.config_show_search_delay = get(res, res2, "config_show_search_delay", "integer");
+        integer.heads_up_notification_decay = get(res, res2, "heads_up_notification_decay", "integer");
 
-        layout.heads_up = res.getIdentifier("heads_up", "layout", SYSTEMUI_PACKAGE);
+        layout.heads_up = get(res, res2, "heads_up", "layout");
         //MediaTek dual-SIM support
         int mtk = res.getIdentifier("gemini_signal_cluster_view", "layout", SYSTEMUI_PACKAGE);
         if (mtk > 0){
             layout.signal_cluster_view = mtk;
         }else {
-            layout.signal_cluster_view = res.getIdentifier("signal_cluster_view", "layout", SYSTEMUI_PACKAGE);
+            layout.signal_cluster_view = get(res, res2, "signal_cluster_view", "layout");
         }
-        layout.status_bar_recent_item = res.getIdentifier("status_bar_recent_item", "layout", SYSTEMUI_PACKAGE);
+        layout.status_bar_recent_item = get(res, res2, "status_bar_recent_item", "layout");
+        layout.status_bar_recent_panel = get(res, res2, "status_bar_recent_panel", "layout");
 
-        string.accessibility_back = res.getIdentifier("accessibility_back", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_battery_level = res.getIdentifier("accessibility_battery_level", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_bluetooth_connected = res.getIdentifier("accessibility_bluetooth_connected", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_bluetooth_disconnected = res.getIdentifier("accessibility_bluetooth_disconnected", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_clear_all = res.getIdentifier("accessibility_clear_all", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_compatibility_zoom_button = res.getIdentifier("accessibility_compatibility_zoom_button", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_desc_quick_settings = res.getIdentifier("accessibility_desc_quick_settings", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_home = res.getIdentifier("accessibility_home", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_ime_switch_button = res.getIdentifier("accessibility_ime_switch_button", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_menu = res.getIdentifier("accessibility_menu", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_notifications_button = res.getIdentifier("accessibility_notifications_button", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_recent = res.getIdentifier("accessibility_recent", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_search_light = res.getIdentifier("accessibility_search_light", "string", SYSTEMUI_PACKAGE);
-        string.accessibility_settings_button = res.getIdentifier("accessibility_settings_button", "string", SYSTEMUI_PACKAGE);
-        string.config_statusBarComponent = res.getIdentifier("config_statusBarComponent", "string", SYSTEMUI_PACKAGE);
-        string.status_bar_input_method_settings_configure_input_methods = res.getIdentifier("status_bar_input_method_settings_configure_input_methods", "string", SYSTEMUI_PACKAGE);
-        string.status_bar_no_recent_apps = res.getIdentifier("status_bar_no_recent_apps", "string", SYSTEMUI_PACKAGE);
-        string.status_bar_settings_airplane = res.getIdentifier("status_bar_settings_airplane", "string", SYSTEMUI_PACKAGE);
-        string.status_bar_settings_auto_brightness_label = res.getIdentifier("status_bar_settings_auto_brightness_label", "string", SYSTEMUI_PACKAGE);
-        string.status_bar_settings_auto_rotation = res.getIdentifier("status_bar_settings_auto_rotation", "string", SYSTEMUI_PACKAGE);
-        string.status_bar_settings_notifications = res.getIdentifier("status_bar_settings_notifications", "string", SYSTEMUI_PACKAGE);
-        string.status_bar_settings_settings_button = res.getIdentifier("status_bar_settings_settings_button", "string", SYSTEMUI_PACKAGE);
-        string.status_bar_settings_wifi_button = res.getIdentifier("status_bar_settings_wifi_button", "string", SYSTEMUI_PACKAGE);
-        string.status_bar_use_physical_keyboard = res.getIdentifier("status_bar_use_physical_keyboard", "string", SYSTEMUI_PACKAGE);
+        string.accessibility_back = get(res, res2, "accessibility_back", "string");
+        string.accessibility_battery_level = get(res, res2, "accessibility_battery_level", "string");
+        string.accessibility_bluetooth_connected = get(res, res2, "accessibility_bluetooth_connected", "string");
+        string.accessibility_bluetooth_disconnected = get(res, res2, "accessibility_bluetooth_disconnected", "string");
+        string.accessibility_clear_all = get(res, res2, "accessibility_clear_all", "string");
+        string.accessibility_compatibility_zoom_button = get(res, res2, "accessibility_compatibility_zoom_button", "string");
+        string.accessibility_desc_quick_settings = get(res, res2, "accessibility_desc_quick_settings", "string");
+        string.accessibility_home = get(res, res2, "accessibility_home", "string");
+        string.accessibility_ime_switch_button = get(res, res2, "accessibility_ime_switch_button", "string");
+        string.accessibility_menu = get(res, res2, "accessibility_menu", "string");
+        string.accessibility_notifications_button = get(res, res2, "accessibility_notifications_button", "string");
+        string.accessibility_recent = get(res, res2, "accessibility_recent", "string");
+        string.accessibility_search_light = get(res, res2, "accessibility_search_light", "string");
+        string.accessibility_settings_button = get(res, res2, "accessibility_settings_button", "string");
+        string.config_statusBarComponent = get(res, res2, "config_statusBarComponent", "string");
+        string.status_bar_input_method_settings_configure_input_methods = get(res, res2, "status_bar_input_method_settings_configure_input_methods", "string");
+        string.status_bar_no_recent_apps = get(res, res2, "status_bar_no_recent_apps", "string");
+        string.status_bar_settings_airplane = get(res, res2, "status_bar_settings_airplane", "string");
+        string.status_bar_settings_auto_brightness_label = get(res, res2, "status_bar_settings_auto_brightness_label", "string");
+        string.status_bar_settings_auto_rotation = get(res, res2, "status_bar_settings_auto_rotation", "string");
+        string.status_bar_settings_notifications = get(res, res2, "status_bar_settings_notifications", "string");
+        string.status_bar_settings_settings_button = get(res, res2, "status_bar_settings_settings_button", "string");
+        string.status_bar_settings_wifi_button = get(res, res2, "status_bar_settings_wifi_button", "string");
+        string.status_bar_use_physical_keyboard = get(res, res2, "status_bar_use_physical_keyboard", "string");
     }
 }

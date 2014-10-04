@@ -312,6 +312,9 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     private final ContentObserver mHeadsUpObserver = new ContentObserver(mHandler) {
         @Override
         public void onChange(boolean selfChange) {
+            if (self == null) {
+                return;
+            }
             boolean wasUsing = XposedHelpers.getBooleanField(self, "mUseHeadsUp");
             boolean mUseHeadsUp = ENABLE_HEADS_UP && 0 != Settings.Global.getInt(
                     mContext.getContentResolver(), SETTING_HEADS_UP, 0);
@@ -1460,6 +1463,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         XposedHelpers.findAndHookMethod(base, "onConfigurationChanged", Configuration.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                TabletKatModule.recentsMod.onConfigurationChanged((Configuration) param.args[0]);
+
                 if (!mIsTv){
                     return;
                 }
@@ -1487,29 +1492,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 return mStatusBarView;
             }
         });
-/*
-        XposedHelpers.findAndHookMethod(tv, "getRecentsLayoutParams", new XC_MethodReplacement() {
-            @Override
-            protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-                        (int) mContext.getResources().getDimension(TkR.dimen.status_bar_recents_width),
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        XposedHelpers.getStaticIntField(TabletKatModule.mWindowManagerLayoutParamsClass, "TYPE_NAVIGATION_BAR_PANEL"),
-                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                                | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-                                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-                                | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                        PixelFormat.TRANSLUCENT);
-                lp.gravity = Gravity.BOTTOM | Gravity.START;
-                lp.setTitle("RecentsPanel");
-                lp.windowAnimations = XposedHelpers.getStaticIntField(TabletKatModule.mComAndroidInternalRStyleClass, "Animation_RecentApplications");
-                lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED
-                        | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
 
-                return lp;
-            }
-        });
-*/
         XposedHelpers.findAndHookMethod(tv, "getSearchLayoutParams", ViewGroup.LayoutParams.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
@@ -2373,7 +2356,11 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         }};
 
     @Override
-    protected void onStart() {
+    public void onStart() {
+        if (!mIsTv) {
+            return;
+        }
+
         super.onStart();
         mHeadsUpObserver.onChange(true); // set up
         if (ENABLE_HEADS_UP) {

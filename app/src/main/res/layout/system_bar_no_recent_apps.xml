@@ -22,7 +22,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:paddingBottom="@dimen/system_bar_height"
     >
 
     <TextView
@@ -33,5 +32,6 @@
         android:id="@+id/no_recent_apps"
         android:gravity="start"
         android:layout_gravity="bottom|start"
+        android:paddingBottom="@dimen/system_bar_height"
     />
 </FrameLayout>
