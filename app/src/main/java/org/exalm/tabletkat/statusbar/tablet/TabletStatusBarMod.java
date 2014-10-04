@@ -2328,6 +2328,9 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
     private void checkBarModes() {
         int sbMode = mStatusBarMode;
+        if (TabletKatModule.recentsMod.isOverlayShowing()) {
+            sbMode = BarTransitions.MODE_OPAQUE;
+        }
         checkBarMode(sbMode, mStatusBarWindowState, mStatusBarView.getBarTransitions());
     }
 

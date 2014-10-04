@@ -16,7 +16,7 @@
         android:key="overlay_recents"
         android:title="Overlay recents"
         android:summary="TODO"
-        android:defaultValue="false" />
+        android:defaultValue="true" />
     <!--
         <ListPreference
             android:key="when_to_use"

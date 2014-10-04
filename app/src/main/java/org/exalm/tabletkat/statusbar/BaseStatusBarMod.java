@@ -52,7 +52,7 @@ public class BaseStatusBarMod implements IMod {
 
     public static final int EXPANDED_LEAVE_ALONE = -10000;
     protected static final int MSG_TOGGLE_RECENTS_PANEL = 1020;
-    protected static final int MSG_CLOSE_RECENTS_PANEL = 1021;
+    public static final int MSG_CLOSE_RECENTS_PANEL = 1021;
     protected static final int MSG_OPEN_SEARCH_PANEL = 1024;
     protected static final int MSG_CLOSE_SEARCH_PANEL = 1025;
     protected static final int MSG_SHOW_HEADS_UP = 1026;

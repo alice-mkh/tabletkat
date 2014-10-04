@@ -14,7 +14,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.exalm.tabletkat.IMod;
@@ -22,6 +21,7 @@ import org.exalm.tabletkat.OnPreferenceChangedListener;
 import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
+import org.exalm.tabletkat.statusbar.phone.BarTransitions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +41,8 @@ public class TabletRecentsMod implements IMod {
     private boolean overlay;
     private RecentsPanel mRecentsPanel;
     private Object mBar;
-    private View mRecentsTransitionBackground;
-    private ImageView mRecentsTransitionPlaceholderIcon;
+//    private View mRecentsTransitionBackground;
+//    private ImageView mRecentsTransitionPlaceholderIcon;
 
     public void setBar(Object bar) {
         mBar = bar;
@@ -93,7 +93,7 @@ public class TabletRecentsMod implements IMod {
             @Override
             public void init(XSharedPreferences pref) {
                 useTabletLayout = pref.getBoolean("enable_mod_recents", true);
-                overlay = pref.getBoolean("overlay_recents", false);
+                overlay = pref.getBoolean("overlay_recents", true);
             }
         });
     }
@@ -223,14 +223,13 @@ public class TabletRecentsMod implements IMod {
                 if (mRecentsPanel == null) {
                     return;
                 }
-                mRecentsPanel.setVisibility((Boolean) param.args[0]);
             }
         });
 
         XposedHelpers.findAndHookConstructor(recentsPanelViewClass, Context.class, AttributeSet.class, int.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if (!shouldUseTabletRecents()){
+                if (!useTabletLayout){
                     return;
                 }
                 setIntField(param.thisObject, "mRecentItemLayoutId", TkR.layout.system_bar_recent_item);
@@ -394,6 +393,26 @@ public class TabletRecentsMod implements IMod {
                 XposedHelpers.callMethod(param.thisObject, "show", true);
             }
         });*/
+
+        XposedHelpers.findAndHookMethod(TabletKatModule.mPhoneStatusBarClass, "checkBarModes", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                int i = XposedHelpers.getIntField(param.thisObject, "mNavigationBarMode");
+                if (isOverlayShowing()) {
+                    XposedHelpers.setIntField(param.thisObject, "mNavigationBarMode", BarTransitions.MODE_OPAQUE);
+                    param.setObjectExtra("mode", i);
+                }
+                param.setObjectExtra("overlay", isOverlayShowing());
+            }
+
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                if ((Boolean) param.getObjectExtra("overlay")) {
+                    int i = (Integer) param.getObjectExtra("mode");
+                    XposedHelpers.setIntField(param.thisObject, "mNavigationBarMode", i);
+                }
+            }
+        });
     }
 
     private boolean shouldUseTabletRecents(){
@@ -402,5 +421,9 @@ public class TabletRecentsMod implements IMod {
 
     @Override
     public void initResources(XResources res, XModuleResources res2) {
+    }
+
+    public boolean isOverlayShowing() {
+        return mRecentsPanel != null && mRecentsPanel.isVisible();
     }
 }

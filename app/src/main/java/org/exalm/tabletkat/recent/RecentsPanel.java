@@ -33,6 +33,7 @@ public class RecentsPanel {
     protected WindowManager mWindowManager;
     protected Object mBar;
     boolean useTabletLayout;
+    private boolean mVisible;
 
     public RecentsPanel(Object bar, boolean useTabletLayout) {
         mBar = bar;
@@ -88,7 +89,7 @@ public class RecentsPanel {
             firstScreenful = XposedHelpers.getBooleanField(mRecentTasksLoader, "mFirstScreenful");
         }
 
-        // Provide RecentsPanelView with a temporary parent to allow layout pareams to work.
+        // Provide RecentsPanelView with a temporary parent to allow layout params to work.
         LinearLayout tmpRoot = new LinearLayout(mContext);
         mRecentsPanel = (FrameLayout) LayoutInflater.from(mContext).inflate(
                 recentsResId, tmpRoot, false);
@@ -104,7 +105,6 @@ public class RecentsPanel {
         WindowManager.LayoutParams lp = getRecentsLayoutParams(mRecentsPanel.getLayoutParams());
 
         mWindowManager.addView(mRecentsPanel, lp);
-//        mRecentsPanel.setBar(mBar);
         if (visible) {
             XposedHelpers.callMethod(mRecentsPanel, "show", true, recentTasksList, firstScreenful, false);
         } else {
@@ -116,7 +116,6 @@ public class RecentsPanel {
     public void updateRecentsPanel() {
         if (useTabletLayout) {
             updateRecentsPanel(TkR.layout.system_bar_recent_panel);
-//            mRecentsPanel.setStatusBarView(mStatusBarView);
             return;
         }
 
@@ -125,15 +124,11 @@ public class RecentsPanel {
         // .03, the item disappears entirely (as if alpha = 0) and that discontinuity looks
         // a bit jarring
         XposedHelpers.callMethod(mRecentsPanel, "setMinSwipeAlpha", 0.03f);
-//        if (mNavigationBarView != null) {
-//            mNavigationBarView.getRecentsButton().setOnTouchListener(mRecentsPanel);
-//        }
     }
 
     public void toggleRecentsActivity() {
         if (mRecentsPanel != null) {
             boolean b = mRecentsPanel.getVisibility() == View.VISIBLE;
-            View v = (View) XposedHelpers.getObjectField(mRecentsPanel, "mRecentsContainer");
             XposedHelpers.callMethod(mRecentsPanel, "show", !b);
         }
     }
@@ -143,19 +138,25 @@ public class RecentsPanel {
     }
 
     public void cancelPreloadingRecentTasksList() {
-        XposedHelpers.callMethod(mRecentTasksLoader
-                , "cancelPreloadingRecentTasksList");
+        XposedHelpers.callMethod(mRecentTasksLoader, "cancelPreloadingRecentTasksList");
     }
 
     public void closeRecents() {
         if (mRecentsPanel != null) {
             XposedHelpers.callMethod(mRecentsPanel, "show", false);
-            setVisibility(false);
         }
     }
 
     public void setVisibility(boolean visibility) {
         mRecentsPanel.setVisibility(visibility ? View.VISIBLE : View.GONE);
+        mVisible = visibility;
+        if (TabletKatModule.mPhoneStatusBarClass.isInstance(mBar)) {
+            XposedHelpers.callMethod(mBar, "checkBarModes");
+        }
+    }
+
+    public boolean isVisible() {
+        return mVisible;
     }
 
     public class TouchOutsideListener implements View.OnTouchListener {

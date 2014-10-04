@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import org.exalm.tabletkat.StatusBarManager;
 import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
+import org.exalm.tabletkat.statusbar.BaseStatusBarMod;
 
 import de.robv.android.xposed.XposedHelpers;
 
@@ -153,6 +154,8 @@ public class TabletStatusBarView extends FrameLayout {
                 Log.d(TabletStatusBarMod.TAG, "TabletStatusBarView intercepting touch event: " + ev);
             }
 
+            mHandler.removeMessages(BaseStatusBarMod.MSG_CLOSE_RECENTS_PANEL);
+            mHandler.sendEmptyMessage(TabletStatusBarMod.MSG_CLOSE_RECENTS_PANEL);
             mHandler.removeMessages(TabletStatusBarMod.MSG_CLOSE_NOTIFICATION_PANEL);
             mHandler.sendEmptyMessage(TabletStatusBarMod.MSG_CLOSE_NOTIFICATION_PANEL);
             mHandler.removeMessages(TabletStatusBarMod.MSG_CLOSE_INPUT_METHODS_PANEL);
