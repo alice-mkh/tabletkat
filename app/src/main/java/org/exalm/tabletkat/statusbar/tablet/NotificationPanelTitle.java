@@ -71,7 +71,12 @@ public class NotificationPanelTitle extends RelativeLayout implements View.OnCli
         ViewHelper.replaceView(this, SystemR.id.date, date);
         ((TextView) findViewById(SystemR.id.date)).setAllCaps(true);
 
-        ViewHelper.replaceView(this, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mLargeIconContext));
+        View battery = ViewHelper.replaceView(this, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mLargeIconContext));
+        try {
+            XposedHelpers.callMethod(battery, "updateSettings", false);
+            XposedHelpers.callMethod(battery, "setColors", false);
+        } catch (NoSuchMethodError e) {
+        }
 
         ViewHelper.replaceView(this, TkR.id.battery_text, new BatteryPercentView(getContext()));
         BatteryPercentView v = (BatteryPercentView) findViewById(TkR.id.battery_text);

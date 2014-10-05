@@ -770,7 +770,12 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             XposedBridge.log(t);
         }
 
-        ViewHelper.replaceView(v, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mLargeIconContext));
+        View battery = ViewHelper.replaceView(v, SystemR.id.battery, (View) XposedHelpers.newInstance(TabletKatModule.mBatteryMeterViewClass, mLargeIconContext));
+        try {
+            XposedHelpers.callMethod(battery, "updateSettings", false);
+            XposedHelpers.callMethod(battery, "setColors", false);
+        } catch (NoSuchMethodError e) {
+        }
         ViewHelper.replaceView(v, TkR.id.battery_text, new BatteryPercentView(mContext));
         final BatteryPercentView percent = (BatteryPercentView) v.findViewById(TkR.id.battery_text);
         percent.setTextColor(mContext.getResources().getColor(SystemR.color.status_bar_clock_color));
