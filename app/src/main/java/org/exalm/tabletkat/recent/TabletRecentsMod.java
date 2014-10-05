@@ -62,6 +62,9 @@ public class TabletRecentsMod implements IMod {
 
     public void destroy() {
         mBar = null;
+        if (mRecentsPanel != null) {
+            mRecentsPanel.destroy();
+        }
         mRecentsPanel = null;
     }
 

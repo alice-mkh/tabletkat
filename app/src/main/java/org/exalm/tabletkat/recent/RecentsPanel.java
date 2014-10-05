@@ -93,7 +93,7 @@ public class RecentsPanel {
         LinearLayout tmpRoot = new LinearLayout(mContext);
         mRecentsPanel = (FrameLayout) LayoutInflater.from(mContext).inflate(
                 recentsResId, tmpRoot, false);
-        XposedHelpers.callMethod(mRecentsPanel, "setRecentTasksLoader", mRecentTasksLoader);
+        XposedHelpers.setObjectField(mRecentsPanel, "mRecentTasksLoader", mRecentTasksLoader);
         XposedHelpers.callMethod(mRecentTasksLoader, "setRecentsPanel", mRecentsPanel, mRecentsPanel);
         mRecentsPanel.setOnTouchListener(
                 new TouchOutsideListener(MSG_CLOSE_RECENTS_PANEL, mRecentsPanel));
