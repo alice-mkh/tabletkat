@@ -123,7 +123,7 @@ public class TkR {
         drawable.ic_sysbar_bluetooth = add(res, res2, R.drawable.ic_sysbar_bluetooth);
         drawable.ic_sysbar_brightness = add(res, res2, R.drawable.ic_sysbar_brightness);
         drawable.ic_sysbar_ime = add(res, res2, R.drawable.ic_sysbar_ime);
-        drawable.ic_sysbar_ime_pressed = add(res, res2, R.drawable.ic_sysbar_ime_pressed);
+        drawable.ic_sysbar_ime_pressed = add(res, res2, R.drawable.ic_sysbar_ime_active);
         drawable.ic_sysbar_location = add(res, res2, R.drawable.ic_sysbar_location);
         drawable.ic_sysbar_quicksettings = add(res, res2, R.drawable.ic_sysbar_quicksettings);
         drawable.ic_sysbar_rotate = add(res, res2, R.drawable.ic_sysbar_rotate);
