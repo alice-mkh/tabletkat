@@ -1879,6 +1879,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
                 ImageView view = (ImageView) XposedHelpers.newInstance(TabletKatModule.mStatusBarIconViewClass,
                         mLargeIconContext, slot, null);
+                view.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                view.setPadding(0, 0, 0, 0);
 
                 XposedHelpers.callMethod(view, "set", icon);
                 mStatusIcons.addView(view, viewIndex, new LinearLayout.LayoutParams(mIconSize, mIconSize));
