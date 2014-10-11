@@ -23,7 +23,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:background="@drawable/dialog_full_holo_dark"
+    android:background="@android:drawable/dialog_holo_dark_frame"
     android:orientation="vertical"
     >
 

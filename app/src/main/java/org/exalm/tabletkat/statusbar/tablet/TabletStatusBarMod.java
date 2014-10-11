@@ -693,10 +693,12 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         mInputMethodSwitchButton = (InputMethodButton) sb.findViewById(TkR.id.imeSwitchButton);
         // Overwrite the lister
         mInputMethodSwitchButton.setOnClickListener(mOnClickListener);
+        mInputMethodSwitchButton.setPadding(mIconHPadding, 0, 0, 0);
 
         mCompatModeButton = (CompatModeButton) sb.findViewById(TkR.id.compatModeButton);
         mCompatModeButton.setOnClickListener(mOnClickListener);
         mCompatModeButton.setVisibility(View.GONE);
+        mCompatModeButton.setPadding(mIconHPadding, 0, 0, 0);
 
         // for redirecting errant bar taps to the IME
         mFakeSpaceBar = sb.findViewById(TkR.id.fake_space_bar);
@@ -1288,6 +1290,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     private void reloadAllNotificationIcons() {
         if (mIconLayout == null) return;
         mIconLayout.removeAllViews();
+        mCompatModeButton.setPadding(mIconHPadding, 0, 0, 0);
+        mInputMethodSwitchButton.setPadding(mIconHPadding, 0, 0, 0);
         updateNotificationIcons();
     }
 
@@ -1863,7 +1867,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                 String slot = (String) methodHookParam.args[0];
-                int viewIndex = (Integer) methodHookParam.args[2];
+                int viewIndex = 0; //(Integer) methodHookParam.args[2];
                 Object icon = methodHookParam.args[3];
 
                 if (DEBUG) Log.d(TAG, "addIcon(" + slot + ") -> " + icon);
@@ -1886,7 +1890,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                 String slot = (String) methodHookParam.args[0];
-                int viewIndex = (Integer) methodHookParam.args[2];
+                int viewIndex = 0;//(Integer) methodHookParam.args[2];
                 Object icon = methodHookParam.args[3];
 
                 if (DEBUG) Log.d(TAG, "updateIcon(" + slot + ") -> " + icon);
@@ -1906,7 +1910,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                 String slot = (String) methodHookParam.args[0];
-                int viewIndex = (Integer) methodHookParam.args[2];
+                int viewIndex = 0;//(Integer) methodHookParam.args[2];
 
                 if (DEBUG) Log.d(TAG, "removeIcon(" + slot + ")");
 //                Toast.makeText(mContext, "removeIcon(" + slot + ")", Toast.LENGTH_SHORT).show();

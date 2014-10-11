@@ -43,7 +43,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
     private boolean mLightsOut;
     private final float mIconAlphaWhenOpaque;
 
-    private View mNotificationArea, mStatusIcons, mSignalCluster, mBattery, mBatteryText, mBluetooth, mClock;
+    private View mFeedbackIconArea, mStatusIcons, mSignalCluster, mBattery, mBatteryText, mBluetooth, mClock;
     private Animator mCurrentAnimation;
 
     public TabletStatusBarTransitions(TabletStatusBarView view, Object barService) {
@@ -55,7 +55,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
     }
 
     public void init() {
-        mNotificationArea = mView.findViewById(SystemR.id.notificationIcons);
+        mFeedbackIconArea = mView.findViewById(TkR.id.feedbackIconArea);
         mStatusIcons = mView.findViewById(SystemR.id.statusIcons);
         mSignalCluster = mView.findViewById(SystemR.id.signal_cluster);
         mBattery = mView.findViewById(SystemR.id.battery);
@@ -98,7 +98,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
         // apply to lights out
         applyLightsOut(mode == MODE_LIGHTS_OUT, animate, force);
 
-        if (mNotificationArea == null) return; // pre-init
+        if (mFeedbackIconArea == null) return; // pre-init
         float newAlpha = getIconAlphaFor(mode);
         if (mCurrentAnimation != null) {
             mCurrentAnimation.cancel();
@@ -106,7 +106,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
         if (animate) {
             AnimatorSet anims = new AnimatorSet();
             anims.playTogether(
-                    animateTransitionTo(mNotificationArea, newAlpha),
+                    animateTransitionTo(mFeedbackIconArea, newAlpha),
                     animateTransitionTo(mStatusIcons, newAlpha),
                     animateTransitionTo(mSignalCluster, newAlpha),
                     animateTransitionTo(mBattery, newAlpha),
@@ -120,7 +120,7 @@ public final class TabletStatusBarTransitions extends BarTransitions {
             anims.start();
             mCurrentAnimation = anims;
         } else {
-            mNotificationArea.setAlpha(newAlpha);
+            mFeedbackIconArea.setAlpha(newAlpha);
             mStatusIcons.setAlpha(newAlpha);
             mSignalCluster.setAlpha(newAlpha);
             mBattery.setAlpha(newAlpha);
