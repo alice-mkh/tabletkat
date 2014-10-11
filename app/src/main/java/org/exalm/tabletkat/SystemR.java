@@ -35,7 +35,6 @@ public class SystemR {
         public static int ic_sysbar_menu;
         public static int ic_sysbar_recent;
         public static int nav_background;
-        public static int notification_panel_bg;
         public static int recents_thumbnail_bg;
         public static int recents_thumbnail_fg;
         public static int search_light;
@@ -150,7 +149,6 @@ public class SystemR {
         drawable.ic_sysbar_lights_out_dot_large = get(res, res2, "ic_sysbar_lights_out_dot_large", "drawable");
         drawable.ic_sysbar_lights_out_dot_small = get(res, res2, "ic_sysbar_lights_out_dot_small", "drawable");
         drawable.ic_sysbar_recent = get(res, res2, "ic_sysbar_recent", "drawable");
-        drawable.notification_panel_bg = get(res, res2, "notification_panel_bg", "drawable");
         drawable.nav_background = get(res, res2, "nav_background", "drawable");
         drawable.recents_thumbnail_bg = get(res, res2, "recents_thumbnail_bg", "drawable");
         drawable.recents_thumbnail_fg = get(res, res2, "recents_thumbnail_fg", "drawable");

@@ -628,6 +628,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         // the whole right-hand side of the bar
         mNotificationArea = sb.findViewById(TkR.id.notificationArea);
         mNotificationArea.setOnTouchListener(new NotificationTriggerTouchListener());
+        mNotificationArea.setVisibility(View.VISIBLE);
 
         // the button to open the notification area
         mNotificationTrigger = sb.findViewById(TkR.id.notificationTrigger);
@@ -689,16 +690,15 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         // The bar contents buttons
         mFeedbackIconArea = (ViewGroup)sb.findViewById(TkR.id.feedbackIconArea);
-        mFeedbackIconArea.setVisibility(View.VISIBLE);
         mInputMethodSwitchButton = (InputMethodButton) sb.findViewById(TkR.id.imeSwitchButton);
         // Overwrite the lister
         mInputMethodSwitchButton.setOnClickListener(mOnClickListener);
-        mInputMethodSwitchButton.setPadding(mIconHPadding, 0, 0, 0);
+        mInputMethodSwitchButton.setPadding(mIconHPadding, 0, mIconHPadding, 0);
 
         mCompatModeButton = (CompatModeButton) sb.findViewById(TkR.id.compatModeButton);
         mCompatModeButton.setOnClickListener(mOnClickListener);
         mCompatModeButton.setVisibility(View.GONE);
-        mCompatModeButton.setPadding(mIconHPadding, 0, 0, 0);
+        mCompatModeButton.setPadding(mIconHPadding, 0, mIconHPadding, 0);
 
         // for redirecting errant bar taps to the IME
         mFakeSpaceBar = sb.findViewById(TkR.id.fake_space_bar);
@@ -1012,7 +1012,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 break;
             case MSG_STOP_TICKER:
                 mTicker.halt();
-                mFeedbackIconArea.setVisibility(View.VISIBLE);
+                mNotificationArea.setVisibility(View.VISIBLE);
                 break;
             case MSG_SHOW_HEADS_UP:
                 setHeadsUpVisibility(true);
@@ -1061,10 +1061,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
     // called by TabletTicker when it's done with all queued ticks
     public void doneTicking() {
-        if (mFeedbackIconArea == null) {
-            return;
-        }
-        mFeedbackIconArea.setVisibility(View.VISIBLE);
+        mNotificationArea.setVisibility(View.VISIBLE);
     }
 
     public void animateCollapsePanels() {
@@ -1290,8 +1287,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     private void reloadAllNotificationIcons() {
         if (mIconLayout == null) return;
         mIconLayout.removeAllViews();
-        mCompatModeButton.setPadding(mIconHPadding, 0, 0, 0);
-        mInputMethodSwitchButton.setPadding(mIconHPadding, 0, 0, 0);
+        mCompatModeButton.setPadding(mIconHPadding, 0, mIconHPadding, 0);
+        mInputMethodSwitchButton.setPadding(mIconHPadding, 0, mIconHPadding, 0);
         updateNotificationIcons();
     }
 
@@ -1613,7 +1610,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                     if (0 == (mDisabled & (StatusBarManager.DISABLE_NOTIFICATION_ICONS
                             | StatusBarManager.DISABLE_NOTIFICATION_TICKER))) {
                         mTicker.add(key, n);
-                        mFeedbackIconArea.setVisibility(View.GONE);
+                        mNotificationArea.setVisibility(View.INVISIBLE);
                     }
                 }
                 return null;

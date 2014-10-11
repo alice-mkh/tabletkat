@@ -29,6 +29,7 @@ public class TkR {
         public static int ic_sysbar_quicksettings;
         public static int ic_sysbar_rotate;
         public static int ic_sysbar_wifi;
+        public static int notification_panel_bg;
     }
     public static class id {
         public static int background;
@@ -128,6 +129,7 @@ public class TkR {
         drawable.ic_sysbar_quicksettings = add(res, res2, R.drawable.ic_sysbar_quicksettings);
         drawable.ic_sysbar_rotate = add(res, res2, R.drawable.ic_sysbar_rotate);
         drawable.ic_sysbar_wifi = add(res, res2, R.drawable.ic_sysbar_wifi);
+        drawable.notification_panel_bg = add(res, res2, R.drawable.notification_panel_bg);
 
         id.background = add(res, res2, R.id.background);
         id.bar_contents = add(res, res2, R.id.bar_contents);

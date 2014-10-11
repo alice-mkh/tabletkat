@@ -114,7 +114,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
 
         mShowing = false;
 
-        mContentFrame.setBackgroundResource(SystemR.drawable.notification_panel_bg);
+        mContentFrame.setBackgroundResource(TkR.drawable.notification_panel_bg);
 
         LinearLayout l = (LinearLayout) XposedHelpers.newInstance(TabletKatModule.mNotificationRowLayoutClass, getContext(), null);
 
