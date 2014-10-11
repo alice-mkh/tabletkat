@@ -1970,17 +1970,21 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             }
         });
 
-        XposedHelpers.findAndHookMethod(tv, "resetHeadsUpDecayTimer", new XC_MethodReplacement() {
-            @Override
-            protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                if (XposedHelpers.getBooleanField(self, "mUseHeadsUp") && mHeadsUpNotificationDecay > 0
-                        && (Boolean) XposedHelpers.callMethod(mHeadsUpNotificationView, "isClearable")) {
-                    mHandler.removeMessages(MSG_HIDE_HEADS_UP);
-                    mHandler.sendEmptyMessageDelayed(MSG_HIDE_HEADS_UP, mHeadsUpNotificationDecay);
+        try {
+            XposedHelpers.findAndHookMethod(tv, "resetHeadsUpDecayTimer", new XC_MethodReplacement() {
+                @Override
+                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                    if (XposedHelpers.getBooleanField(self, "mUseHeadsUp") && mHeadsUpNotificationDecay > 0
+                            && (Boolean) XposedHelpers.callMethod(mHeadsUpNotificationView, "isClearable")) {
+                        mHandler.removeMessages(MSG_HIDE_HEADS_UP);
+                        mHandler.sendEmptyMessageDelayed(MSG_HIDE_HEADS_UP, mHeadsUpNotificationDecay);
+                    }
+                    return null;
                 }
-                return null;
-            }
-        });
+            });
+        } catch (NoSuchMethodError e) {
+            ENABLE_HEADS_UP = false;
+        }
 
         XposedHelpers.findAndHookMethod(tv, "removeNotification", IBinder.class, new XC_MethodReplacement() {
             @Override
@@ -2209,27 +2213,31 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 reset();
             }
         });
-        XposedHelpers.findAndHookMethod(base, "onHeadsUpDismissed", new XC_MethodReplacement() {
-            @Override
-            protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                Object mInterruptingNotificationEntry = XposedHelpers.getObjectField(self, "mInterruptingNotificationEntry");
-                if (mInterruptingNotificationEntry == null) return null;
-                mHandler.sendEmptyMessage(MSG_HIDE_HEADS_UP);
-                if ((Boolean) XposedHelpers.callMethod(mHeadsUpNotificationView, "isClearable")) {
-                    try {
-                        StatusBarNotification notification = (StatusBarNotification)
-                                XposedHelpers.getObjectField(mInterruptingNotificationEntry, "notification");
-                        XposedHelpers.callMethod(mBarService, "onNotificationClear",
-                                notification.getPackageName(),
-                                notification.getTag(),
-                                notification.getId());
-                    } catch (Exception ex) {
-                        // oh well
+        try {
+            XposedHelpers.findAndHookMethod(base, "onHeadsUpDismissed", new XC_MethodReplacement() {
+                @Override
+                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                    Object mInterruptingNotificationEntry = XposedHelpers.getObjectField(self, "mInterruptingNotificationEntry");
+                    if (mInterruptingNotificationEntry == null) return null;
+                    mHandler.sendEmptyMessage(MSG_HIDE_HEADS_UP);
+                    if ((Boolean) XposedHelpers.callMethod(mHeadsUpNotificationView, "isClearable")) {
+                        try {
+                            StatusBarNotification notification = (StatusBarNotification)
+                                    XposedHelpers.getObjectField(mInterruptingNotificationEntry, "notification");
+                            XposedHelpers.callMethod(mBarService, "onNotificationClear",
+                                    notification.getPackageName(),
+                                    notification.getTag(),
+                                    notification.getId());
+                        } catch (Exception ex) {
+                            // oh well
+                        }
                     }
+                    return null;
                 }
-                return null;
-            }
-        });
+            });
+        } catch (NoSuchMethodError e) {
+            ENABLE_HEADS_UP = false;
+        }
         XposedHelpers.findAndHookMethod(TabletKatModule.mDateViewClass, "updateClock", new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
@@ -2398,29 +2406,33 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     public void initResources(final XResources res, final XModuleResources res2) {
         super.initResources(res, res2);
 
-        res.hookLayout(TabletKatModule.SYSTEMUI_PACKAGE, "layout", "heads_up", new XC_LayoutInflated() {
-            @Override
-            public void handleLayoutInflated(LayoutInflatedParam param) throws Throwable {
-                if (!mIsTv){
-                    return;
-                }
+        try {
+            res.hookLayout(TabletKatModule.SYSTEMUI_PACKAGE, "layout", "heads_up", new XC_LayoutInflated() {
+                @Override
+                public void handleLayoutInflated(LayoutInflatedParam param) throws Throwable {
+                    if (!mIsTv) {
+                        return;
+                    }
 
-                ViewGroup v = (ViewGroup) param.view;
-                DisplayMetrics d = v.getResources().getDisplayMetrics();
+                    ViewGroup v = (ViewGroup) param.view;
+                    DisplayMetrics d = v.getResources().getDisplayMetrics();
 
-                int content_slider = param.res.getIdentifier("content_slider", "id", TabletKatModule.SYSTEMUI_PACKAGE);
-                View contentSlider = v.findViewById(content_slider);
-                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)
-                        contentSlider.getLayoutParams();
+                    int content_slider = param.res.getIdentifier("content_slider", "id", TabletKatModule.SYSTEMUI_PACKAGE);
+                    View contentSlider = v.findViewById(content_slider);
+                    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)
+                            contentSlider.getLayoutParams();
 
-                params.gravity = Gravity.END;
-                params.width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 478, d);
-                params.setMarginStart(0);
-                params.setMarginEnd(0);
+                    params.gravity = Gravity.END;
+                    params.width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 478, d);
+                    params.setMarginStart(0);
+                    params.setMarginEnd(0);
 
-                contentSlider.setLayoutParams(params);
-            }
-        });
+                    contentSlider.setLayoutParams(params);
+                    }
+            });
+        } catch (Resources.NotFoundException e){
+            ENABLE_HEADS_UP = false;
+        }
 
         replaceDimen(res, res2, R.dimen.system_bar_icon_drawing_size, "status_bar_icon_drawing_size", false);
         replaceDimen(res, res2, R.dimen.navbar_search_panel_height, "navbar_search_panel_height", true);

@@ -58,7 +58,7 @@ public class BaseStatusBarMod implements IMod {
     protected static final int MSG_SHOW_HEADS_UP = 1026;
     protected static final int MSG_HIDE_HEADS_UP = 1027;
     protected static final int MSG_ESCALATE_HEADS_UP = 1028;
-    protected static final boolean ENABLE_HEADS_UP = true;
+    protected static boolean ENABLE_HEADS_UP = true;
     public static final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
     protected static final String SETTING_HEADS_UP = "heads_up_enabled";
     protected Object mNotificationData;
@@ -422,11 +422,19 @@ public class BaseStatusBarMod implements IMod {
     }
 
     public void resetHeadsUpDecayTimer() {
-        XposedHelpers.callMethod(self, "resetHeadsUpDecayTimer");
+        try {
+            XposedHelpers.callMethod(self, "resetHeadsUpDecayTimer");
+        } catch (NoSuchMethodError e) {
+            ENABLE_HEADS_UP = false;
+        }
     }
 
     protected void notifyHeadsUpScreenOn(boolean screenOn) {
-        XposedHelpers.callMethod(self, "notifyHeadsUpScreenOn", screenOn);
+        try {
+            XposedHelpers.callMethod(self, "notifyHeadsUpScreenOn", screenOn);
+        } catch (NoSuchMethodError e) {
+            ENABLE_HEADS_UP = false;
+        }
     }
 
     public class TouchOutsideListener implements View.OnTouchListener {
