@@ -47,8 +47,8 @@
     <CheckBoxPreference
         android:key="force_breadcrumbs"
         android:title="@string/pref_title_force_breadcrumbs"
-        android:summary="@string/pref_summary_force_breadcrumbs"
-        android:defaultValue="true" />
+        android:defaultValue="true"
+        android:dependency="enable_mod_settings"/>
 
     <SwitchPreference
         android:key="enable_mod_launcher"
