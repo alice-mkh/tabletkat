@@ -7,7 +7,10 @@
     <string name="pref_summary_enable_tablet_ui">Использовать старый планшетный интерфейс</string>
 
     <string name="pref_title_enable_mod_recents">Планшетный экран недавних</string>
-    <string name="pref_summary_enable_mod_recents">Переместить Недавние налево</string>
+    <string name="pref_summary_enable_mod_recents">Переместить недавние налево</string>
+
+    <string name="pref_title_overlay_recents">Оверлейные недавние</string>
+    <string name="pref_summary_overlay_recents">Открывать недавние поверх текущего приложения</string>
 
     <string name="pref_title_extended_settings">Расширенные быстрые настройки</string>
     <string name="pref_summary_extended_settings">Разрешить дополнительные пункты в быстрых настройках</string>
@@ -19,6 +22,8 @@
 
     <string name="pref_title_enable_mod_settings">Двухпанельные настройки</string>
     <string name="pref_summary_enable_mod_settings">Включить двухпанельный режим в приложении настроек</string>
+
+    <string name="pref_title_force_breadcrumbs">Всегда показывать строку пути</string>
 
     <string name="pref_title_enable_mod_launcher">Планшетный вариант лончера</string>
     <string name="pref_summary_enable_mod_launcher">Только для Launcher2 (стандартный в Nexus 10)</string>
