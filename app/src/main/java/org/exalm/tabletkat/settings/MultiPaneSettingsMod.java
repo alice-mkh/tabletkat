@@ -85,6 +85,45 @@ public class MultiPaneSettingsMod implements IMod {
             }
         });
 
+        XposedHelpers.findAndHookMethod(Activity.class, "setTitle", int.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                Activity a = (Activity) param.thisObject;
+                if (!settingsClass.isInstance(a)){
+                    return;
+                }
+                PreferenceActivity p = (PreferenceActivity) a;
+                if (!p.onIsMultiPane() || p.onIsHidingHeaders()) {
+                    return;
+                }
+                Object o = XposedHelpers.getObjectField(p, "mFragmentBreadCrumbs");
+                if (o == null) {
+                    return;
+                }
+                param.args[0] = a.getResources().getIdentifier("settings_label", "string",
+                        TabletKatModule.SETTINGS_PACKAGE);
+            }
+        });
+        XposedHelpers.findAndHookMethod(Activity.class, "setTitle", CharSequence.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                Activity a = (Activity) param.thisObject;
+                if (!settingsClass.isInstance(a)){
+                    return;
+                }
+                PreferenceActivity p = (PreferenceActivity) a;
+                if (!p.onIsMultiPane() || p.onIsHidingHeaders()) {
+                    return;
+                }
+                Object o = XposedHelpers.getObjectField(p, "mFragmentBreadCrumbs");
+                if (o == null) {
+                    return;
+                }
+                param.args[0] = a.getString(a.getResources().getIdentifier("settings_label", "string",
+                        TabletKatModule.SETTINGS_PACKAGE));
+            }
+        });
+
         XposedHelpers.findAndHookMethod(settingsClass, "isValidFragment", String.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
