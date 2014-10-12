@@ -90,7 +90,6 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -154,11 +153,9 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     View mHomeButton;
     View mMenuButton;
     View mRecentButton;
-    private boolean mAltBackButtonEnabledForIme;
 
     private LinearLayout mStatusIcons;
 
-    ViewGroup mFeedbackIconArea; // notification icons, IME icon, compat icon
     InputMethodButton mInputMethodSwitchButton;
     CompatModeButton mCompatModeButton;
 
@@ -237,9 +234,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         mHomeButton = null;
         mMenuButton = null;
         mRecentButton = null;
-        mAltBackButtonEnabledForIme = false;
         mStatusIcons = null;
-        mFeedbackIconArea = null;
         mInputMethodSwitchButton = null;
         mCompatModeButton = null;
         mNotificationPanel = null;
@@ -689,8 +684,6 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         // no multi-touch on the nav buttons
         mNavigationArea.setMotionEventSplittingEnabled(false);
 
-        // The bar contents buttons
-        mFeedbackIconArea = (ViewGroup)sb.findViewById(TkR.id.feedbackIconArea);
         mInputMethodSwitchButton = (InputMethodButton) sb.findViewById(TkR.id.imeSwitchButton);
         // Overwrite the lister
         mInputMethodSwitchButton.setOnClickListener(mOnClickListener);
@@ -968,7 +961,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 if (DEBUG) Log.d(TAG, "opening notifications panel");
                 if (!mNotificationPanel.isShowing()) {
                     mNotificationPanel.show(true, true);
-                    mNotificationArea.setVisibility(View.INVISIBLE);
+                    mNotificationArea.setAlpha(0);
                     mTicker.halt();
                 }
                 break;
@@ -976,7 +969,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 if (DEBUG) Log.d(TAG, "closing notifications panel");
                 if (mNotificationPanel.isShowing()) {
                     mNotificationPanel.show(false, true);
-                    mNotificationArea.setVisibility(View.VISIBLE);
+                    mNotificationArea.setAlpha(1);
                 }
                 break;
             case MSG_OPEN_INPUT_METHODS_PANEL:
@@ -1013,7 +1006,6 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 break;
             case MSG_STOP_TICKER:
                 mTicker.halt();
-                mNotificationArea.setVisibility(View.VISIBLE);
                 break;
             case MSG_SHOW_HEADS_UP:
                 setHeadsUpVisibility(true);
@@ -1058,6 +1050,11 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
     private boolean hasTicker(Notification n) {
         return n.tickerView != null || !TextUtils.isEmpty(n.tickerText);
+    }
+
+    // called by TabletTicker when it's done with all queued ticks
+    public void startTicking() {
+        mNotificationArea.setVisibility(View.INVISIBLE);
     }
 
     // called by TabletTicker when it's done with all queued ticks
@@ -1433,7 +1430,6 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
                 boolean altBack = (backDisposition == InputMethodService.BACK_DISPOSITION_WILL_DISMISS)
                         || ((vis & IME_VISIBLE) != 0);
-                mAltBackButtonEnabledForIme = altBack;
 
                 setNavigationIconHints(
                         altBack ? (mNavigationIconHints | StatusBarManager.NAVIGATION_HINT_BACK_ALT)
@@ -1640,7 +1636,6 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                     if (0 == (mDisabled & (StatusBarManager.DISABLE_NOTIFICATION_ICONS
                             | StatusBarManager.DISABLE_NOTIFICATION_TICKER))) {
                         mTicker.add(key, n);
-                        mNotificationArea.setVisibility(View.INVISIBLE);
                     }
                 }
                 return null;

@@ -36,7 +36,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import org.exalm.tabletkat.SystemR;
@@ -44,7 +43,6 @@ import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
 
 import java.util.Arrays;
-import java.util.List;
 
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -151,6 +149,7 @@ public class TabletTicker
             for (int i=0; i<QUEUE_LENGTH; i++) {
                 mKeys[i] = null;
                 mQueue[i] = null;
+                mBar.doneTicking();
             }
             mQueuePos = 0;
             sendEmptyMessage(MSG_ADVANCE);
@@ -170,6 +169,7 @@ public class TabletTicker
         if (mCurrentView != null) {
             if (mWindow != null) {
                 mWindow.removeView(mCurrentView);
+                mBar.doneTicking();
             }
             mCurrentView = null;
             mCurrentKey = null;
@@ -180,6 +180,7 @@ public class TabletTicker
         dequeue();
         while (mCurrentNotification != null) {
             mCurrentView = makeTickerView(mCurrentNotification);
+            mBar.startTicking();
             if (mCurrentView != null) {
                 if (mWindow == null) {
                     mWindow = makeWindow();
