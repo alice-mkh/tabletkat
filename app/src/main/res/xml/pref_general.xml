@@ -14,8 +14,8 @@
 
     <SwitchPreference
         android:key="overlay_recents"
-        android:title="Overlay recents"
-        android:summary="TODO"
+        android:title="@string/pref_title_overlay_recents"
+        android:summary="@string/pref_summary_overlay_recents"
         android:defaultValue="true" />
 
     <CheckBoxPreference

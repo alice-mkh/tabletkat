@@ -9,7 +9,10 @@
     <string name="pref_summary_enable_tablet_ui">Use older tablet mode</string>
 
     <string name="pref_title_enable_mod_recents">Enable tablet recents</string>
-    <string name="pref_summary_enable_mod_recents">Pin Recents to the left</string>
+    <string name="pref_summary_enable_mod_recents">Pin recents to the left</string>
+
+    <string name="pref_title_overlay_recents">Enable overlay recents</string>
+    <string name="pref_summary_overlay_recents">Open recents above the current app</string>
 
     <string name="pref_title_extended_settings">Extended quick settings</string>
     <string name="pref_summary_extended_settings">Allow additional features in the settings pane</string>
@@ -22,9 +25,9 @@
     <string name="pref_title_enable_mod_settings">Enable multi-pane settings</string>
     <string name="pref_summary_enable_mod_settings">Enable multi-pane mode in the Settings app</string>
 
-    <string name="pref_title_enable_mod_launcher">Enable tablet launcher layout</string>
-    <string name="pref_summary_enable_mod_launcher">Launcher2 (Nexus 10 default) only</string>
-
     <string name="pref_title_force_breadcrumbs">Force breadcrumbs</string>
     <string name="pref_summary_force_breadcrumbs">Works in all dual-pane preferences</string>
+
+    <string name="pref_title_enable_mod_launcher">Enable tablet launcher layout</string>
+    <string name="pref_summary_enable_mod_launcher">Launcher2 (Nexus 10 default) only</string>
 </resources>
