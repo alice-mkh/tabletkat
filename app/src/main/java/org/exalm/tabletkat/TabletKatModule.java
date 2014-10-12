@@ -1,5 +1,6 @@
 package org.exalm.tabletkat;
 
+import android.app.FragmentBreadCrumbs;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,10 +9,20 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.preference.PreferenceActivity;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.DisplayInfo;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import org.exalm.tabletkat.launcher.LauncherMod;
 import org.exalm.tabletkat.recent.TabletRecentsMod;
@@ -28,6 +39,7 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
+import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import static de.robv.android.xposed.XposedHelpers.*;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -125,7 +137,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         findAndHookMethod(c, "getConfigDisplayHeight", int.class, int.class, int.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                if (shouldUseTabletUI(null)){
+                if (shouldUseTabletUI(null)) {
                     int fullWidth = (Integer) methodHookParam.args[0];
                     int fullHeight = (Integer) methodHookParam.args[1];
                     int rotation = (Integer) methodHookParam.args[2];
@@ -337,11 +349,13 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 
     @Override
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam initPackageResourcesParam) throws Throwable {
+        XResources res = initPackageResourcesParam.res;
+        MultiPaneSettingsMod.hookBreadcrumbs(res);
+
         if (initPackageResourcesParam.packageName.equals(SETTINGS_PACKAGE)){
             if (settingsMod == null){
                 settingsMod = new MultiPaneSettingsMod();
             }
-            XResources res = initPackageResourcesParam.res;
             XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, initPackageResourcesParam.res);
 
             SystemR.init(res, res2);
@@ -357,7 +371,6 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
                 if (launcherMod == null || !initPackageResourcesParam.packageName.equals(launcherMod.getPackage())) {
                     launcherMod = new LauncherMod();
                 }
-                XResources res = initPackageResourcesParam.res;
                 XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, initPackageResourcesParam.res);
 
                 SystemR.init(res, res2);
@@ -377,7 +390,6 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         if (recentsMod == null){
             recentsMod = new TabletRecentsMod();
         }
-        XResources res = initPackageResourcesParam.res;
         XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, initPackageResourcesParam.res);
 
         debug("Replacing SystemUI resources");
@@ -465,5 +477,9 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 
     public static Object invokeOriginalMethod(XC_MethodHook.MethodHookParam param) throws IllegalAccessException, InvocationTargetException{
         return XposedBridge.invokeOriginalMethod(param.method, param.thisObject, param.args);
+    }
+
+    public static boolean shouldForceBreadcrumbs() {
+        return pref.getBoolean("force_breadcrumbs", true);
     }
 }

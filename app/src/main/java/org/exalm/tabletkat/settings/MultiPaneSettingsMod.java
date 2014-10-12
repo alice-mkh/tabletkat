@@ -2,29 +2,34 @@ package org.exalm.tabletkat.settings;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.FragmentBreadCrumbs;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.exalm.tabletkat.IMod;
-import org.exalm.tabletkat.R;
 import org.exalm.tabletkat.TabletKatModule;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 
 public class MultiPaneSettingsMod implements IMod {
     private static int id_loading_container;
@@ -54,7 +59,6 @@ public class MultiPaneSettingsMod implements IMod {
         XposedHelpers.findAndHookMethod(settingsClass, "onCreate", Bundle.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 Activity a = (Activity) param.thisObject;
                 View v = a.findViewById(android.R.id.list);
 
@@ -197,5 +201,68 @@ public class MultiPaneSettingsMod implements IMod {
             //This is not Xperia.
         }
         return false;
+    }
+
+    public static void hookBreadcrumbs(XResources res) {
+        res.hookLayout("android", "layout", "breadcrumbs_in_fragment", new XC_LayoutInflated() {
+            @Override
+            public void handleLayoutInflated(XC_LayoutInflated.LayoutInflatedParam layoutInflatedParam) throws Throwable {
+                if (!TabletKatModule.shouldForceBreadcrumbs()) {
+                    return;
+                }
+                ViewGroup v = (ViewGroup) layoutInflatedParam.view;
+                if (v instanceof LinearLayout) {
+                    return; //The breadcrumbs are already there
+                }
+                if (! (v.getContext() instanceof PreferenceActivity)) {
+                    return; //Not a preference activity
+                }
+                try {
+                    PreferenceActivity a = (PreferenceActivity) v.getContext();
+                    if (!a.onIsMultiPane()) {
+                        return; //Single pane
+                    }
+                } catch (Throwable t) {
+                    XposedBridge.log(t);
+                    return;
+                }
+
+                v.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                DisplayMetrics d = v.getResources().getDisplayMetrics();
+                int padding = v.getResources().getDimensionPixelSize(
+                        com.android.internal.R.dimen.preference_fragment_padding_side); //TODO
+                int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, d);
+                int top = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, d);
+                int bottom = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, d);
+                int iheight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, d);
+
+                LinearLayout l = new LinearLayout(v.getContext());
+                l.setOrientation(LinearLayout.VERTICAL);
+                l.setPadding(padding, 0, padding, 0);
+                FrameLayout.LayoutParams lparams = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                lparams.leftMargin = padding;
+                lparams.rightMargin = padding;
+
+                FragmentBreadCrumbs bc = new FragmentBreadCrumbs(l.getContext());
+                bc.setId(android.R.id.title);
+                bc.setPadding(0, top, 0, bottom);
+                LinearLayout.LayoutParams bcparams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, height);
+                bcparams.gravity = Gravity.CENTER_VERTICAL | Gravity.START;
+                l.addView(bc, bcparams);
+
+                ImageView i = new ImageView(l.getContext());
+                i.setImageDrawable(new ColorDrawable(0xFF404040));
+                l.addView(i, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, iheight));
+
+                v.addView(l);
+                v.setVisibility(View.VISIBLE);
+
+                v.requestLayout();
+            }
+        });
     }
 }

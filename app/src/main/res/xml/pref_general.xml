@@ -17,17 +17,7 @@
         android:title="Overlay recents"
         android:summary="TODO"
         android:defaultValue="true" />
-    <!--
-        <ListPreference
-            android:key="when_to_use"
-            android:title="@string/pref_title_when_to_use"
-            android:defaultValue="2"
-            android:entries="@array/pref_when_to_use_titles"
-            android:entryValues="@array/pref_when_to_use_values"
-            android:dependency="enable_tablet_ui"
-            android:negativeButtonText="@null"
-            android:positiveButtonText="@null" />
-    -->
+
     <CheckBoxPreference
         android:key="ics_clock_font"
         android:title="@string/pref_title_ics_clock_font"
@@ -52,6 +42,12 @@
         android:key="enable_mod_settings"
         android:title="@string/pref_title_enable_mod_settings"
         android:summary="@string/pref_summary_enable_mod_settings"
+        android:defaultValue="true" />
+
+    <CheckBoxPreference
+        android:key="force_breadcrumbs"
+        android:title="@string/pref_title_force_breadcrumbs"
+        android:summary="@string/pref_summary_force_breadcrumbs"
         android:defaultValue="true" />
 
     <SwitchPreference
