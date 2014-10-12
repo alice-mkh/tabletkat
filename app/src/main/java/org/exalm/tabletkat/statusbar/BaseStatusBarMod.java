@@ -68,7 +68,6 @@ public class BaseStatusBarMod implements IMod {
     protected Object mPile;
     protected Object mWindowManagerService;
     protected Object mBarService;
-    protected Object mSearchPanelView;
     protected Object mCommandQueue;
     protected boolean mIsTv;
 
@@ -86,7 +85,6 @@ public class BaseStatusBarMod implements IMod {
         mPile = null;
         mWindowManagerService = null;
         mBarService = null;
-        mSearchPanelView = null;
         mCommandQueue = null;
         mContext = null;
         self = null;
@@ -273,7 +271,6 @@ public class BaseStatusBarMod implements IMod {
         mRecentsPreloadOnTouchListener = (View.OnTouchListener) XposedHelpers.getObjectField(self, "mRecentsPreloadOnTouchListener");
         mPile = XposedHelpers.getObjectField(self, "mPile");
         mBarService = XposedHelpers.getObjectField(self, "mBarService");
-        mSearchPanelView = XposedHelpers.getObjectField(self, "mSearchPanelView");
         mCommandQueue = XposedHelpers.getObjectField(self, "mCommandQueue");
     }
 
@@ -437,11 +434,19 @@ public class BaseStatusBarMod implements IMod {
         }
     }
 
+    protected WindowManager.LayoutParams getSearchLayoutParams(ViewGroup.LayoutParams layoutParams) {
+        try {
+            return (WindowManager.LayoutParams) XposedHelpers.callMethod(self, "getSearchLayoutParams", layoutParams);
+        } catch (NoSuchMethodError e) {
+            return null;
+        }
+    }
+
     public class TouchOutsideListener implements View.OnTouchListener {
         private int mMsg;
-        private StatusBarPanel mPanel;
+        private Object mPanel;
 
-        public TouchOutsideListener(int msg, StatusBarPanel panel) {
+        public TouchOutsideListener(int msg, Object panel) {
             mMsg = msg;
             mPanel = panel;
         }
@@ -450,7 +455,8 @@ public class BaseStatusBarMod implements IMod {
             final int action = ev.getAction();
             if (action == MotionEvent.ACTION_OUTSIDE
                     || (action == MotionEvent.ACTION_DOWN
-                    && !mPanel.isInContentArea((int)ev.getX(), (int)ev.getY()))) {
+                    && !(Boolean) XposedHelpers.callMethod(mPanel, "isInContentArea",
+                        (int)ev.getX(), (int)ev.getY()))) {
                 mHandler.removeMessages(mMsg);
                 mHandler.sendEmptyMessage(mMsg);
                 return true;

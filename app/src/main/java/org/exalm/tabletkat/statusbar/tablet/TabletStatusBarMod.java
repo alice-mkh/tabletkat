@@ -49,6 +49,7 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.VelocityTracker;
@@ -1528,16 +1529,45 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         });
 
         try {
-            XposedHelpers.findAndHookMethod(base, "updateSearchPanel", new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(base, "updateSearchPanel", new XC_MethodReplacement() {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                     if (!mIsTv) {
-                        return;
+                        return TabletKatModule.invokeOriginalMethod(methodHookParam);
                     }
 
-                    mSearchPanelView = XposedHelpers.getObjectField(self, "mSearchPanelView");
+                    View mSearchPanelView = (View) XposedHelpers.getObjectField(self, "mSearchPanelView");
 
-                    mStatusBarView.setDelegateView((View) mSearchPanelView);
+                    // Search Panel
+                    boolean visible = false;
+                    if (mSearchPanelView != null) {
+                        visible = (Boolean) XposedHelpers.callMethod(mSearchPanelView, "isShowing");
+                        mWindowManager.removeView(mSearchPanelView);
+                    }
+
+                    // Provide SearchPanel with a temporary parent to allow layout params to work.
+                    LinearLayout tmpRoot = new LinearLayout(mContext);
+
+                    Configuration c = new Configuration(mContext.getResources().getConfiguration());
+                    c.smallestScreenWidthDp = 720;
+                    Context c2 = mContext.createConfigurationContext(c);
+                    mSearchPanelView = LayoutInflater.from(c2).inflate(
+                            SystemR.layout.status_bar_search_panel, tmpRoot, false);
+                    mSearchPanelView.setOnTouchListener(
+                            new TouchOutsideListener(MSG_CLOSE_SEARCH_PANEL, mSearchPanelView));
+                    mSearchPanelView.setVisibility(View.GONE);
+
+                    WindowManager.LayoutParams lp = getSearchLayoutParams(mSearchPanelView.getLayoutParams());
+
+                    mWindowManager.addView(mSearchPanelView, lp);
+                    XposedHelpers.callMethod(mSearchPanelView, "setBar", self);
+                    if (visible) {
+                        XposedHelpers.callMethod(mSearchPanelView, "show", true, false);
+                    }
+
+                    mStatusBarView.setDelegateView(mSearchPanelView);
+                    XposedHelpers.setObjectField(self, "mSearchPanelView", mSearchPanelView);
+                    return null;
                 }
             });
         }catch (NoSuchMethodError e){}
@@ -2393,15 +2423,15 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         final float orig = inline ? 0 :
                 res.getDimension(res.getIdentifier(str, "dimen", TabletKatModule.SYSTEMUI_PACKAGE));
         res.setReplacement(TabletKatModule.SYSTEMUI_PACKAGE, "dimen", str, new CustomDimenReplacement() {
-                @Override
-                protected float getValue() {
-                    if (mIsTv){
-                        return res2.getDimension(id);
+                    @Override
+                    protected float getValue() {
+                        if (mIsTv) {
+                            return res2.getDimension(id);
+                        }
+                        return !inline ? orig :
+                                res.getDimension(res.getIdentifier(str, "dimen", TabletKatModule.SYSTEMUI_PACKAGE));
                     }
-                    return !inline ? orig :
-                            res.getDimension(res.getIdentifier(str, "dimen", TabletKatModule.SYSTEMUI_PACKAGE));
                 }
-            }
         );
     }
 
@@ -2442,7 +2472,6 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         replaceDimen(res, res2, R.dimen.navbar_search_outerring_diameter, "navbar_search_outerring_diameter", true);
         replaceDimen(res, res2, R.dimen.navbar_search_outerring_radius, "navbar_search_outerring_radius", true);
 
-        //Fixing Google Now ring. We have to rotate it for landscape handsets and to move to the left for everything
         res.hookLayout(TabletKatModule.SYSTEMUI_PACKAGE, "layout", "status_bar_search_panel", new XC_LayoutInflated() {
             @Override
             public void handleLayoutInflated(LayoutInflatedParam param) throws Throwable {
@@ -2451,59 +2480,19 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 }
 
                 ViewGroup v = (ViewGroup) param.view;
+
+                DisplayMetrics dm = v.getContext().getResources().getDisplayMetrics();
+                int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -150, dm);
+
                 int glow_pad_view = param.res.getIdentifier("glow_pad_view", "id", TabletKatModule.SYSTEMUI_PACKAGE);
-                int search_bg_protect = param.res.getIdentifier("search_bg_protect", "id", TabletKatModule.SYSTEMUI_PACKAGE);
-
-                DisplayMetrics displayMetrics = v.getContext().getResources().getDisplayMetrics();
-                int margin = (int) (-90F * displayMetrics.density);
-
                 View glowpad = v.findViewById(glow_pad_view);
-                RelativeLayout l2 = (RelativeLayout) v.findViewById(search_bg_protect);
 
-                if (l2 != null){
-                    View l = l2.getChildAt(0);
-                    RelativeLayout.LayoutParams lparams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    lparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    l.setLayoutParams(lparams);
-
-                    FrameLayout.LayoutParams lparams2 = (FrameLayout.LayoutParams) l2.getLayoutParams();
-                    lparams2.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
-                    lparams2.setMarginStart(margin);
-                    l2.setLayoutParams(lparams2);
-
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) glowpad.getLayoutParams();
-                    if (params.height == ViewGroup.LayoutParams.MATCH_PARENT) {
-                        int h = params.height;
-                        params.height = params.width;
-                        params.width = h;
-
-                        List mDirectionDescriptions = (List) XposedHelpers.getObjectField(glowpad, "mDirectionDescriptions");
-                        swapItems((List) XposedHelpers.getObjectField(glowpad, "mTargetDrawables"), 1, 2);
-                        swapItems((List) XposedHelpers.getObjectField(glowpad, "mTargetDescriptions"), 1, 2);
-                        swapItems(mDirectionDescriptions, 1, 2);
-                        if (mDirectionDescriptions != null) {
-                            String str = res2.getString(res2.fwd(R.string.up).getId());
-                            mDirectionDescriptions.set(1, str);
-                        }
-                    }
-                    XposedHelpers.setIntField(glowpad, "mGravity", Gravity.CENTER_HORIZONTAL | Gravity.TOP);
-                    glowpad.setLayoutParams(params);
-               }else{
-                    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) glowpad.getLayoutParams();
-                    params.setMarginStart(margin);
-                    glowpad.setLayoutParams(params);
-               }
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) glowpad.getLayoutParams();
+                params.setMarginStart(margin);
+                params.gravity = Gravity.START | Gravity.BOTTOM;
+                glowpad.setLayoutParams(params);
+                XposedHelpers.setIntField(glowpad, "mGravity", Gravity.TOP | Gravity.END);
             }
         });
-    }
-
-    @SuppressWarnings("unchecked")
-    private void swapItems(List l, int i1, int i2){
-        if (l == null){
-            return;
-        }
-        Object o1 = l.get(i1);
-        l.set(i1, l.get(i2));
-        l.set(i2, o1);
     }
 }

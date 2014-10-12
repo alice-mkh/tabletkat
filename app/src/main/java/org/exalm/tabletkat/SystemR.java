@@ -80,6 +80,7 @@ public class SystemR {
         public static int signal_cluster_view;
         public static int status_bar_recent_item;
         public static int status_bar_recent_panel;
+        public static int status_bar_search_panel;
     }
     public static class string {
         public static int accessibility_back;
@@ -198,6 +199,7 @@ public class SystemR {
         }
         layout.status_bar_recent_item = get(res, res2, "status_bar_recent_item", "layout");
         layout.status_bar_recent_panel = get(res, res2, "status_bar_recent_panel", "layout");
+        layout.status_bar_search_panel = get(res, res2, "status_bar_search_panel", "layout");
 
         string.accessibility_back = get(res, res2, "accessibility_back", "string");
         string.accessibility_battery_level = get(res, res2, "accessibility_battery_level", "string");
