@@ -14,14 +14,15 @@ import android.preference.PreferenceManager;
 import java.util.List;
 
 public class TabletKatSettings extends PreferenceActivity {
-    private static final boolean ALWAYS_SIMPLE_PREFS = false;
     public static final String ACTION_PREFERENCE_CHANGED = "org.exalm.tabletkat.PREFERENCE_CHANGED";
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        setupSimplePreferencesScreen();
+        if (!onIsMultiPane()) {
+            setupSimplePreferencesScreen();
+        }
     }
 
     @Override
@@ -30,10 +31,6 @@ public class TabletKatSettings extends PreferenceActivity {
     }
 
     private void setupSimplePreferencesScreen() {
-        if (!isSimplePreferences(this)) {
-            return;
-        }
-
         getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.pref_general);
 
@@ -71,24 +68,12 @@ public class TabletKatSettings extends PreferenceActivity {
     }
 
     @Override
-    public boolean onIsMultiPane() {
-        return isXLargeTablet(this) && !isSimplePreferences(this);
-    }
-
-    private static boolean isXLargeTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-        & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-    }
-
-    private static boolean isSimplePreferences(Context context) {
-        return ALWAYS_SIMPLE_PREFS || !isXLargeTablet(context);
-    }
-
-    @Override
     public void onBuildHeaders(List<Header> target) {
-        if (!isSimplePreferences(this)) {
-            loadHeadersFromResource(R.xml.pref_headers, target);
+        if (!onIsMultiPane()) {
+            return;
         }
+
+        loadHeadersFromResource(R.xml.pref_headers, target);
     }
 
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
