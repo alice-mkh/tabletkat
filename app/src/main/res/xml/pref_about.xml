@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:title="@string/pref_title_version"
+        android:summary="@string/pref_summary_version"/>
+    <Preference
+        android:title="@string/pref_title_support"
+        android:summary="@string/pref_summary_support">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="http://forum.xda-developers.com/showthread.php?t=2862722"/>
+    </Preference>
+    <Preference
+        android:title="@string/pref_title_source"
+        android:summary="@string/pref_summary_source">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/Exalm/tabletkat"/>
+    </Preference>
+    <Preference
+        android:title="@string/pref_title_donate"
+        android:summary="@string/pref_summary_donate">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=exalm7659@gmail.com&amp;item_name=TabletKat&amp;currency_code=USD"/>
+    </Preference>
+    <Preference
+        android:key="translation"
+        android:title="@string/pref_title_translation"
+        android:summary="@string/pref_summary_translation">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="@string/pref_translation_email"/>
+    </Preference>
+</PreferenceScreen>

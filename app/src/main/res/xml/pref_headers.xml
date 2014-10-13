@@ -6,4 +6,8 @@
         android:fragment="org.exalm.tabletkat.TabletKatSettings$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
 
+    <header
+        android:fragment="org.exalm.tabletkat.TabletKatSettings$AboutPreferenceFragment"
+        android:title="@string/pref_header_about" />
+
 </preference-headers>

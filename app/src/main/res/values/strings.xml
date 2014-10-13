@@ -1,10 +1,14 @@
 <resources>
     <string name="app_name">TabletKat</string>
+    <string name="app_version">1.2test14</string>
 
     <!--Strings from settings activity-->
 
+    <!-- Headers -->
     <string name="pref_header_general">General</string>
+    <string name="pref_header_about">About</string>
 
+    <!-- General -->
     <string name="pref_title_enable_tablet_ui">Enable tablet UI</string>
     <string name="pref_summary_enable_tablet_ui">Use older tablet mode</string>
 
@@ -29,4 +33,28 @@
 
     <string name="pref_title_enable_mod_launcher">Enable tablet launcher layout</string>
     <string name="pref_summary_enable_mod_launcher">Launcher2 (Nexus 10 default) only</string>
+
+    <!-- About -->
+    <string name="pref_title_version">TabletKat version</string>
+    <string name="pref_summary_version">@string/app_version</string>
+
+    <string name="pref_title_support">Discussion</string>
+    <string name="pref_summary_support">Tap to open XDA forum thread</string>
+
+    <string name="pref_title_source">Source code</string>
+    <string name="pref_summary_source">Tap to see the source code on Github</string>
+
+    <string name="pref_title_donate">Donate</string>
+    <string name="pref_summary_donate">Tap to donate via PayPal</string>
+
+    <!--Translators should override this in the following manner:
+
+    <string name="pref_title_translation">%language% translation by</string>
+    <string name="pref_summary_translation">%your name%</string>
+    <string name="pref_translation_email">mailto:%your email%</string>
+    -->
+
+    <string name="pref_title_translation"></string>
+    <string name="pref_summary_translation"></string>
+    <string name="pref_translation_email"></string>
 </resources>

@@ -1,6 +1,5 @@
 package org.exalm.tabletkat;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -8,9 +7,9 @@ import android.os.*;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -38,10 +37,10 @@ public class TabletKatSettings extends PreferenceActivity {
         getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
         addPreferencesFromResource(R.xml.pref_general);
 
-//        PreferenceCategory fakeHeader = new PreferenceCategory(this);
-//        fakeHeader.setTitle(R.string.pref_header_notifications);
-//        getPreferenceScreen().addPreference(fakeHeader);
-//        addPreferencesFromResource(R.xml.pref_notification);
+        PreferenceCategory fakeHeader = new PreferenceCategory(this);
+        fakeHeader.setTitle(R.string.pref_header_about);
+        getPreferenceScreen().addPreference(fakeHeader);
+        addPreferencesFromResource(R.xml.pref_about);
 
         setUpPreferenceChangeListener(findPreference("enable_tablet_ui"));
         setUpPreferenceChangeListener(findPreference("enable_mod_recents"));
@@ -50,7 +49,9 @@ public class TabletKatSettings extends PreferenceActivity {
         setUpPreferenceChangeListener(findPreference("ics_clock_font"));
         setUpPreferenceChangeListener(findPreference("battery_percents"));
 
-//        bindPreferenceSummaryToValue(findPreference("when_to_use"));
+        if (getString(R.string.pref_summary_translation).isEmpty()) {
+            getPreferenceScreen().removePreference(findPreference("translation"));
+        }
     }
 
     @Override
@@ -91,10 +92,6 @@ public class TabletKatSettings extends PreferenceActivity {
             } else {
                 preference.setSummary(stringValue);
             }
-//            if (preference.getKey().equals("when_to_use")){
-//                Context c = preference.getContext();
-//                Toast.makeText(c, c.getString(R.string.message_reboot), Toast.LENGTH_SHORT).show();
-//            }
             return true;
         }
     };
@@ -142,6 +139,19 @@ public class TabletKatSettings extends PreferenceActivity {
             setUpPreferenceChangeListener(findPreference("extended_settings"));
             setUpPreferenceChangeListener(findPreference("ics_clock_font"));
             setUpPreferenceChangeListener(findPreference("battery_percents"));
+        }
+    }
+
+    public static class AboutPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
+            addPreferencesFromResource(R.xml.pref_about);
+
+            if (getString(R.string.pref_summary_translation).isEmpty()) {
+                getPreferenceScreen().removePreference(findPreference("translation"));
+            }
         }
     }
 }
