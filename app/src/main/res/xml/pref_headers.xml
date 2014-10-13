@@ -7,6 +7,18 @@
         android:title="@string/pref_header_general" />
 
     <header
+        android:fragment="org.exalm.tabletkat.TabletKatSettings$RecentsPreferenceFragment"
+        android:title="@string/pref_header_recents" />
+
+    <header
+        android:fragment="org.exalm.tabletkat.TabletKatSettings$LauncherPreferenceFragment"
+        android:title="@string/pref_header_launcher" />
+
+    <header
+        android:fragment="org.exalm.tabletkat.TabletKatSettings$SettingsPreferenceFragment"
+        android:title="@string/pref_header_settings" />
+
+    <header
         android:fragment="org.exalm.tabletkat.TabletKatSettings$AboutPreferenceFragment"
         android:title="@string/pref_header_about" />
 

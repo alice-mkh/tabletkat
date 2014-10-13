@@ -1,0 +1,15 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="enable_mod_recents"
+        android:title="@string/pref_title_enable_mod_recents"
+        android:summary="@string/pref_summary_enable_mod_recents"
+        android:defaultValue="true" />
+
+    <SwitchPreference
+        android:key="overlay_recents"
+        android:title="@string/pref_title_overlay_recents"
+        android:summary="@string/pref_summary_overlay_recents"
+        android:defaultValue="true" />
+
+</PreferenceScreen>

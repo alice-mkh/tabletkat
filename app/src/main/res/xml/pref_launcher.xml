@@ -1,0 +1,9 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="enable_mod_launcher"
+        android:title="@string/pref_title_enable_mod_launcher"
+        android:summary="@string/pref_summary_enable_mod_launcher"
+        android:defaultValue="true" />
+
+</PreferenceScreen>

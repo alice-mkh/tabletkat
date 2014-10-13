@@ -6,18 +6,6 @@
         android:summary="@string/pref_summary_enable_tablet_ui"
         android:defaultValue="true" />
 
-    <SwitchPreference
-        android:key="enable_mod_recents"
-        android:title="@string/pref_title_enable_mod_recents"
-        android:summary="@string/pref_summary_enable_mod_recents"
-        android:defaultValue="true" />
-
-    <SwitchPreference
-        android:key="overlay_recents"
-        android:title="@string/pref_title_overlay_recents"
-        android:summary="@string/pref_summary_overlay_recents"
-        android:defaultValue="true" />
-
     <CheckBoxPreference
         android:key="ics_clock_font"
         android:title="@string/pref_title_ics_clock_font"
@@ -38,21 +26,4 @@
         android:dependency="enable_tablet_ui"
         android:defaultValue="false" />
 
-    <SwitchPreference
-        android:key="enable_mod_settings"
-        android:title="@string/pref_title_enable_mod_settings"
-        android:summary="@string/pref_summary_enable_mod_settings"
-        android:defaultValue="true" />
-
-    <CheckBoxPreference
-        android:key="force_breadcrumbs"
-        android:title="@string/pref_title_force_breadcrumbs"
-        android:defaultValue="true"
-        android:dependency="enable_mod_settings"/>
-
-    <SwitchPreference
-        android:key="enable_mod_launcher"
-        android:title="@string/pref_title_enable_mod_launcher"
-        android:summary="@string/pref_summary_enable_mod_launcher"
-        android:defaultValue="true" />
 </PreferenceScreen>

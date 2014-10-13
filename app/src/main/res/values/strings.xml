@@ -6,17 +6,14 @@
 
     <!-- Headers -->
     <string name="pref_header_general">General</string>
+    <string name="pref_header_recents">Recents</string>
+    <string name="pref_header_launcher">Launcher</string>
+    <string name="pref_header_settings">Settings</string>
     <string name="pref_header_about">About</string>
 
     <!-- General -->
     <string name="pref_title_enable_tablet_ui">Enable tablet UI</string>
     <string name="pref_summary_enable_tablet_ui">Use older tablet mode</string>
-
-    <string name="pref_title_enable_mod_recents">Enable tablet recents</string>
-    <string name="pref_summary_enable_mod_recents">Pin recents to the left</string>
-
-    <string name="pref_title_overlay_recents">Enable overlay recents</string>
-    <string name="pref_summary_overlay_recents">Open recents above the current app</string>
 
     <string name="pref_title_extended_settings">Extended quick settings</string>
     <string name="pref_summary_extended_settings">Allow additional features in the settings pane</string>
@@ -26,13 +23,22 @@
 
     <string name="pref_title_battery_percents">Show battery percents</string>
 
+    <!-- Recents -->
+    <string name="pref_title_enable_mod_recents">Enable tablet recents</string>
+    <string name="pref_summary_enable_mod_recents">Pin recents to the left</string>
+
+    <string name="pref_title_overlay_recents">Enable overlay recents</string>
+    <string name="pref_summary_overlay_recents">Open recents above the current app</string>
+
+    <!-- Launcher -->
+    <string name="pref_title_enable_mod_launcher">Enable tablet launcher layout</string>
+    <string name="pref_summary_enable_mod_launcher">Launcher2 (Nexus 10 default) only</string>
+
+    <!-- Settings -->
     <string name="pref_title_enable_mod_settings">Enable multi-pane settings</string>
     <string name="pref_summary_enable_mod_settings">Enable multi-pane mode in the Settings app</string>
 
     <string name="pref_title_force_breadcrumbs">Force breadcrumbs</string>
-
-    <string name="pref_title_enable_mod_launcher">Enable tablet launcher layout</string>
-    <string name="pref_summary_enable_mod_launcher">Launcher2 (Nexus 10 default) only</string>
 
     <!-- About -->
     <string name="pref_title_version">TabletKat version</string>
@@ -54,7 +60,7 @@
     <string name="pref_translation_email">mailto:%your email%</string>
     -->
 
-    <string name="pref_title_translation"></string>
-    <string name="pref_summary_translation"></string>
-    <string name="pref_translation_email"></string>
+    <string name="pref_title_translation"/>
+    <string name="pref_summary_translation"/>
+    <string name="pref_translation_email"/>
 </resources>

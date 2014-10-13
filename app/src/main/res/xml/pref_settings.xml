@@ -1,0 +1,15 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="enable_mod_settings"
+        android:title="@string/pref_title_enable_mod_settings"
+        android:summary="@string/pref_summary_enable_mod_settings"
+        android:defaultValue="true" />
+
+    <CheckBoxPreference
+        android:key="force_breadcrumbs"
+        android:title="@string/pref_title_force_breadcrumbs"
+        android:defaultValue="true"
+        android:dependency="enable_mod_settings"/>
+
+</PreferenceScreen>

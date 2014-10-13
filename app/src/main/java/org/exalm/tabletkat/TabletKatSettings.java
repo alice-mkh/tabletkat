@@ -38,16 +38,32 @@ public class TabletKatSettings extends PreferenceActivity {
         addPreferencesFromResource(R.xml.pref_general);
 
         PreferenceCategory fakeHeader = new PreferenceCategory(this);
+        fakeHeader.setTitle(R.string.pref_header_recents);
+        getPreferenceScreen().addPreference(fakeHeader);
+        addPreferencesFromResource(R.xml.pref_recents);
+
+        fakeHeader = new PreferenceCategory(this);
+        fakeHeader.setTitle(R.string.pref_header_launcher);
+        getPreferenceScreen().addPreference(fakeHeader);
+        addPreferencesFromResource(R.xml.pref_launcher);
+
+        fakeHeader = new PreferenceCategory(this);
+        fakeHeader.setTitle(R.string.pref_header_settings);
+        getPreferenceScreen().addPreference(fakeHeader);
+        addPreferencesFromResource(R.xml.pref_settings);
+
+        fakeHeader = new PreferenceCategory(this);
         fakeHeader.setTitle(R.string.pref_header_about);
         getPreferenceScreen().addPreference(fakeHeader);
         addPreferencesFromResource(R.xml.pref_about);
 
         setUpPreferenceChangeListener(findPreference("enable_tablet_ui"));
-        setUpPreferenceChangeListener(findPreference("enable_mod_recents"));
-        setUpPreferenceChangeListener(findPreference("overlay_recents"));
         setUpPreferenceChangeListener(findPreference("extended_settings"));
         setUpPreferenceChangeListener(findPreference("ics_clock_font"));
         setUpPreferenceChangeListener(findPreference("battery_percents"));
+
+        setUpPreferenceChangeListener(findPreference("enable_mod_recents"));
+        setUpPreferenceChangeListener(findPreference("overlay_recents"));
 
         if (getString(R.string.pref_summary_translation).isEmpty()) {
             getPreferenceScreen().removePreference(findPreference("translation"));
@@ -134,11 +150,39 @@ public class TabletKatSettings extends PreferenceActivity {
             addPreferencesFromResource(R.xml.pref_general);
 
             setUpPreferenceChangeListener(findPreference("enable_tablet_ui"));
-            setUpPreferenceChangeListener(findPreference("enable_mod_recents"));
-            setUpPreferenceChangeListener(findPreference("overlay_recents"));
             setUpPreferenceChangeListener(findPreference("extended_settings"));
             setUpPreferenceChangeListener(findPreference("ics_clock_font"));
             setUpPreferenceChangeListener(findPreference("battery_percents"));
+        }
+    }
+
+    public static class RecentsPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
+            addPreferencesFromResource(R.xml.pref_recents);
+
+            setUpPreferenceChangeListener(findPreference("enable_mod_recents"));
+            setUpPreferenceChangeListener(findPreference("overlay_recents"));
+        }
+    }
+
+    public static class LauncherPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
+            addPreferencesFromResource(R.xml.pref_launcher);
+        }
+    }
+
+    public static class SettingsPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
+            addPreferencesFromResource(R.xml.pref_settings);
         }
     }
 
