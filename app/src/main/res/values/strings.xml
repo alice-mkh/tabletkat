@@ -40,6 +40,9 @@
 
     <string name="pref_title_force_breadcrumbs">Force breadcrumbs</string>
 
+    <string name="pref_title_settings_light_theme">Light theme</string>
+    <string name="pref_summary_settings_light_theme">Use this if you experience glitches</string>
+
     <!-- About -->
     <string name="pref_title_version">TabletKat version</string>
     <string name="pref_summary_version">@string/app_version</string>

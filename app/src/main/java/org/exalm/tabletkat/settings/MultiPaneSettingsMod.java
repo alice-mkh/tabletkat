@@ -37,7 +37,7 @@ public class MultiPaneSettingsMod implements IMod {
     private static int id_tabs;
 
     @Override
-    public void addHooks(final ClassLoader cl) {
+    public void addHooks(ClassLoader cl) {
         Class dataUsageSummaryClass = XposedHelpers.findClass("com.android.settings.DataUsageSummary", cl);
 //        final Class homeSettingsClass = XposedHelpers.findClass("com.android.settings.HomeSettings", cl);
         Class manageApplicationsClass = XposedHelpers.findClass("com.android.settings.applications.ManageApplications", cl);
@@ -50,8 +50,9 @@ public class MultiPaneSettingsMod implements IMod {
                 Activity a = (Activity) param.thisObject;
                 String name = a.getResources().getResourceName(a.getThemeResId());
                 if (name.endsWith(":style/Theme.Settings")) {
-                    a.setTheme(shouldUseLightTheme(cl) ? android.R.style.Theme_DeviceDefault_Light :
-                            android.R.style.Theme_DeviceDefault);
+                    a.setTheme(TabletKatModule.shouldUseLightTheme()
+                            ? android.R.style.Theme_DeviceDefault_Light
+                            : android.R.style.Theme_DeviceDefault);
                 }
             }
         });
@@ -229,17 +230,6 @@ public class MultiPaneSettingsMod implements IMod {
 
     private boolean isMultiPane(Resources r){
         return true;//r.getBoolean(com.android.internal.R.bool.preferences_prefer_dual_pane); //TODO
-    }
-
-    private boolean shouldUseLightTheme(ClassLoader cl) {
-        try {
-            //Is this Xperia?
-            XposedHelpers.findClass("com.sonymobile.settings.TetherAllowDialog", cl);
-            return true;
-        }catch (Throwable t) {
-            //This is not Xperia.
-        }
-        return false;
     }
 
     public static void hookBreadcrumbs(XResources res) {

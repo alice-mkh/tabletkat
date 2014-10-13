@@ -482,4 +482,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     public static boolean shouldForceBreadcrumbs() {
         return isModEnabled("settings") && pref.getBoolean("force_breadcrumbs", true);
     }
+
+    public static boolean shouldUseLightTheme() {
+        return isModEnabled("settings") && pref.getBoolean("settings_light_theme", false);
+    }
 }

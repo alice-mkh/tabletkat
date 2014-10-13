@@ -12,4 +12,11 @@
         android:defaultValue="true"
         android:dependency="enable_mod_settings"/>
 
+    <CheckBoxPreference
+        android:key="settings_light_theme"
+        android:title="@string/pref_title_settings_light_theme"
+        android:summary="@string/pref_summary_settings_light_theme"
+        android:defaultValue="false"
+        android:dependency="enable_mod_settings" />
+
 </PreferenceScreen>

@@ -37,6 +37,9 @@
 
     <string name="pref_title_force_breadcrumbs">Всегда показывать строку пути</string>
 
+    <string name="pref_title_settings_light_theme">Светлая тема</string>
+    <string name="pref_summary_settings_light_theme">Используйте в случае возникновения графических багов</string>
+
     <!-- О программе -->
     <string name="pref_title_version">Версия TabletKat</string>
 
