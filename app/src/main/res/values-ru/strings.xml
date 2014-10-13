@@ -1,30 +1,55 @@
 <resources>
-    <!--Strings from settings activity-->
+    <!--Строки для экрана настроек-->
 
+    <!-- Заголовки -->
     <string name="pref_header_general">Основное</string>
+    <string name="pref_header_recents">Недавние</string>
+    <string name="pref_header_launcher">Лончер</string>
+    <string name="pref_header_settings">Настройки</string>
+    <string name="pref_header_about">О программе</string>
 
+    <!-- Основноеы -->
     <string name="pref_title_enable_tablet_ui">Планшетный интерфейс</string>
     <string name="pref_summary_enable_tablet_ui">Использовать старый планшетный интерфейс</string>
 
     <string name="pref_title_enable_mod_recents">Планшетный экран недавних</string>
     <string name="pref_summary_enable_mod_recents">Переместить недавние налево</string>
 
+    <string name="pref_title_ics_clock_font">Старый шрифт часов</string>
+    <string name="pref_summary_ics_clock_font">Использовать особый шрифт для часов</string>
+
+    <string name="pref_title_battery_percents">Проценты батареи</string>
+
+    <!-- Недавние -->
     <string name="pref_title_overlay_recents">Оверлейные недавние</string>
     <string name="pref_summary_overlay_recents">Открывать недавние поверх текущего приложения</string>
 
     <string name="pref_title_extended_settings">Расширенные быстрые настройки</string>
     <string name="pref_summary_extended_settings">Разрешить дополнительные пункты в быстрых настройках</string>
 
-    <string name="pref_title_ics_clock_font">Старый шрифт часов</string>
-    <string name="pref_summary_ics_clock_font">Использовать особый шрифт для часов</string>
+    <!-- Лончер -->
+    <string name="pref_title_enable_mod_launcher">Планшетный вариант лончера</string>
+    <string name="pref_summary_enable_mod_launcher">Только для Launcher2 (стандартный в Nexus 10)</string>
 
-    <string name="pref_title_battery_percents">Проценты батареи</string>
-
+    <!-- Настройки -->
     <string name="pref_title_enable_mod_settings">Двухпанельные настройки</string>
     <string name="pref_summary_enable_mod_settings">Включить двухпанельный режим в приложении настроек</string>
 
     <string name="pref_title_force_breadcrumbs">Всегда показывать строку пути</string>
 
-    <string name="pref_title_enable_mod_launcher">Планшетный вариант лончера</string>
-    <string name="pref_summary_enable_mod_launcher">Только для Launcher2 (стандартный в Nexus 10)</string>
+    <!-- О программе -->
+    <string name="pref_title_version">Версия TabletKat</string>
+
+    <string name="pref_title_support">Обсуждение</string>
+    <string name="pref_summary_support">Нажмите, чтобы открыть тему на форуме XDA (На английском)</string>
+
+    <string name="pref_title_source">Исходный код</string>
+    <string name="pref_summary_source">Нажмите, чтоб посмотреть исходный код на Github</string>
+
+    <string name="pref_title_donate">Пожертвовать</string>
+    <string name="pref_summary_donate">Нажмите, чтобы пожертвовать через PayPal</string>
+
+    <string name="pref_title_translation">Переводчик</string>
+    <string name="pref_summary_translation">Exalm</string>
+    <string name="pref_translation_email">mailto:exalm7659@gmail.com</string>
 </resources>
