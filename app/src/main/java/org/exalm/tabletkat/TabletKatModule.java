@@ -339,9 +339,9 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
             recentsMod.destroy();
             callMethod(mStatusBar, "start");
             statusBarMod.onStart();
-            recentsMod.setBar(mStatusBar);
+            recentsMod.setBar(mStatusBar, statusBarMod);
             recentsMod.registerReceiver(mContext);
-            recentsMod.createPanel(mStatusBar);
+            recentsMod.createPanel(mStatusBar, statusBarMod);
             debug("started " + mStatusBar.getClass().getSimpleName());
         }
         return mStatusBar;

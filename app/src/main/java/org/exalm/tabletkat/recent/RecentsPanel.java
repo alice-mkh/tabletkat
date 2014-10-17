@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
+import org.exalm.tabletkat.statusbar.tablet.TabletStatusBarMod;
 
 import java.util.ArrayList;
 
@@ -32,11 +33,13 @@ public class RecentsPanel {
     protected Context mContext;
     protected WindowManager mWindowManager;
     protected Object mBar;
+    protected TabletStatusBarMod mMod;
     boolean useTabletLayout;
     private boolean mVisible;
 
-    public RecentsPanel(Object bar, boolean useTabletLayout) {
+    public RecentsPanel(Object bar, TabletStatusBarMod mod, boolean useTabletLayout) {
         mBar = bar;
+        mMod = mod;
         mContext = (Context) XposedHelpers.getObjectField(mBar, "mContext");
         mWindowManager = (WindowManager) XposedHelpers.getObjectField(mBar, "mWindowManager");
         mRecentTasksLoader = XposedHelpers.callStaticMethod(TabletKatModule.mRecentTasksLoaderClass, "getInstance", mContext);
@@ -150,6 +153,9 @@ public class RecentsPanel {
     public void setVisibility(boolean visibility) {
         mRecentsPanel.setVisibility(visibility ? View.VISIBLE : View.GONE);
         mVisible = visibility;
+        if (mMod != null) {
+            mMod.setOverlayRecentsVisible(mVisible);
+        }
         if (TabletKatModule.mPhoneStatusBarClass.isInstance(mBar)) {
             XposedHelpers.callMethod(mBar, "checkBarModes");
         }

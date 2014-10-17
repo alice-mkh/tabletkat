@@ -22,6 +22,7 @@ import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.statusbar.phone.BarTransitions;
+import org.exalm.tabletkat.statusbar.tablet.TabletStatusBarMod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +42,18 @@ public class TabletRecentsMod implements IMod {
     private boolean overlay;
     private RecentsPanel mRecentsPanel;
     private Object mBar;
+    private TabletStatusBarMod mMod;
 //    private View mRecentsTransitionBackground;
 //    private ImageView mRecentsTransitionPlaceholderIcon;
 
-    public void setBar(Object bar) {
+    public void setBar(Object bar, TabletStatusBarMod mod) {
         mBar = bar;
+        mMod = mod;
     }
 
-    public void createPanel(Object bar) {
+    public void createPanel(Object bar, TabletStatusBarMod mod) {
         mBar = bar;
+        mMod = mod;
         if (mRecentsPanel != null) {
             mRecentsPanel.destroy();
         }
@@ -57,11 +61,12 @@ public class TabletRecentsMod implements IMod {
             mRecentsPanel = null;
             return;
         }
-        mRecentsPanel = new RecentsPanel(bar, useTabletLayout);
+        mRecentsPanel = new RecentsPanel(bar, mod, useTabletLayout);
     }
 
     public void destroy() {
         mBar = null;
+        mMod = null;
         if (mRecentsPanel != null) {
             mRecentsPanel.destroy();
         }
@@ -84,7 +89,7 @@ public class TabletRecentsMod implements IMod {
                 }
                 if (key.equals("overlay_recents")) {
                     overlay = value;
-                    createPanel(mBar);
+                    createPanel(mBar, mMod);
                 }
             }
 
@@ -217,15 +222,6 @@ public class TabletRecentsMod implements IMod {
                     return;
                 }
                 mRecentsPanel.setVisibility((Boolean) param.args[0]);
-            }
-        });
-
-        XposedHelpers.findAndHookMethod(recentsPanelViewClass, "show", boolean.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (mRecentsPanel == null) {
-                    return;
-                }
             }
         });
 

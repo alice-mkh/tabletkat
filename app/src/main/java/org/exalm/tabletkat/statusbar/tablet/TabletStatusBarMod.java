@@ -1190,6 +1190,10 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         mHandler.sendEmptyMessage(msg);
     }
 
+    public void setOverlayRecentsVisible(boolean visible) {
+        mStatusBarView.setBlockEvents(visible);
+    }
+
     private class NotificationTriggerTouchListener implements View.OnTouchListener {
         VelocityTracker mVT;
         float mInitialTouchX, mInitialTouchY;

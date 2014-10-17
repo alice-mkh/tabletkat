@@ -49,6 +49,7 @@ public class TabletStatusBarView extends FrameLayout {
     private int mDisabledFlags = 0;
     private int mNavigationIconHints = 0;
     private final NavTransitionListener mTransitionListener = new NavTransitionListener();
+    private boolean mBlocksEvents;
 
     private class NavTransitionListener implements LayoutTransition.TransitionListener {
         private boolean mBackTransitioning;
@@ -106,6 +107,7 @@ public class TabletStatusBarView extends FrameLayout {
         mDelegateHelper = XposedHelpers.newInstance(TabletKatModule.mDelegateViewHelperClass, this);
         setBackgroundResource(SystemR.drawable.system_bar_background);
         mBarTransitions = new TabletStatusBarTransitions(this, barService);
+        mBlocksEvents = false;
     }
 
     public void setDelegateView(View view) {
@@ -150,11 +152,12 @@ public class TabletStatusBarView extends FrameLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+
             if (TabletStatusBarMod.DEBUG) {
                 Log.d(TabletStatusBarMod.TAG, "TabletStatusBarView intercepting touch event: " + ev);
             }
 
-            mHandler.removeMessages(BaseStatusBarMod.MSG_CLOSE_RECENTS_PANEL);
+            mHandler.removeMessages(TabletStatusBarMod.MSG_CLOSE_RECENTS_PANEL);
             mHandler.sendEmptyMessage(TabletStatusBarMod.MSG_CLOSE_RECENTS_PANEL);
             mHandler.removeMessages(TabletStatusBarMod.MSG_CLOSE_NOTIFICATION_PANEL);
             mHandler.sendEmptyMessage(TabletStatusBarMod.MSG_CLOSE_NOTIFICATION_PANEL);
@@ -180,7 +183,7 @@ public class TabletStatusBarView extends FrameLayout {
             Log.d(TabletStatusBarMod.TAG, "TabletStatusBarView not intercepting event");
         }
         boolean b = (Boolean) XposedHelpers.callMethod(mDelegateHelper, "onInterceptTouchEvent", ev);
-        if (mDelegateHelper != null && b) {
+        if ((mDelegateHelper != null && b) || mBlocksEvents) {
             return true;
         }
         return super.onInterceptTouchEvent(ev);
@@ -308,5 +311,9 @@ public class TabletStatusBarView extends FrameLayout {
         if (view != null) {
             view.setVisibility(visible ? VISIBLE : GONE);
         }
+    }
+
+    public void setBlockEvents(boolean block) {
+        mBlocksEvents = block;
     }
 }
