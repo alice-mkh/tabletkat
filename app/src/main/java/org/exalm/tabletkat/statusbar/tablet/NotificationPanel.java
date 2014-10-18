@@ -141,6 +141,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
                 new Class<?>[]{Context.class, TabletKatModule.mExpandHelperCallbackClass, Integer.TYPE, Integer.TYPE},
                 new Object[]{getContext(), latestItems, minHeight, maxHeight});
         XposedHelpers.callMethod(mExpandHelper, "setEventSource", this);
+        XposedHelpers.callMethod(mExpandHelper, "setScrollView", mNotificationScroller);
         XposedHelpers.setIntField(mExpandHelper, "mGravity", Gravity.BOTTOM);
     }
 
