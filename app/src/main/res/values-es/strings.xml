@@ -1,19 +1,66 @@
 <resources>
     <!--Strings from settings activity-->
 
+    <!-- Headers -->
+    <!--untranslated-->
+    <string name="pref_header_general">General</string>
+    <string name="pref_header_recents">Recents</string>
+    <string name="pref_header_launcher">Launcher</string>
+    <string name="pref_header_settings">Settings</string>
+    <string name="pref_header_about">About</string>
+    <!--end untranslated-->
+
+    <!-- General -->
     <string name="pref_title_enable_tablet_ui">Activar tablet UI</string>
     <string name="pref_summary_enable_tablet_ui">Utilice el modo tablet viejo</string>
-
-    <string name="pref_title_enable_mod_recents">Activar tablet recents</string>
-    <string name="pref_summary_enable_mod_recents">Pin recientes a la izquierda</string>
 
     <string name="pref_title_extended_settings">Ajustes rápidos extendidos</string>
     <string name="pref_summary_extended_settings">Permitir funciones adicionales en el panel de configuración</string>
 
+    <!--untranslated-->
+    <string name="pref_title_ics_clock_font">ICS clock font</string>
+    <!--end untranslated-->
     <string name="pref_summary_ics_clock_font">Use una fuente especial para el reloj</string>
 
     <string name="pref_title_battery_percents">Muestra el porcentaje de bateria</string>
 
+    <!-- Recents -->
+    <string name="pref_title_enable_mod_recents">Activar tablet recents</string>
+    <string name="pref_summary_enable_mod_recents">Pin recientes a la izquierda</string>
+
+    <!--untranslated-->
+    <string name="pref_title_overlay_recents">Enable overlay recents</string>
+    <string name="pref_summary_overlay_recents">Open recents above the current app</string>
+    <!--end untranslated-->
+
+    <!-- Launcher -->
+    <string name="pref_title_enable_mod_launcher">Ativar o layout p/ tablets no launcher</string>
+    <string name="pref_summary_enable_mod_launcher">Somente p/ o Launcher2 (padrão do Nexus 10).</string>
+
+    <!-- Settings -->
     <string name="pref_title_enable_mod_settings">Habilitar la configuración de múltiples paneles</string>
     <string name="pref_summary_enable_mod_settings">Activar el modo multi-panel en la aplicación de configuración</string>
+
+    <!--untranslated-->
+    <string name="pref_title_force_breadcrumbs">Force breadcrumbs</string>
+
+    <string name="pref_title_settings_light_theme">Light theme</string>
+    <string name="pref_summary_settings_light_theme">Use this if you experience glitches</string>
+
+    <!-- About -->
+    <string name="pref_title_version">TabletKat version</string>
+    <string name="pref_summary_version">@string/app_version</string>
+
+    <string name="pref_title_support">Discussion</string>
+    <string name="pref_summary_support">Tap to open XDA forum thread</string>
+
+    <string name="pref_title_source">Source code</string>
+    <string name="pref_summary_source">Tap to see the source code on Github</string>
+
+    <string name="pref_title_donate">Donate</string>
+    <string name="pref_summary_donate">Tap to donate via PayPal</string>
+
+    <string name="pref_title_translation">Translator</string>
+    <string name="pref_summary_translation">%your XDA or Github name%</string>
+    <string name="pref_translation_email">mailto:%your email%</string>
 </resources>

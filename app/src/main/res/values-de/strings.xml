@@ -1,13 +1,17 @@
 <resources>
     <!--Strings from settings activity-->
 
+    <!-- Headers -->
     <string name="pref_header_general">Allgemein</string>
+    <!--untranslated-->
+    <string name="pref_header_recents">Recents</string>
+    <string name="pref_header_launcher">Launcher</string>
+    <string name="pref_header_settings">Settings</string>
+    <string name="pref_header_about">About</string>
 
+    <!-- General -->
     <string name="pref_title_enable_tablet_ui">Tablet Oberfläche aktivieren</string>
     <string name="pref_summary_enable_tablet_ui">Nutze ältere Tablet Oberfläche</string>
-
-    <string name="pref_title_enable_mod_recents">Tablet Verlauf aktivieren</string>
-    <string name="pref_summary_enable_mod_recents">Programmverlauf erscheint am linken Bildschirmrand</string>
 
     <string name="pref_title_extended_settings">Erweiterte Schnelleinstellungen</string>
     <string name="pref_summary_extended_settings">Bietet zusätzliche Optionen in den Schnelleinstellungen</string>
@@ -17,9 +21,43 @@
 
     <string name="pref_title_battery_percents">Akkustand in Prozent anzeigen</string>
 
+    <!-- Recents -->
+    <string name="pref_title_enable_mod_recents">Tablet Verlauf aktivieren</string>
+    <string name="pref_summary_enable_mod_recents">Programmverlauf erscheint am linken Bildschirmrand</string>
+
+    <!--untranslated-->
+    <string name="pref_title_overlay_recents">Enable overlay recents</string>
+    <string name="pref_summary_overlay_recents">Open recents above the current app</string>
+    <!--end untranslated-->
+
+    <!-- Launcher -->
+    <string name="pref_title_enable_mod_launcher">Aktiviere Tablet Launcher Layout</string>
+    <string name="pref_summary_enable_mod_launcher">nur Launcher2 (Nexus 10 Standard)</string>
+
+    <!-- Settings -->
     <string name="pref_title_enable_mod_settings">Zweispaltige Systemeinstellungen</string>
     <string name="pref_summary_enable_mod_settings">Ermöglicht zweispaltige Darstellung in den Systemeinstellungen</string>
 
-    <string name="pref_title_enable_mod_launcher">Aktiviere Tablet Launcher Layout</string>
-    <string name="pref_summary_enable_mod_launcher">nur Launcher2 (Nexus 10 Standard)</string>
+    <!--untranslated-->
+    <string name="pref_title_force_breadcrumbs">Force breadcrumbs</string>
+
+    <string name="pref_title_settings_light_theme">Light theme</string>
+    <string name="pref_summary_settings_light_theme">Use this if you experience glitches</string>
+
+    <!-- About -->
+    <string name="pref_title_version">TabletKat version</string>
+    <string name="pref_summary_version">@string/app_version</string>
+
+    <string name="pref_title_support">Discussion</string>
+    <string name="pref_summary_support">Tap to open XDA forum thread</string>
+
+    <string name="pref_title_source">Source code</string>
+    <string name="pref_summary_source">Tap to see the source code on Github</string>
+
+    <string name="pref_title_donate">Donate</string>
+    <string name="pref_summary_donate">Tap to donate via PayPal</string>
+
+    <string name="pref_title_translation">Translator</string>
+    <string name="pref_summary_translation">%your XDA or Github name%</string>
+    <string name="pref_translation_email">mailto:%your email%</string>
 </resources>
