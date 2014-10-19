@@ -1,6 +1,5 @@
 package org.exalm.tabletkat;
 
-import android.app.FragmentBreadCrumbs;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,20 +8,10 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
-import android.preference.PreferenceActivity;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.Display;
 import android.view.DisplayInfo;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import org.exalm.tabletkat.launcher.LauncherMod;
 import org.exalm.tabletkat.recent.TabletRecentsMod;
@@ -39,7 +28,6 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
-import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import static de.robv.android.xposed.XposedHelpers.*;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -110,6 +98,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 
         Class c = findClass("com.android.internal.policy.impl.PhoneWindowManager", null);
 
+        final XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, null);
+
         findAndHookMethod(c, "getNonDecorDisplayWidth", int.class, int.class, int.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
@@ -137,21 +127,41 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         findAndHookMethod(c, "getConfigDisplayHeight", int.class, int.class, int.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                int fullWidth = (Integer) methodHookParam.args[0];
+                int fullHeight = (Integer) methodHookParam.args[1];
+                int rotation = (Integer) methodHookParam.args[2];
+                int base = (Integer) callMethod(methodHookParam.thisObject, "getNonDecorDisplayHeight", fullWidth, fullHeight, rotation);
                 if (shouldUseTabletUI(null)) {
-                    int fullWidth = (Integer) methodHookParam.args[0];
-                    int fullHeight = (Integer) methodHookParam.args[1];
-                    int rotation = (Integer) methodHookParam.args[2];
-                    return callMethod(methodHookParam.thisObject, "getNonDecorDisplayHeight", fullWidth, fullHeight, rotation);
+                    return base;
                 }
-                return invokeOriginalMethod(methodHookParam);
+                return base + res2.getDimensionPixelSize(R.dimen.status_bar_height);
+            }
+        });
+        findAndHookMethod(c, "setInitialDisplaySize", Display.class, int.class, int.class, int.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Context mContext = (Context) getObjectField(param.thisObject, "mContext");
+                Display display = (Display) param.args[0];
+                if (mContext == null || display.getDisplayId() != Display.DEFAULT_DISPLAY) {
+                    return;
+                }
+                setIntField(param.thisObject, "mStatusBarHeight", res2.getDimensionPixelSize(R.dimen.status_bar_height));
             }
         });
 
-        XModuleResources res2 = XModuleResources.createInstance(MODULE_PATH, null);
         try {
             XResources.setSystemWideReplacement("android", "layout", "status_bar_latest_event_ticker", res2.fwd(R.layout.status_bar_latest_event_ticker));
             XResources.setSystemWideReplacement("android", "layout", "status_bar_latest_event_ticker_large_icon", res2.fwd(R.layout.status_bar_latest_event_ticker_large_icon));
         }catch (Resources.NotFoundException e){}
+        XResources.setSystemWideReplacement("android", "dimen", "status_bar_height", new CustomDimenReplacement() {
+            @Override
+            protected float getValue() {
+                if (shouldUseTabletUI(null)) {
+                    return 0;
+                }
+                return res2.getDimension(R.dimen.status_bar_height);
+            }
+        });
     }
 
     private void setNavigationBarProperties(XC_MethodHook.MethodHookParam param, boolean b) {
@@ -181,6 +191,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 
     @Override
     public void handleLoadPackage(LoadPackageParam loadPackageParam) throws Throwable {
+        tryHookSystemBarTint(loadPackageParam.classLoader);
         if (loadPackageParam.packageName.equals(SETTINGS_PACKAGE)){
             if (settingsMod == null){
                 settingsMod = new MultiPaneSettingsMod();
@@ -298,6 +309,33 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
                 return null;
             }
         });
+    }
+
+    //TODO: At least move the ugly hack away from te main module class
+    private void tryHookSystemBarTint(ClassLoader cl) {
+        try {
+            Class c = findClass("com.readystatesoftware.systembartint.SystemBarTintManager$SystemBarConfig", cl);
+            XposedBridge.hookAllConstructors(c, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (!shouldUseTabletUI(null)) {
+                        return;
+                    }
+                    setBooleanField(param.thisObject, "mTranslucentStatusBar", false);
+                    setBooleanField(param.thisObject, "mHasNavigationBar", true);
+                    setIntField(param.thisObject, "mNavigationBarWidth", 0);
+                }
+            });
+            findAndHookMethod(c, "isNavigationAtBottom", new XC_MethodReplacement() {
+                @Override
+                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                    if (shouldUseTabletUI(null)) {
+                        return true;
+                    }
+                    return invokeOriginalMethod(methodHookParam);
+                }
+            });
+        }catch (Throwable t){}
     }
 
     private boolean shouldUseTabletUI(Configuration conf) {

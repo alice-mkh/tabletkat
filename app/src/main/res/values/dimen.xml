@@ -83,4 +83,5 @@
     <dimen name="launcher2_workspace_width_gap_port">0dp</dimen>
     <dimen name="launcher2_workspace_height_gap_land">0dp</dimen>
     <dimen name="launcher2_workspace_height_gap_port">0dp</dimen>
+    <dimen name="status_bar_height">25dp</dimen>
 </resources>
