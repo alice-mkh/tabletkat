@@ -34,19 +34,18 @@
 
     <LinearLayout
         android:id="@+id/content_frame"
+        android:background="@drawable/sysbar_notification_panel_bg"
         android:layout_height="wrap_content"
         android:layout_width="478dp"
         android:orientation="vertical"
         android:layout_alignParentEnd="true"
         android:layout_above="@id/system_bar_notification_panel_bottom_space"
-        android:paddingBottom="8dp"
+        android:paddingBottom="16dp"
         >
 
         <include layout="@layout/system_bar_notification_panel_title"
             android:layout_width="match_parent"
             android:layout_height="130dp"
-            android:layout_above="@id/content_frame"
-            android:layout_alignParentEnd="true"
             android:layout_weight="0"
             />
 

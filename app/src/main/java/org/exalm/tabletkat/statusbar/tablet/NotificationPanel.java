@@ -38,6 +38,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
@@ -62,7 +63,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
     NotificationPanelTitle mTitleArea;
     ImageView mSettingsButton;
     ImageView mNotificationButton;
-    View mNotificationScroller;
+    ScrollView mNotificationScroller;
     ViewGroup mContentFrame;
     Rect mContentArea = new Rect();
     SettingsView mSettingsView;
@@ -104,7 +105,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
         mSettingsButton = (ImageView) findViewById(SystemR.id.settings_button);
         mNotificationButton = (ImageView) findViewById(SystemR.id.notification_button);
 
-        mNotificationScroller = findViewById(TkR.id.notification_scroller);
+        mNotificationScroller = (ScrollView) findViewById(TkR.id.notification_scroller);
         mContentFrame = (ViewGroup)findViewById(TkR.id.content_frame);
         mContentFrameMissingTranslation = 0; // not needed with current assets
 
@@ -114,11 +115,9 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
 
         mShowing = false;
 
-        mContentFrame.setBackgroundResource(TkR.drawable.notification_panel_bg);
-
         LinearLayout l = (LinearLayout) XposedHelpers.newInstance(TabletKatModule.mNotificationRowLayoutClass, getContext(), null);
 
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
         l.setLayoutParams(lp);
 
@@ -127,7 +126,7 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
         l.setFocusable(true);
         l.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
 
-        ((ViewGroup)findViewById(TkR.id.notification_scroller)).addView(l);
+        mNotificationScroller.addView(l);
     }
 
     @Override
