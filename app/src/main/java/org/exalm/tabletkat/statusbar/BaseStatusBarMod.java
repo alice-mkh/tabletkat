@@ -210,6 +210,7 @@ public class BaseStatusBarMod implements IMod {
                             return null;
                         }
                         XposedHelpers.callMethod(self, "updateExpansionStates");
+                        updatePeek(key);
                     }
                     catch (RuntimeException e) {
                         // It failed to add cleanly.  Log, and remove the view from the panel.
@@ -260,6 +261,9 @@ public class BaseStatusBarMod implements IMod {
         try {
             XposedHelpers.findAndHookMethod(base, "updateHoverState", XC_MethodReplacement.DO_NOTHING);
         }catch (NoSuchMethodError e){}
+    }
+
+    protected void updatePeek(IBinder key) {
     }
 
     public void onStart() {

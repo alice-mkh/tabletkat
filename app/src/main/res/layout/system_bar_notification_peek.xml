@@ -19,8 +19,9 @@
 -->
 
 <!--    android:background="@drawable/system_bar_closed_default_background" -->
-<org.exalm.tabletkat.statusbar.tablet.NotificationPeekPanel
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/panel"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:background="@android:drawable/dialog_holo_dark_frame"
@@ -39,4 +40,4 @@
         android:descendantFocusability="afterDescendants"
         >
     </FrameLayout>
-</org.exalm.tabletkat.statusbar.tablet.NotificationPeekPanel>
+</RelativeLayout>

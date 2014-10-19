@@ -18,6 +18,7 @@ public class SystemR {
         public static int notification_panel_width;
         public static int notification_row_max_height;
         public static int notification_row_min_height;
+        public static int peek_window_y_offset;
         public static int status_bar_icon_drawing_alpha;
         public static int status_bar_icon_size;
     }
@@ -136,6 +137,7 @@ public class SystemR {
         dimen.notification_panel_width = get(res, res2, "notification_panel_width", "dimen");
         dimen.notification_row_max_height = get(res, res2, "notification_row_max_height", "dimen");
         dimen.notification_row_min_height = get(res, res2, "notification_row_min_height", "dimen");
+        dimen.peek_window_y_offset = get(res, res2, "peek_window_y_offset", "dimen");
         dimen.status_bar_icon_drawing_alpha = get(res, res2, "status_bar_icon_drawing_alpha", "dimen");
         dimen.status_bar_icon_size = get(res, res2, "status_bar_icon_size", "dimen");
 

@@ -86,6 +86,7 @@ public class TkR {
         public static int system_bar_input_methods_item;
         public static int system_bar_input_methods_panel;
         public static int system_bar_notification_panel;
+        public static int system_bar_notification_peek;
         public static int system_bar_recent_item;
         public static int system_bar_recent_panel;
         public static int system_bar_settings_row;
@@ -183,6 +184,7 @@ public class TkR {
         layout.system_bar_input_methods_item = add(res, res2, R.layout.system_bar_input_methods_item);
         layout.system_bar_input_methods_panel = add(res, res2, R.layout.system_bar_input_methods_panel);
         layout.system_bar_notification_panel = add(res, res2, R.layout.system_bar_notification_panel);
+        layout.system_bar_notification_peek = add(res, res2, R.layout.system_bar_notification_peek);
         layout.system_bar_recent_item = add(res, res2, R.layout.system_bar_recent_item);
         layout.system_bar_recent_panel = add(res, res2, R.layout.system_bar_recent_panel);
         layout.system_bar_settings_row = add(res, res2, R.layout.system_bar_settings_row);
