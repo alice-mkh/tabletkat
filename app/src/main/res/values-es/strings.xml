@@ -62,5 +62,4 @@
 
     <string name="pref_title_translation">Translator</string>
     <string name="pref_summary_translation">%your XDA or Github name%</string>
-    <string name="pref_translation_email">mailto:%your email%</string>
 </resources>

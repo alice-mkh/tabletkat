@@ -29,8 +29,5 @@
         android:key="translation"
         android:title="@string/pref_title_translation"
         android:summary="@string/pref_summary_translation">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="@string/pref_translation_email"/>
     </Preference>
 </PreferenceScreen>
