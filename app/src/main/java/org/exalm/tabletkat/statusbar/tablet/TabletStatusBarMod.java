@@ -285,6 +285,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     private Runnable mShowSearchPanel = new Runnable() {
         public void run() {
             showSearchPanel();
+            awakenDreams();
         }
     };
 
@@ -301,11 +302,23 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                     mHandler.removeCallbacks(mShowSearchPanel);
+                    awakenDreams();
                     break;
             }
             return false;
         }
     };
+
+    private void awakenDreams() {
+        Object mDreamManager = XposedHelpers.getObjectField(self, "mDreamManager");
+        if (mDreamManager != null) {
+            try {
+                XposedHelpers.callMethod(mDreamManager, "awaken");
+            } catch (Exception e) {
+                // fine, stay asleep then
+            }
+        }
+    }
 
     private final ContentObserver mHeadsUpObserver = new ContentObserver(mHandler) {
         @Override
@@ -515,12 +528,12 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         mRecentButton.setOnTouchListener(mRecentsPreloadOnTouchListener);
 
-        mPile = mNotificationPanel.findViewById(SystemR.id.content);
+        mPile = (ViewGroup) mNotificationPanel.findViewById(SystemR.id.content);
         XposedHelpers.setObjectField(self, "mPile", mPile);
-        XposedHelpers.callMethod(mPile, "removeAllViews");
+        mPile.removeAllViews();
         XposedHelpers.callMethod(mPile, "setLongPressListener", getNotificationLongClicker());
 
-        ScrollView scroller = (ScrollView) XposedHelpers.callMethod(mPile, "getParent");
+        ScrollView scroller = (ScrollView) mPile.getParent();
         scroller.setFillViewport(true);
     }
 
@@ -935,6 +948,8 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             case MSG_OPEN_NOTIFICATION_PEEK:
                 if (DEBUG) Log.d(TAG, "opening notification peek window; arg=" + m.arg1);
 
+                awakenDreams();
+
                 if (m.arg1 >= 0) {
                     final int N = (Integer) XposedHelpers.callMethod(mNotificationData, "size");
 
@@ -1013,6 +1028,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 break;
             case MSG_OPEN_NOTIFICATION_PANEL:
                 if (DEBUG) Log.d(TAG, "opening notifications panel");
+                awakenDreams();
                 if (!mNotificationPanel.isShowing()) {
                     mNotificationPanel.show(true, true);
                     mNotificationArea.setAlpha(0);
@@ -1030,6 +1046,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 }
                 break;
             case MSG_OPEN_INPUT_METHODS_PANEL:
+                awakenDreams();
                 if (DEBUG) Log.d(TAG, "opening input methods panel");
                 if (mInputMethodsPanel != null) mInputMethodsPanel.openPanel();
                 break;
@@ -1038,6 +1055,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 if (mInputMethodsPanel != null) mInputMethodsPanel.closePanel(false);
                 break;
             case MSG_OPEN_COMPAT_MODE_PANEL:
+                awakenDreams();
                 if (DEBUG) Log.d(TAG, "opening compat panel");
                 if (mCompatModePanel != null) mCompatModePanel.openPanel();
                 break;
@@ -1230,6 +1248,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
     public void onClickRecentButton() {
         if (DEBUG) Log.d(TAG, "clicked recent apps; disabled=" + mDisabled);
         if ((mDisabled & StatusBarManager.DISABLE_EXPAND) == 0) {
+            awakenDreams();
             toggleRecentApps();
         }
     }
@@ -2046,6 +2065,10 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                         resetHeadsUpDecayTimer();
                     }
                 } else if (notification.getNotification().fullScreenIntent != null) {
+                    // Stop screensaver if the notification has a full-screen intent.
+                    // (like an incoming phone call)
+                    awakenDreams();
+
                     // not immersive & a full-screen alert should be shown
                     Log.w(TAG, "Notification has fullScreenIntent and activity is not immersive;"
                             + " sending fullScreenIntent");
