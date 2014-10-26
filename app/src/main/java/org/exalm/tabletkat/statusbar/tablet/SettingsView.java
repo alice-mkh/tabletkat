@@ -30,6 +30,7 @@ import org.exalm.tabletkat.quicksettings.RowFactory;
 import java.util.ArrayList;
 
 import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedHelpers;
 
 public class SettingsView extends LinearLayout {
 
@@ -38,7 +39,7 @@ public class SettingsView extends LinearLayout {
     BroadcastReceiver settingsReceiver;
     ArrayList<Row> rows;
 
-    private static String[] defaultRows = new String[]{"airplane", "wifi", "rotate", "brightness", "dnd", "settings"};
+    private static String defaultRows = "airplane wifi rotate brightness dnd settings";
 
     public SettingsView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -49,19 +50,20 @@ public class SettingsView extends LinearLayout {
         rows = new ArrayList<Row>();
     }
 
-    private void rebuild(String[] strings) {
+    private void rebuild(String strings) {
         LinearLayout container = (LinearLayout) findViewById(TkR.id.settings_container);
         releaseControllers();
         container.removeAllViews();
         int i = 0;
-        for (String s : strings){
+        String[] strs = strings.split(" ");
+        for (String s : strs){
             Row row = RowFactory.createRowFromString(getContext(), s);
             if (row == null){
                 continue;
             }
             rows.add(row);
             container.addView(row.getView());
-            if (i >= strings.length - 1){
+            if (i >= strs.length - 1){
                 continue;
             }
             container.addView(row.getSeparator());
@@ -91,10 +93,21 @@ public class SettingsView extends LinearLayout {
 
             @Override
             public void init(XSharedPreferences pref) {
-                String[] customRows = new String[]{"wifi-switch", "bluetooth", "location", "airplane", "rotate", "brightness", "dnd", "settings"}; //TODO: Customization UI
-                rebuild(pref.getBoolean("extended_settings", false) ? customRows : defaultRows);
+                String rows = "wifi-switch bluetooth location airplane rotate brightness dnd settings"; //TODO: Customization UI
+                if (isAndroidX86()) {
+                    rows += " poweroff";
+                }
+                rebuild(pref.getBoolean("extended_settings", false) ? rows : defaultRows);
             }
         });
+    }
+
+    private boolean isAndroidX86() {
+        try{
+            return XposedHelpers.findMethodExact(TabletKatModule.mQuickSettingsClass, "onClickPowerOff") != null;
+        } catch (NoSuchMethodError e) {
+        }
+        return false;
     }
 
     @Override

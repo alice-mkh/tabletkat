@@ -53,6 +53,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     public static Class mBrightnessControllerClass;
     public static Class mClockClass;
     public static Class mComAndroidInternalRDrawableClass;
+    public static Class mComAndroidInternalRStringClass;
     public static Class mComAndroidInternalRStyleClass;
     public static Class mDateViewClass;
     public static Class mDelegateViewHelperClass;
@@ -66,6 +67,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
     public static Class mNotificationRowLayoutClass;
     public static Class mPhoneStatusBarClass;
     public static Class mPhoneStatusBarPolicyClass;
+    public static Class mQuickSettingsClass;
     public static Class mRecentTasksLoaderClass;
     public static Class mStatusBarIconClass;
     public static Class mStatusBarIconViewClass;
@@ -239,6 +241,7 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         mBrightnessControllerClass = findClass("com.android.systemui.settings.BrightnessController", loadPackageParam.classLoader);
         mClockClass = findClass("com.android.systemui.statusbar.policy.Clock", loadPackageParam.classLoader);
         mComAndroidInternalRDrawableClass = findClass("com.android.internal.R.drawable", loadPackageParam.classLoader);
+        mComAndroidInternalRStringClass = findClass("com.android.internal.R.string", loadPackageParam.classLoader);
         mComAndroidInternalRStyleClass = findClass("com.android.internal.R.style", loadPackageParam.classLoader);
         mDateViewClass = findClass("com.android.systemui.statusbar.policy.DateView", loadPackageParam.classLoader);
         mDelegateViewHelperClass = findClass("com.android.systemui.statusbar.DelegateViewHelper", loadPackageParam.classLoader);
@@ -252,8 +255,9 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         mNotificationRowLayoutClass = findClass("com.android.systemui.statusbar.policy.NotificationRowLayout", loadPackageParam.classLoader);
         mPhoneStatusBarClass = findClass("com.android.systemui.statusbar.phone.PhoneStatusBar", loadPackageParam.classLoader);
         mPhoneStatusBarPolicyClass = findClass("com.android.systemui.statusbar.phone.PhoneStatusBarPolicy", loadPackageParam.classLoader);
-        mStatusBarIconClass = findClass("com.android.internal.statusbar.StatusBarIcon", loadPackageParam.classLoader);
+        mQuickSettingsClass = findClass("com.android.systemui.statusbar.phone.QuickSettings", loadPackageParam.classLoader);
         mRecentTasksLoaderClass = findClass("com.android.systemui.recent.RecentTasksLoader", loadPackageParam.classLoader);
+        mStatusBarIconClass = findClass("com.android.internal.statusbar.StatusBarIcon", loadPackageParam.classLoader);
         mStatusBarIconViewClass = findClass("com.android.systemui.statusbar.StatusBarIconView", loadPackageParam.classLoader);
         mStatusBarManagerClass = findClass("android.app.StatusBarManager", loadPackageParam.classLoader);
         mSystemUIClass = findClass("com.android.systemui.SystemUI", loadPackageParam.classLoader);

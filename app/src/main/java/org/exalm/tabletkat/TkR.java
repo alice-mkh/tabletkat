@@ -100,6 +100,7 @@ public class TkR {
         public static int status_bar_date_formatter;
         public static int status_bar_settings_bluetooth;
         public static int status_bar_settings_location;
+        public static int status_bar_settings_poweroff;
     }
 
     public static void init(XResources res, XModuleResources res2) {
@@ -197,6 +198,7 @@ public class TkR {
         string.status_bar_date_formatter = add(res, res2, R.string.status_bar_date_formatter);
         string.status_bar_settings_bluetooth = add(res, res2, R.string.status_bar_settings_bluetooth);
         string.status_bar_settings_location = add(res, res2, R.string.status_bar_settings_location);
+        string.status_bar_settings_poweroff = add(res, res2, R.string.status_bar_settings_poweroff);
     }
 
     private static int add(XResources res, XModuleResources res2, int id){

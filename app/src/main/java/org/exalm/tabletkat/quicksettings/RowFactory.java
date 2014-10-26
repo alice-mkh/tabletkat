@@ -28,5 +28,8 @@ public class RowFactory {
         classMapping.put("settings", RowSettings.class);
         classMapping.put("wifi", RowWifi.class);
         classMapping.put("wifi-switch", RowWifiSwitch.class);
+
+        //Android-x86
+        classMapping.put("poweroff", RowPowerOff.class);
     }
 }
