@@ -60,13 +60,13 @@ public class BarTransitions {
         mTag = "BarTransitions." + view.getClass().getSimpleName();
         mView = view;
         mBarBackground = new BarBackgroundDrawable(mView.getContext(), gradientResourceId);
-        reloadBackground();
+        if (HIGH_END) {
+            reloadBackground();
+        }
     }
 
     public void reloadBackground(){
-        if (HIGH_END) {
-            mView.setBackground(mBarBackground);
-        }
+        mView.setBackground(mBarBackground);
     }
 
     public int getMode() {

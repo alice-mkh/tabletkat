@@ -27,7 +27,7 @@
     android:clipChildren="false"
     >
     <FrameLayout
-        android:id="@+id/recents_bg_protect"
+        android:id="@+id/recents_bg_protect_tablet"
         android:background="@drawable/recents_bg_protect_tile"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
