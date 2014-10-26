@@ -49,6 +49,10 @@ public class TabletRecentsMod implements IMod {
     public void setBar(Object bar, TabletStatusBarMod mod) {
         mBar = bar;
         mMod = mod;
+        if (mRecentsPanel != null) {
+            mRecentsPanel.destroy();
+        }
+        mRecentsPanel = new RecentsPanel(bar, mod, useTabletLayout);
     }
 
     public void createPanel(Object bar, TabletStatusBarMod mod) {
@@ -173,20 +177,22 @@ public class TabletRecentsMod implements IMod {
                 boolean firstScreenful = (Boolean) methodHookParam.args[1];
                 ArrayList mRecentTaskDescriptions = (ArrayList) XposedHelpers.getObjectField(self, "mRecentTaskDescriptions");
 
-                ActivityManager am = (ActivityManager) mRecentsPanel.mContext.getSystemService(Context.ACTIVITY_SERVICE);
-                List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-                ComponentName componentInfo = taskInfo.get(0).topActivity;
-                Object loader = XposedHelpers.callStaticMethod(TabletKatModule.mRecentTasksLoaderClass, "getInstance", mRecentsPanel.mContext);
-                boolean b = (Boolean) XposedHelpers.callMethod(loader, "isCurrentHomeActivity", componentInfo, null);
-
                 if (mRecentTaskDescriptions == null) {
                     mRecentTaskDescriptions = new ArrayList(tasks);
                     XposedHelpers.setObjectField(self, "mRecentTaskDescriptions", mRecentTaskDescriptions);
                 } else {
                     mRecentTaskDescriptions.addAll(tasks);
                 }
-                if (!mRecentTaskDescriptions.isEmpty() && firstScreenful && !b) {
-                    mRecentTaskDescriptions.remove(0);
+                if (!mRecentTaskDescriptions.isEmpty() && firstScreenful) {
+                    ActivityManager am = (ActivityManager) mRecentsPanel.mContext.getSystemService(Context.ACTIVITY_SERVICE);
+                    List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+                    ComponentName componentInfo = taskInfo.get(0).topActivity;
+                    Object loader = XposedHelpers.callStaticMethod(TabletKatModule.mRecentTasksLoaderClass, "getInstance", mRecentsPanel.mContext);
+                    boolean b = (Boolean) XposedHelpers.callMethod(loader, "isCurrentHomeActivity", componentInfo, null);
+
+                    if (!b) {
+                        mRecentTaskDescriptions.remove(0);
+                    }
                 }
                 XposedHelpers.callMethod(self, "refreshViews");
                 return null;
@@ -223,6 +229,11 @@ public class TabletRecentsMod implements IMod {
                 }
                 mRecentsPanel.setVisibility((Boolean) param.args[0]);
             }
+/*
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                XposedHelpers.setBooleanField(mRecentsPanel, "mCallUiHiddenBeforeNextReload", false);
+            }*/
         });
 
         XposedHelpers.findAndHookConstructor(recentsPanelViewClass, Context.class, AttributeSet.class, int.class, new XC_MethodHook() {

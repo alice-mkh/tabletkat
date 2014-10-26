@@ -132,7 +132,8 @@ public class RecentsPanel {
     public void toggleRecentsActivity() {
         if (mRecentsPanel != null) {
             boolean b = mRecentsPanel.getVisibility() == View.VISIBLE;
-            XposedHelpers.callMethod(mRecentsPanel, "show", !b);
+            //TODO: Somehow handle the situation when the task list is null
+            XposedHelpers.callMethod(mRecentsPanel, "show", !b, null, true, true);
         }
     }
 
