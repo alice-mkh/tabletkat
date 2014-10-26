@@ -41,6 +41,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_sysbar_ime_default"
             android:visibility="gone"
+            android:contentDescription="@string/accessibility_compatibility_zoom_button"
             android:alpha="0.75"
             />
 

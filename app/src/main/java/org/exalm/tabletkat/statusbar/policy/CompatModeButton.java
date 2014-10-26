@@ -23,8 +23,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import org.exalm.tabletkat.SystemR;
-
 import de.robv.android.xposed.XposedHelpers;
 
 public class CompatModeButton extends ImageView {
@@ -45,8 +43,6 @@ public class CompatModeButton extends ImageView {
         mAM = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
         refresh();
-
-        setContentDescription(context.getResources().getString(SystemR.string.accessibility_compatibility_zoom_button));
     }
 
     public void refresh() {

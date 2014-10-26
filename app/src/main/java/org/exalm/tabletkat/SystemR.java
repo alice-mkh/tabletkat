@@ -3,6 +3,8 @@ package org.exalm.tabletkat;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
 
+import de.robv.android.xposed.XposedBridge;
+
 public class SystemR {
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
     private static boolean initialized;
@@ -89,7 +91,6 @@ public class SystemR {
         public static int accessibility_bluetooth_connected;
         public static int accessibility_bluetooth_disconnected;
         public static int accessibility_clear_all;
-        public static int accessibility_compatibility_zoom_button;
         public static int accessibility_desc_quick_settings;
         public static int accessibility_home;
         public static int accessibility_ime_switch_button;
@@ -112,14 +113,15 @@ public class SystemR {
 
     private static int get(XResources res, XModuleResources res2, String name, String type) {
         int id = res.getIdentifier(name, type, SYSTEMUI_PACKAGE);
-/*        if (id <= 0) {
+        if (id <= 0) {
             try {
                 int i = res2.getIdentifier(name, type, "org.exalm.tabletkat");
                 id = res.addResource(res2, res2.fwd(i).getId());
             }catch (Throwable t){
-                XposedBridge.log(t);
+                return id;
             }
-        }*/
+            XposedBridge.log("Cannot find " + SYSTEMUI_PACKAGE + "/" + type + ":" + name);
+        }
         return id;
     }
 
@@ -208,7 +210,6 @@ public class SystemR {
         string.accessibility_bluetooth_connected = get(res, res2, "accessibility_bluetooth_connected", "string");
         string.accessibility_bluetooth_disconnected = get(res, res2, "accessibility_bluetooth_disconnected", "string");
         string.accessibility_clear_all = get(res, res2, "accessibility_clear_all", "string");
-        string.accessibility_compatibility_zoom_button = get(res, res2, "accessibility_compatibility_zoom_button", "string");
         string.accessibility_desc_quick_settings = get(res, res2, "accessibility_desc_quick_settings", "string");
         string.accessibility_home = get(res, res2, "accessibility_home", "string");
         string.accessibility_ime_switch_button = get(res, res2, "accessibility_ime_switch_button", "string");
