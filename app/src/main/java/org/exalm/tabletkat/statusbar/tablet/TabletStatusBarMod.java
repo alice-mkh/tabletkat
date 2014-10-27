@@ -633,7 +633,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             params.width = mNavIconWidth;
             params.addRule(RelativeLayout.ALIGN_PARENT_START);
             params.leftMargin = mNavIconWidth;
-            mStatusBarView.findViewById(SystemR.id.search_light).setLayoutParams(params);
+            mStatusBarView.findViewById(TkR.id.tablet_search_light).setLayoutParams(params);
         }
 
         if (mNavigationArea != null && (force || newMenuNavIconWidth != mMenuNavIconWidth)) {
@@ -723,11 +723,11 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         XposedHelpers.callMethod(mNetworkController, "addSignalCluster", signalCluster);
 
         // The navigation buttons
-        mBackButton = (ImageView)sb.findViewById(SystemR.id.back);
+        mBackButton = (ImageView)sb.findViewById(TkR.id.tablet_back);
         mNavigationArea = (ViewGroup) sb.findViewById(SystemR.id.nav_buttons);
-        mHomeButton = mNavigationArea.findViewById(SystemR.id.home);
-        mMenuButton = mNavigationArea.findViewById(SystemR.id.menu);
-        mRecentButton = mNavigationArea.findViewById(SystemR.id.recent_apps);
+        mHomeButton = mNavigationArea.findViewById(TkR.id.tablet_home);
+        mMenuButton = mNavigationArea.findViewById(TkR.id.tablet_menu);
+        mRecentButton = mNavigationArea.findViewById(TkR.id.tablet_recent_apps);
         mRecentButton.setOnClickListener(mOnClickListener);
 
         loadDimens2(true);
@@ -845,7 +845,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
 
         ViewGroup view = (ViewGroup)v.findViewById(SystemR.id.nav_buttons);
 
-        int[] ids = {SystemR.id.back, SystemR.id.home, SystemR.id.recent_apps, SystemR.id.menu};
+        int[] ids = {TkR.id.tablet_back, TkR.id.tablet_home, TkR.id.tablet_recent_apps, TkR.id.tablet_menu};
         int[] keyCodes = {4, 3, -1, 82};
         int[] src = {
                 SystemR.drawable.ic_sysbar_back,
@@ -876,7 +876,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             XposedHelpers.setObjectField(button, "mGlowWidth", glowBackground.getIntrinsicWidth());
             XposedHelpers.setObjectField(button, "mGlowHeight", glowBackground.getIntrinsicHeight());
 
-            if (ids[i] == SystemR.id.menu){
+            if (ids[i] == TkR.id.tablet_menu){
                 button.setVisibility(View.INVISIBLE);
             }
 
@@ -884,7 +884,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         }
 
         ImageView searchLight = (ImageView) XposedHelpers.newInstance(TabletKatModule.mKeyButtonViewClass, mContext, null);
-        searchLight.setId(SystemR.id.search_light);
+        searchLight.setId(TkR.id.tablet_search_light);
         searchLight.setImageResource(SystemR.drawable.search_light);
         searchLight.setContentDescription(mContext.getResources().getString(SystemR.string.accessibility_search_light));
         searchLight.setScaleType(ImageView.ScaleType.CENTER);

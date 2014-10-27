@@ -50,22 +50,17 @@ public class SystemR {
     }
     public static class id {
         public static int app_thumbnail;
-        public static int back;
         public static int battery;
         public static int brightness_icon;
         public static int clear_all_button;
         public static int clock;
         public static int content;
         public static int date;
-        public static int home;
-        public static int menu;
         public static int mobile_signal;
         public static int mobile_type;
         public static int nav_buttons;
         public static int notification_button;
         public static int notificationIcons;
-        public static int recent_apps;
-        public static int search_light;
         public static int settings_button;
         public static int signal_cluster;
         public static int statusIcons;
@@ -166,22 +161,17 @@ public class SystemR {
         drawable.system_bar_ticker_background = get(res, res2, "system_bar_ticker_background", "drawable");
 
         id.app_thumbnail = get(res, res2, "app_thumbnail", "id");
-        id.back = get(res, res2, "back", "id");
         id.battery = get(res, res2, "battery", "id");
         id.brightness_icon = get(res, res2, "brightness_icon", "id");
         id.clear_all_button = get(res, res2, "clear_all_button", "id");
         id.clock = get(res, res2, "clock", "id");
         id.content = get(res, res2, "content", "id");
         id.date =get(res, res2, "date", "id");
-        id.home = get(res, res2, "home", "id");
-        id.menu = get(res, res2, "menu", "id");
         id.mobile_signal = get(res, res2, "mobile_signal", "id");
         id.mobile_type = get(res, res2, "mobile_type", "id");
         id.nav_buttons = get(res, res2, "nav_buttons", "id");
         id.notification_button = get(res, res2, "notification_button", "id");
         id.notificationIcons = get(res, res2, "notificationIcons", "id");
-        id.recent_apps = get(res, res2, "recent_apps", "id");
-        id.search_light = get(res, res2, "search_light", "id");
         id.settings_button = get(res, res2, "settings_button", "id");
         id.signal_cluster = get(res, res2, "signal_cluster", "id");
         id.statusIcons = get(res, res2, "statusIcons", "id");

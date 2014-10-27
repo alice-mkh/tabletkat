@@ -1,5 +1,6 @@
 package org.exalm.tabletkat.recent;
 
+import android.animation.Animator;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -29,6 +30,7 @@ public class RecentsPanel {
     protected static final int MSG_CLOSE_RECENTS_PANEL = 1021;
 
     protected FrameLayout mRecentsPanel;
+    protected Choreographer mChoreo;
     protected Object mRecentTasksLoader;
     protected Context mContext;
     protected WindowManager mWindowManager;
@@ -96,6 +98,7 @@ public class RecentsPanel {
         LinearLayout tmpRoot = new LinearLayout(mContext);
         mRecentsPanel = (FrameLayout) LayoutInflater.from(mContext).inflate(
                 recentsResId, tmpRoot, false);
+        createChoreo();
         XposedHelpers.setObjectField(mRecentsPanel, "mRecentTasksLoader", mRecentTasksLoader);
         XposedHelpers.callMethod(mRecentTasksLoader, "setRecentsPanel", mRecentsPanel, mRecentsPanel);
         mRecentsPanel.setOnTouchListener(
@@ -151,9 +154,22 @@ public class RecentsPanel {
         }
     }
 
-    public void setVisibility(boolean visibility) {
-        mRecentsPanel.setVisibility(visibility ? View.VISIBLE : View.GONE);
-        mVisible = visibility;
+    public void setVisibility(boolean show, boolean animate) {
+        if (animate) {
+            if (mVisible != show) {
+                mVisible = show;
+                if (show) {
+                    mRecentsPanel.setVisibility(View.VISIBLE);
+                }
+                mChoreo.startAnimation(show);
+            }
+        } else {
+            mVisible = show;
+            mRecentsPanel.setVisibility(show ? View.VISIBLE : View.GONE);
+            mChoreo.jumpTo(show);
+            XposedHelpers.callMethod(mRecentsPanel, "onAnimationEnd",
+                    new Class[]{Animator.class}, new Object[]{null});
+        }
         if (mMod != null) {
             mMod.setOverlayRecentsVisible(mVisible);
         }
@@ -164,6 +180,19 @@ public class RecentsPanel {
 
     public boolean isVisible() {
         return mVisible;
+    }
+
+    public void onLayout() {
+        View v = (View) XposedHelpers.getObjectField(mRecentsPanel, "mRecentsContainer");
+        mChoreo.setPanelHeight(v.getHeight());
+    }
+
+    public void createChoreo() {
+        View mRecentsScrim = (View) XposedHelpers.getObjectField(mRecentsPanel, "mRecentsScrim");
+        View mRecentsContainer = (View) XposedHelpers.getObjectField(mRecentsPanel, "mRecentsContainer");
+        View mRecentsNoApps = (View) XposedHelpers.getObjectField(mRecentsPanel, "mRecentsNoApps");
+        mChoreo = new Choreographer(mRecentsPanel, mRecentsScrim, mRecentsContainer, mRecentsNoApps,
+                (Animator.AnimatorListener) mRecentsPanel, useTabletLayout);
     }
 
     public class TouchOutsideListener implements View.OnTouchListener {

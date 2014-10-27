@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="tablet_back" />
+    <item type="id" name="tablet_home" />
+    <item type="id" name="tablet_menu" />
+    <item type="id" name="tablet_recent_apps" />
+    <item type="id" name="tablet_search_light" />
+    <item type="id" name="recents_transition_background" />
+    <item type="id" name="recents_transition_placeholder_icon" />
+</resources>

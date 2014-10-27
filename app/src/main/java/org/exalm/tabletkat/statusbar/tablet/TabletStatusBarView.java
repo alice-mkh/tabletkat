@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import org.exalm.tabletkat.StatusBarManager;
 import org.exalm.tabletkat.SystemR;
 import org.exalm.tabletkat.TabletKatModule;
+import org.exalm.tabletkat.TkR;
 import org.exalm.tabletkat.statusbar.BaseStatusBarMod;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -61,9 +62,9 @@ public class TabletStatusBarView extends FrameLayout {
         @Override
         public void startTransition(LayoutTransition transition, ViewGroup container,
                                     View view, int transitionType) {
-            if (view.getId() == SystemR.id.back) {
+            if (view.getId() == TkR.id.tablet_back) {
                 mBackTransitioning = true;
-            } else if (view.getId() == SystemR.id.home && transitionType == LayoutTransition.APPEARING) {
+            } else if (view.getId() == TkR.id.tablet_home && transitionType == LayoutTransition.APPEARING) {
                 mHomeAppearing = true;
                 mStartDelay = transition.getStartDelay(transitionType);
                 mDuration = transition.getDuration(transitionType);
@@ -74,9 +75,9 @@ public class TabletStatusBarView extends FrameLayout {
         @Override
         public void endTransition(LayoutTransition transition, ViewGroup container,
                                   View view, int transitionType) {
-            if (view.getId() == SystemR.id.back) {
+            if (view.getId() == TkR.id.tablet_back) {
                 mBackTransitioning = false;
-            } else if (view.getId() == SystemR.id.home && transitionType == LayoutTransition.APPEARING) {
+            } else if (view.getId() == TkR.id.tablet_home && transitionType == LayoutTransition.APPEARING) {
                 mHomeAppearing = false;
             }
         }
@@ -220,23 +221,23 @@ public class TabletStatusBarView extends FrameLayout {
     }
 
     public View getBackButton() {
-        return findViewById(SystemR.id.back);
+        return findViewById(TkR.id.tablet_back);
     }
 
     public View getHomeButton() {
-        return findViewById(SystemR.id.home);
+        return findViewById(TkR.id.tablet_home);
     }
 
     public View getRecentsButton() {
-        return findViewById(SystemR.id.recent_apps);
+        return findViewById(TkR.id.tablet_recent_apps);
     }
 
     public View getMenuButton() {
-        return findViewById(SystemR.id.menu);
+        return findViewById(TkR.id.tablet_menu);
     }
 
     public View getSearchLight() {
-        return findViewById(SystemR.id.search_light);
+        return findViewById(TkR.id.tablet_search_light);
     }
 
     public void setNavigationIconHints(int hints) {
