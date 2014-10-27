@@ -232,8 +232,8 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
 //            Class c = findClass("com.sonymobile.systemui.statusbar.BatteryImage", loadPackageParam.classLoader);
 //            mBatteryMeterViewClass = c;
             mBatteryMeterViewClass = findClass("com.android.systemui.BatteryMeterView", loadPackageParam.classLoader);
-        }catch (ClassNotFoundError e){
-            XposedBridge.log(e);
+        }catch (Throwable t){
+            XposedBridge.log(t);
             //Ok, it's not Xperia
             mBatteryMeterViewClass = findClass("com.android.systemui.BatteryMeterView", loadPackageParam.classLoader);
         }
@@ -255,7 +255,12 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
         mNotificationRowLayoutClass = findClass("com.android.systemui.statusbar.policy.NotificationRowLayout", loadPackageParam.classLoader);
         mPhoneStatusBarClass = findClass("com.android.systemui.statusbar.phone.PhoneStatusBar", loadPackageParam.classLoader);
         mPhoneStatusBarPolicyClass = findClass("com.android.systemui.statusbar.phone.PhoneStatusBarPolicy", loadPackageParam.classLoader);
-        mQuickSettingsClass = findClass("com.android.systemui.statusbar.phone.QuickSettings", loadPackageParam.classLoader);
+        try {
+            mQuickSettingsClass = findClass("com.android.systemui.statusbar.phone.QuickSettings", loadPackageParam.classLoader);
+        } catch (Throwable t){
+            XposedBridge.log(t);
+            //CyanogenMod?
+        }
         mRecentTasksLoaderClass = findClass("com.android.systemui.recent.RecentTasksLoader", loadPackageParam.classLoader);
         mStatusBarIconClass = findClass("com.android.internal.statusbar.StatusBarIcon", loadPackageParam.classLoader);
         mStatusBarIconViewClass = findClass("com.android.systemui.statusbar.StatusBarIconView", loadPackageParam.classLoader);

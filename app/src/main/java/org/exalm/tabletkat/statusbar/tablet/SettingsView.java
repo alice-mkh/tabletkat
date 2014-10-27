@@ -105,7 +105,7 @@ public class SettingsView extends LinearLayout {
     private boolean isAndroidX86() {
         try{
             return XposedHelpers.findMethodExact(TabletKatModule.mQuickSettingsClass, "onClickPowerOff") != null;
-        } catch (NoSuchMethodError e) {
+        } catch (Throwable t) {
         }
         return false;
     }
