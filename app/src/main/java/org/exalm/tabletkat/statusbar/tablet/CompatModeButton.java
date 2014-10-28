@@ -22,6 +22,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import de.robv.android.xposed.XposedHelpers;
 
@@ -55,8 +56,9 @@ public class CompatModeButton extends ImageView {
             // If in an unknown state, don't change.
             return;
         }
-        final boolean vis = (mode != COMPAT_MODE_NEVER
-                          && mode != COMPAT_MODE_ALWAYS);
+        final boolean vis = mode != 0 //Small-screen devices always get 0, because they don't have compat mode
+                          && mode != COMPAT_MODE_NEVER
+                          && mode != COMPAT_MODE_ALWAYS;
         if (DEBUG) Log.d(TAG, "compat mode is " + mode + "; icon will " + (vis ? "show" : "hide"));
         setVisibility(vis ? View.VISIBLE : View.GONE);
     }
