@@ -82,7 +82,6 @@ import org.exalm.tabletkat.statusbar.CommandQueue;
 import org.exalm.tabletkat.statusbar.DoNotDisturb;
 import org.exalm.tabletkat.statusbar.phone.BarTransitions;
 import org.exalm.tabletkat.statusbar.policy.BatteryPercentView;
-import org.exalm.tabletkat.statusbar.policy.CompatModeButton;
 import org.exalm.tabletkat.statusbar.policy.EventHole;
 import org.exalm.tabletkat.statusbar.policy.Prefs;
 import org.exalm.tabletkat.statusbar.policy.TabletBluetoothController;

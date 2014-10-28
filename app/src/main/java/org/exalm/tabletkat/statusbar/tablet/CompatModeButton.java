@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.exalm.tabletkat.statusbar.policy;
+package org.exalm.tabletkat.statusbar.tablet;
 
 import android.app.ActivityManager;
 import android.content.Context;
