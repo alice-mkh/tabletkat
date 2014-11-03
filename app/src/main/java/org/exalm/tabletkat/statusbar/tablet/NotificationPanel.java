@@ -357,6 +357,13 @@ public class NotificationPanel extends RelativeLayout implements StatusBarPanel,
         mContentFrame.addView(mSettingsView);
     }
 
+    public void setQuickSettingsEnabled(boolean enable) {
+        if (!enable && mSettingsView != null) {
+            swapPanels();
+        }
+        mSettingsButton.setEnabled(enable);
+    }
+
     private class Choreographer implements Animator.AnimatorListener {
         boolean mVisible;
         int mPanelHeight;

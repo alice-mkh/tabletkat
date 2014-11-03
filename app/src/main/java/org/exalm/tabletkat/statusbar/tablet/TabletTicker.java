@@ -271,7 +271,7 @@ public class TabletTicker
         }
         if (n.tickerView != null) {
             group = (ViewGroup)inflater.inflate(TkR.layout.system_bar_ticker_panel, null, false);
-            group.findViewById(TkR.id.background).setBackgroundResource(SystemR.drawable.system_bar_ticker_background);
+            group.findViewById(TkR.id.ticker_background).setBackgroundResource(SystemR.drawable.system_bar_ticker_background);
             ViewGroup content = (FrameLayout) group.findViewById(TkR.id.ticker_expanded);
             View expanded = null;
             Exception exception = null;
@@ -295,7 +295,7 @@ public class TabletTicker
             content.addView(expanded, lp);
         } else if (n.tickerText != null) {
             group = (ViewGroup)inflater.inflate(TkR.layout.system_bar_ticker_compat, mWindow, false);
-            group.findViewById(TkR.id.background).setBackgroundResource(SystemR.drawable.system_bar_ticker_background);
+            group.findViewById(TkR.id.ticker_background).setBackgroundResource(SystemR.drawable.system_bar_ticker_background);
             Object o = XposedHelpers.newInstance(TabletKatModule.mStatusBarIconClass, notification.getPackageName(), (UserHandle) XposedHelpers.callMethod(notification, "getUser"), n.icon, n.iconLevel, 0,
                     n.tickerText);
             final Drawable icon = (Drawable)XposedHelpers.callStaticMethod(TabletKatModule.mStatusBarIconViewClass,

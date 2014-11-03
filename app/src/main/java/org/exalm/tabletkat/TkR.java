@@ -31,7 +31,6 @@ public class TkR {
         public static int ic_sysbar_wifi;
     }
     public static class id {
-        public static int background;
         public static int bar_contents;
         public static int bar_contents_holder;
         public static int bar_shadow;
@@ -82,6 +81,7 @@ public class TkR {
         public static int tablet_menu;
         public static int tablet_recent_apps;
         public static int tablet_search_light;
+        public static int ticker_background;
         public static int ticker_expanded;
         public static int title_area;
         public static int use_physical_keyboard_label;
@@ -138,7 +138,6 @@ public class TkR {
         drawable.ic_sysbar_rotate = add(res, res2, R.drawable.ic_sysbar_rotate);
         drawable.ic_sysbar_wifi = add(res, res2, R.drawable.ic_sysbar_wifi);
 
-        id.background = add(res, res2, R.id.background);
         id.bar_contents = add(res, res2, R.id.bar_contents);
         id.bar_contents_holder = add(res, res2, R.id.bar_contents_holder);
         id.bar_shadow = add(res, res2, R.id.bar_shadow);
@@ -189,6 +188,7 @@ public class TkR {
         id.tablet_menu = add(res, res2, R.id.tablet_menu);
         id.tablet_recent_apps = add(res, res2, R.id.tablet_recent_apps);
         id.tablet_search_light = add(res, res2, R.id.tablet_search_light);
+        id.ticker_background = add(res, res2, R.id.ticker_background);
         id.ticker_expanded = add(res, res2, R.id.ticker_expanded);
         id.title_area = add(res, res2, R.id.title_area);
         id.use_physical_keyboard_label = add(res, res2, R.id.use_physical_keyboard_label);

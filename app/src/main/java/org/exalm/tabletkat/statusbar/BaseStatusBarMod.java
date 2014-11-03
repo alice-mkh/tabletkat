@@ -438,6 +438,10 @@ public class BaseStatusBarMod implements IMod {
         }
     }
 
+    protected boolean notificationIsForCurrentUser(StatusBarNotification n) {
+        return (Boolean) XposedHelpers.callMethod(self, "notificationIsForCurrentUser", n);
+    }
+
     protected WindowManager.LayoutParams getSearchLayoutParams(ViewGroup.LayoutParams layoutParams) {
         try {
             return (WindowManager.LayoutParams) XposedHelpers.callMethod(self, "getSearchLayoutParams", layoutParams);

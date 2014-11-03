@@ -22,7 +22,7 @@
     >
 
     <View
-        android:id="@+id/background"
+        android:id="@+id/ticker_background"
         android:layout_height="48dp"
         android:layout_width="match_parent"
         android:layout_alignParentStart="true"

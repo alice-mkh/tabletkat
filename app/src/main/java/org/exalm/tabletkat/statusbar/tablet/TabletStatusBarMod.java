@@ -275,6 +275,7 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         mSettingsReceiver = null;
         mHeadsUpNotificationDecay = 0;
         mHeadsUpNotificationView = null;
+        mUserSetup = false;
     }
 
     public Context getContext() {
@@ -318,6 +319,28 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             }
         }
     }
+
+    // ensure quick settings is disabled until the current user makes it through the setup wizard
+    private boolean mUserSetup = false;
+    private ContentObserver mUserSetupObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            final boolean userSetup = 0 != Settings.Secure.getIntForUser(
+                    mContext.getContentResolver(),
+                    Settings.Secure.USER_SETUP_COMPLETE,
+                    0 /*default */,
+                    XposedHelpers.getIntField(self, "mCurrentUserId"));
+            if (MULTIUSER_DEBUG) Log.d(TAG, String.format("User setup changed: " +
+                            "selfChange=%s userSetup=%s mUserSetup=%s",
+                    selfChange, userSetup, mUserSetup));
+            if (mNotificationPanel != null) {
+                mNotificationPanel.setQuickSettingsEnabled(userSetup);
+            }
+            if (userSetup != mUserSetup) {
+                mUserSetup = userSetup;
+            }
+        }
+    };
 
     private final ContentObserver mHeadsUpObserver = new ContentObserver(mHandler) {
         @Override
@@ -793,6 +816,9 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         context.registerReceiver(mBroadcastReceiver, filter);
+
+        // listen for USER_SETUP_COMPLETE setting (per-user)
+        resetUserSetupObserver();
 
         return sb;
     }
@@ -1384,9 +1410,14 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         // If the device hasn't been through Setup, we only show system notifications
         for (int i=0; i<N; i++) {
             Object ent = XposedHelpers.callMethod(mNotificationData, "get", N-i-1);
-            if (provisioned || showNotificationEvenIfUnprovisioned((StatusBarNotification) XposedHelpers.getObjectField(ent, "notification"))) {
-                toShow.add((View) XposedHelpers.getObjectField(ent, "row"));
+            StatusBarNotification n = (StatusBarNotification) XposedHelpers.getObjectField(ent, "notification");
+            if (!(provisioned || showNotificationEvenIfUnprovisioned(n))) {
+                continue;
             }
+            if (!notificationIsForCurrentUser(n)) {
+                continue;
+            }
+            toShow.add((View) XposedHelpers.getObjectField(ent, "row"));
         }
 
         ArrayList<View> toRemove = new ArrayList<View>();
@@ -1451,6 +1482,15 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             }
         }
     };
+
+    private void resetUserSetupObserver() {
+        mContext.getContentResolver().unregisterContentObserver(mUserSetupObserver);
+        mUserSetupObserver.onChange(false);
+        mContext.getContentResolver().registerContentObserver(
+                Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), true,
+                mUserSetupObserver,
+                XposedHelpers.getIntField(self, "mCurrentUserId"));
+    }
 
     private void setHeadsUpVisibility(boolean vis) {
         if (!ENABLE_HEADS_UP) return;
@@ -1697,6 +1737,16 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 StatusBarNotification n = (StatusBarNotification) methodHookParam.args[1];
                 boolean firstTime = (Boolean) methodHookParam.args[2];
 
+                // no ticking in Setup
+                if (!isDeviceProvisioned()) {
+                    return null;
+                }
+
+                // not for you
+                if (!notificationIsForCurrentUser(n)) {
+                    return null;
+                }
+
                 // Don't show the ticker when the windowshade is open.
                 if (mNotificationPanel.isShowing()) {
                     return null;
@@ -1804,7 +1854,10 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                 if (mNotificationPanel != null) {
-                    mNotificationPanel.setClearable(isDeviceProvisioned() && (Boolean) XposedHelpers.callMethod(mNotificationData, "hasClearableItems"));
+                    final boolean any = (Integer) XposedHelpers.callMethod(mNotificationData, "size") > 0;
+                    final boolean clearable = any && (Boolean) XposedHelpers.callMethod(mNotificationData, "hasClearableItems");
+
+                    mNotificationPanel.setClearable(isDeviceProvisioned() && clearable);
                 }
                 return null;
             }
@@ -1877,10 +1930,14 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                     if (i >= N) break;
                     Object ent = XposedHelpers.callMethod(mNotificationData, "get", N - i - 1);
                     StatusBarNotification n = (StatusBarNotification) XposedHelpers.getObjectField(ent, "notification");
-                    if ((provisioned && (Integer) XposedHelpers.callMethod(n, "getScore") >= HIDE_ICONS_BELOW_SCORE)
-                            || showNotificationEvenIfUnprovisioned(n)) {
-                        toShow.add((View) XposedHelpers.getObjectField(ent, "icon"));
+                    if (!((provisioned && (Integer) XposedHelpers.callMethod(n, "getScore") >= HIDE_ICONS_BELOW_SCORE)
+                            || showNotificationEvenIfUnprovisioned(n))) {
+                        continue;
                     }
+                    if (!notificationIsForCurrentUser(n)) {
+                        continue;
+                    }
+                    toShow.add((View) XposedHelpers.getObjectField(ent, "icon"));
                 }
 
                 ArrayList<View> toRemove = new ArrayList<View>();
@@ -2335,6 +2392,16 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                 }
                 mContext.unregisterReceiver(mBroadcastReceiver);
                 reset();
+            }
+        });
+        XposedHelpers.findAndHookMethod(base, "userSwitched", int.class, new XC_MethodReplacement() {
+            @Override
+            protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                int newUserId = (Integer) methodHookParam.args[0];
+                animateCollapsePanels();
+                updateNotificationIcons();
+                resetUserSetupObserver();
+                return null;
             }
         });
         try {
