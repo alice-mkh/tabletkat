@@ -1633,9 +1633,6 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
                         (opaque ? PixelFormat.OPAQUE : PixelFormat.TRANSLUCENT));
                 if ((Boolean) XposedHelpers.callStaticMethod(ActivityManager.class, "isHighEndGfx")) {
                     lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
-                } else {
-                    lp.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-                    lp.dimAmount = 0.7f;
                 }
                 lp.gravity = Gravity.BOTTOM | Gravity.START;
                 lp.setTitle("SearchPanel");
