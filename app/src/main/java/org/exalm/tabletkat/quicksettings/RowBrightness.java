@@ -24,12 +24,12 @@ public class RowBrightness extends Row {
     }
 
     @Override
-    public int getLabel() {
+    protected int getLabel() {
         return 0;
     }
 
     @Override
-    public int getIcon() {
+    protected int getIcon() {
         return TkR.drawable.ic_sysbar_brightness;
     }
 

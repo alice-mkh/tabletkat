@@ -18,12 +18,12 @@ public class RowAirplane extends Row {
     }
 
     @Override
-    public int getLabel() {
+    protected int getLabel() {
         return SystemR.string.status_bar_settings_airplane;
     }
 
     @Override
-    public int getIcon() {
+    protected int getIcon() {
         return TkR.drawable.ic_sysbar_airplane;
     }
 

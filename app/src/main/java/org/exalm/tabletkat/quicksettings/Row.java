@@ -1,6 +1,8 @@
 package org.exalm.tabletkat.quicksettings;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.UserHandle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
@@ -10,7 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import org.exalm.tabletkat.TabletKatModule;
 import org.exalm.tabletkat.TkR;
+
+import de.robv.android.xposed.XposedHelpers;
 
 public abstract class Row {
     protected Context mContext;
@@ -27,8 +32,21 @@ public abstract class Row {
         return false;
     }
 
-    protected View.OnClickListener getOnClickListener(){
+    protected String getOnClickAction(){
         return null;
+    }
+
+    protected View.OnClickListener getOnClickListener(){
+        final String s = getOnClickAction();
+        if (s == null) {
+            return null;
+        }
+        return new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startActivityDismissingKeyguard(new Intent(s));
+            }
+        };
     }
 
     protected int getLayout(){
@@ -95,5 +113,18 @@ public abstract class Row {
 
     protected Object getStatusBarManager() {
         return mContext.getSystemService("statusbar");
+    }
+
+    private void startActivityDismissingKeyguard(Intent intent) {
+        try {
+            Object o = XposedHelpers.callStaticMethod(TabletKatModule.mActivityManagerNativeClass, "getDefault");
+            XposedHelpers.callMethod(o, "dismissKeyguardOnNextActivity");
+        } catch (Throwable t) {
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        int USER_CURRENT = XposedHelpers.getStaticIntField(UserHandle.class, "USER_CURRENT");
+        UserHandle h = (UserHandle) XposedHelpers.newInstance(UserHandle.class, USER_CURRENT);
+        XposedHelpers.callMethod(mContext, "startActivityAsUser", intent, h);
+        XposedHelpers.callMethod(getStatusBarManager(), "collapsePanels");
     }
 }

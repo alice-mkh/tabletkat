@@ -18,12 +18,12 @@ public class RowDnd extends Row {
     }
 
     @Override
-    public int getLabel() {
+    protected int getLabel() {
         return SystemR.string.status_bar_settings_notifications;
     }
 
     @Override
-    public int getIcon() {
+    protected int getIcon() {
         return TkR.drawable.ic_notification_open;
     }
 

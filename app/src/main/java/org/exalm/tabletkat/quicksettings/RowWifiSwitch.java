@@ -16,7 +16,7 @@ public class RowWifiSwitch extends RowWifi {
     }
 
     @Override
-    public boolean hasSwitch() {
+    protected boolean hasSwitch() {
         return true;
     }
 
