@@ -118,7 +118,7 @@ class Choreographer implements Animator.AnimatorListener {
                 builder.with(bgAnim);
             }
         } else {
-            if (!mIsTablet || true) {
+            if (!mIsTablet) {
                 View recentsTransitionBackground =
                         mRootView.findViewById(TkR.id.recents_transition_background);
                 recentsTransitionBackground.setVisibility(View.VISIBLE);

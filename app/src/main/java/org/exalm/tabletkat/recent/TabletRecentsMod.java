@@ -122,7 +122,7 @@ public class TabletRecentsMod implements IMod {
         final Class recentsActivityClass = findClass("com.android.systemui.recent.RecentsActivity", cl);
         final Class recentsPanelViewClass = findClass("com.android.systemui.recent.RecentsPanelView", cl);
         final Class recentsPanelViewTaskDescriptionAdapterClass = findClass("com.android.systemui.recent.RecentsPanelView.TaskDescriptionAdapter", cl);
-//        final Class recentTasksLoaderClass = findClass("com.android.systemui.recent.RecentTasksLoader", cl);
+        final Class recentTasksLoaderClass = findClass("com.android.systemui.recent.RecentTasksLoader", cl);
         final Class fadedEdgeDrawHelperClass = findClass("com.android.systemui.recent.FadedEdgeDrawHelper", cl);
 
         XposedHelpers.findAndHookMethod(baseStatusBarClass, "toggleRecentsActivity", new XC_MethodReplacement() {
@@ -322,6 +322,17 @@ public class TabletRecentsMod implements IMod {
 
             }
         });
+        try {
+            XposedHelpers.findAndHookMethod(recentTasksLoaderClass, "getFirstTask", new XC_MethodReplacement() {
+                @Override
+                protected Object replaceHookedMethod(XC_MethodHook.MethodHookParam methodHookParam) throws Throwable {
+                    if (!shouldUseTabletRecents() || overlay){
+                        return TabletKatModule.invokeOriginalMethod(methodHookParam);
+                    }
+                    return null;
+                }
+            });
+        }catch (NoSuchMethodError e){}
 
         XposedHelpers.findAndHookMethod(Activity.class, "setContentView", int.class, new XC_MethodHook() {
             @Override
