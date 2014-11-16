@@ -509,17 +509,21 @@ public class TabletKatModule implements IXposedHookZygoteInit, IXposedHookLoadPa
             return;
         }
 
-        long l = (Long) callMethod(mSystemUI, "onServiceStartAttempt");
-        if (l < 500L) {
-            l = 500L;
-        }
-        Handler h = new Handler(){};
-        h.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                callMethod(mSystemUI, "createStatusBarFromConfig");
+        try {
+            long l = (Long) callMethod(mSystemUI, "onServiceStartAttempt");
+            if (l < 500L) {
+                l = 500L;
             }
-        }, l);
+            Handler h = new Handler() {
+            };
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    callMethod(mSystemUI, "createStatusBarFromConfig");
+                }
+            }, l);
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     public static Object invokeOriginalMethod(XC_MethodHook.MethodHookParam param) throws IllegalAccessException, InvocationTargetException{

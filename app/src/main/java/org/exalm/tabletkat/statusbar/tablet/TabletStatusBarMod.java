@@ -2394,10 +2394,10 @@ public class TabletStatusBarMod extends BaseStatusBarMod implements
         XposedHelpers.findAndHookMethod(base, "userSwitched", int.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                int newUserId = (Integer) methodHookParam.args[0];
                 animateCollapsePanels();
                 updateNotificationIcons();
                 resetUserSetupObserver();
+                XposedHelpers.callMethod(self, "preloadRecentApps");
                 return null;
             }
         });

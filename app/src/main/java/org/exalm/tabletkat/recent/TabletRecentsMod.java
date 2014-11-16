@@ -331,17 +331,6 @@ public class TabletRecentsMod implements IMod {
 
             }
         });
-        try {
-            XposedHelpers.findAndHookMethod(recentTasksLoaderClass, "getFirstTask", new XC_MethodReplacement() {
-                @Override
-                protected Object replaceHookedMethod(XC_MethodHook.MethodHookParam methodHookParam) throws Throwable {
-                    if (!shouldUseTabletRecents() || overlay){
-                        return TabletKatModule.invokeOriginalMethod(methodHookParam);
-                    }
-                    return null;
-                }
-            });
-        }catch (NoSuchMethodError e){}
 
         XposedHelpers.findAndHookMethod(Activity.class, "setContentView", int.class, new XC_MethodHook() {
             @Override
@@ -354,13 +343,14 @@ public class TabletRecentsMod implements IMod {
                 }
                 param.args[0] = TkR.layout.system_bar_recent_panel;
             }
-
+/*
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 Activity a = (Activity) param.thisObject;
                 View v = a.findViewById(SystemR.id.recents_root);
 //                Toast.makeText(a, "Null? "+(v==null), Toast.LENGTH_SHORT).show();
             }
+*/
         });
         XposedHelpers.findAndHookMethod(fadedEdgeDrawHelperClass, "create",
                 Context.class, AttributeSet.class, View.class, boolean.class, new XC_MethodReplacement() {
@@ -372,11 +362,11 @@ public class TabletRecentsMod implements IMod {
                 return null;
             }
         });
-
+/*
         XposedHelpers.findAndHookMethod(recentsPanelViewClass, "handleOnClick", View.class, new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-                if (mRecentsPanel == null || true) {
+                if (mRecentsPanel == null) {
                     return TabletKatModule.invokeOriginalMethod(param);
                 }
                 View view = (View) param.args[0];
@@ -467,7 +457,7 @@ public class TabletRecentsMod implements IMod {
                 return null;
             }
         });
-
+*/
         XposedHelpers.findAndHookMethod(TabletKatModule.mPhoneStatusBarClass, "checkBarModes", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
