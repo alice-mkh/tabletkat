@@ -7,24 +7,22 @@ However, in 4.4 it has been almost completely removed from code, making that imp
 Features
 ========
 
-* Fully working System Bar, with navigation buttons on left side and system indicators, clock and notifications on the right
-
-* Notification/Quick Settings popup
-
-* IME switcher
-
-* Compat mode
+* Tablet UI ported from Jelly Bean
 
 * Recents pinned to the left side
 
-* KitKat Immersive mode and translucency are supported
+* Overlay Recents: floating panel above the current app (4.1 behavior)
+
+* Dual-pane settings
+
+* Tablet layout for Launcher2
 
 Screenshots
 ===========
 
-![Screenshot](/screenshots/2.png?raw=true)
-
 ![Screenshot](/screenshots/1.jpg?raw=true)
+
+![Screenshot](/screenshots/2.jpg?raw=true)
 
 Installation
 ============
@@ -42,8 +40,8 @@ Installation
 Bugs
 ====
 
-* After crashing, Home and Recents buttons will be invisible. Rotate the screen to fix that. However, I hope it doesn't crash anymore. ;)
-
 * Compat mode doesn't seem to work well
 
 * For now the code uses hidden and internal APIs. I will replace that with reflection where possible later.
+
+* Many more!
