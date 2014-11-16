@@ -100,13 +100,13 @@ public class RecentsPanel {
                 recentsResId, tmpRoot, false);
         createChoreo();
         XposedHelpers.setObjectField(mRecentsPanel, "mRecentTasksLoader", mRecentTasksLoader);
+        XposedHelpers.callMethod(mRecentTasksLoader, "cancelLoadingThumbnailsAndIcons");
         XposedHelpers.callMethod(mRecentTasksLoader, "setRecentsPanel", mRecentsPanel, mRecentsPanel);
         mRecentsPanel.setOnTouchListener(
                 new TouchOutsideListener(MSG_CLOSE_RECENTS_PANEL, mRecentsPanel));
         if (!visible) {
             mRecentsPanel.setVisibility(View.GONE);
         }
-
 
         WindowManager.LayoutParams lp = getRecentsLayoutParams(mRecentsPanel.getLayoutParams());
 

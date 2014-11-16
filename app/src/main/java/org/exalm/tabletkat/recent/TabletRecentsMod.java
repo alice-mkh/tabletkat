@@ -2,23 +2,14 @@ package org.exalm.tabletkat.recent;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.ActivityOptions;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.UserHandle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,7 +122,7 @@ public class TabletRecentsMod implements IMod {
         final Class recentsActivityClass = findClass("com.android.systemui.recent.RecentsActivity", cl);
         final Class recentsPanelViewClass = findClass("com.android.systemui.recent.RecentsPanelView", cl);
         final Class recentsPanelViewTaskDescriptionAdapterClass = findClass("com.android.systemui.recent.RecentsPanelView.TaskDescriptionAdapter", cl);
-        final Class recentTasksLoaderClass = findClass("com.android.systemui.recent.RecentTasksLoader", cl);
+//        final Class recentTasksLoaderClass = findClass("com.android.systemui.recent.RecentTasksLoader", cl);
         final Class fadedEdgeDrawHelperClass = findClass("com.android.systemui.recent.FadedEdgeDrawHelper", cl);
 
         XposedHelpers.findAndHookMethod(baseStatusBarClass, "toggleRecentsActivity", new XC_MethodReplacement() {
