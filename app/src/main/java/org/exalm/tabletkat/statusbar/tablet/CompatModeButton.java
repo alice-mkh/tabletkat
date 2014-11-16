@@ -55,7 +55,7 @@ public class CompatModeButton extends ImageView {
             // If in an unknown state, don't change.
             return;
         }
-        final boolean vis = mode > 0 //Small-screen devices always get 0, because they don't have compat mode
+        final boolean vis = mode != 0 //Small-screen devices always get 0, because they don't have compat mode
                 && mode != COMPAT_MODE_NEVER
                 && mode != COMPAT_MODE_ALWAYS;
         if (DEBUG) Log.d(TAG, "compat mode is " + mode + "; icon will " + (vis ? "show" : "hide"));
