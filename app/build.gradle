@@ -8,7 +8,7 @@ android {
         applicationId "org.exalm.tabletkat"
         minSdkVersion 19
         targetSdkVersion 20
-        versionCode 2
+        versionCode 3
         versionName "1.2"
     }
     buildTypes {
